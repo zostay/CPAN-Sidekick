@@ -1,0 +1,88 @@
+{
+  "query": {
+    "filtered": {
+      "query": {
+        "custom_score": {
+          "script": "documentation = doc['documentation'].stringValue; if(documentation == empty) { documentation = 'xxxxxxxxxxxxxxxxxxxxxxxxx' } return _score - documentation.length()/10000",
+          "query": {
+            "boosting": {
+              "negative_boost": 0.5,
+              "negative": { "term": { "file.mime": { "value": "text/x-script.perl" } } },
+              "positive": {
+                "bool": {
+                  "should": [
+                    { "term": { "file.documentation": { "value": "%1$s", "boost": 20 } } },
+                    { "term": { "file.module.name": { "value": "%1$s", "boost": 20 } } },
+                    { 
+                      "dis_max": {
+                        "queries": [
+                          {
+                            "query_string": {
+                              "fields": [
+                                "documentation.analyzed^2", "file.module.name.analyzed^2", "distribution.analyzed",
+                                "documentation.camelcase", "file.module.name.camelcase", "distribution.camelcase"
+                              ],
+                              "query": "%2$s",
+                              "boost": 3,
+                              "default_operator": "AND",
+                              "allow_leading_wildcard": 0,
+                              "use_dis_max": 1
+                            }
+                          },
+                          {
+                            "query_string": {
+                              "fields": [ "abstract.analyzed", "pod.analyzed" ],
+                              "query": "%2$s",
+                              "default_operator": "AND",
+                              "allow_leading_wildcard": 0,
+                              "use_dis_max": 1
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "filter": {
+        "and": [
+          {
+            "not": {
+              "filter": {
+                "or": [
+                  { "term": { "file.distribution": "kurila" } }, 
+                  { "term": { "file.distribution": "perl_debug" } }, 
+                  { "term": { "file.distribution": "perl-5.005_02+apache1.3.3+modperl" } }, 
+                  { "term": { "file.distribution": "pod2texi" } }, 
+                  { "term": { "file.distribution": "perlbench" } }, 
+                  { "term": { "file.distribution": "spodcxx" } }
+                ]
+              }
+            }
+          },
+          { "term": { "status": "latest" } },
+          { "or": [
+            { "missing": { "field": "file.authorized" } },
+            { "term": { "file.authorized": 1 } }
+          ] },
+          { "or": [
+            { "and": [
+              { "exists": { "field": "file.module.name" } },
+              { "term": { "file.module.indexed": 1 } }
+            ] },
+            { "and": [
+              { "exists": { "field": "documentation" } },
+              { "term": { "file.indexed": 1 } }
+            ] }
+          ] }
+        ]
+      }
+    }
+  },
+  "size": %3$d,
+  "from": %4$d
+}

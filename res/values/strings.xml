@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CPAN Sidekick</string>
+    <string name="button_search">Search</string>
+    <string name="url_metacpan_api_base">http://api.metacpan.org</string>
+
+</resources>
