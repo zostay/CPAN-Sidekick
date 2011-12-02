@@ -3,7 +3,6 @@ package com.qubling.sidekick.metacpan;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URLEncoder;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Formatter;
 
@@ -17,16 +16,15 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import com.qubling.sidekick.R;
-import com.qubling.sidekick.metacpan.model.Module;
+import com.qubling.sidekick.metacpan.result.Module;
 
 import android.content.res.Resources;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class ModuleSearch extends AsyncTask<Void, Void, JSONObject> {
+public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 	
 	private static final String METACPAN_API_URL = "http://api.metacpan.org";
 		
@@ -52,16 +50,13 @@ public class ModuleSearch extends AsyncTask<Void, Void, JSONObject> {
 	public ModuleSearch(ListView updateView, String query) {
 		this(updateView, query, DEFAULT_SIZE, DEFAULT_FROM);
 	}
-
-	@Override
-	protected JSONObject doInBackground(Void... params) {
-		AndroidHttpClient client = AndroidHttpClient.newInstance("CPAN-Sidekick/0.1 (Android)");
+	
+	private String loadTemplate(String assetName) {
 		
 		// Load the JSON query template
 		Resources resources = updateView.getResources();
-		String moduleSearchTemplate;
 		try {
-			InputStream moduleSearchTemplateIn = resources.getAssets().open("module_search_template.json");
+			InputStream moduleSearchTemplateIn = resources.getAssets().open(assetName);
 			InputStreamReader moduleSearchTemplateReader = new InputStreamReader(moduleSearchTemplateIn, "UTF-8");
 			char[] buf = new char[1000];
 			StringBuilder moduleSearchTemplateBuilder = new StringBuilder();
@@ -69,20 +64,24 @@ public class ModuleSearch extends AsyncTask<Void, Void, JSONObject> {
 			while ((readLength = moduleSearchTemplateReader.read(buf)) > -1) {
 				moduleSearchTemplateBuilder.append(buf, 0, readLength);
 			}
-			moduleSearchTemplate = moduleSearchTemplateBuilder.toString();
+			return moduleSearchTemplateBuilder.toString();
 		}
+		
 		catch (IOException e) {
 			// TODO Should we do something about this?
 			Log.e("ModuleSearch", "Error loading module_search_template.json: " + e.getMessage());
 			return null;
 		}
 		
+	}
+	
+	private JSONObject search(AndroidHttpClient client) {
+		String moduleSearchTemplate = loadTemplate("module_search_template.json");
+		
 		// Format the query into the actual JSON to run
 		String cleanQuery = query.replace("::", " ");
 		Formatter moduleSearchJSON = new Formatter();
-		moduleSearchJSON.format(moduleSearchTemplate, query, cleanQuery, size, from);
-		
-		Log.d("ModuleSearch", moduleSearchJSON.toString());
+		moduleSearchJSON.format(moduleSearchTemplate, query, cleanQuery, size, from);//		Log.d("ModuleSearch", moduleSearchJSON.toString());
 		
 		try {
 			
@@ -96,8 +95,8 @@ public class ModuleSearch extends AsyncTask<Void, Void, JSONObject> {
 			// Get the response content
 			HttpEntity entity = res.getEntity();
 			InputStream content = entity.getContent();
-			Log.d("ModuleSearch", "res.getHeaders(\"Content-Type\"): " + res.getHeaders("Content-Type")[0].getValue());
-			Log.d("ModuleSearch", "entity.getContentType(): " + entity.getContentType());
+//			Log.d("ModuleSearch", "res.getHeaders(\"Content-Type\"): " + res.getHeaders("Content-Type")[0].getValue());
+//			Log.d("ModuleSearch", "entity.getContentType(): " + entity.getContentType());
 			
 			// Determine the charset
 			String charset;
@@ -117,7 +116,7 @@ public class ModuleSearch extends AsyncTask<Void, Void, JSONObject> {
 			}
 
 			// Read the content
-			Log.d("ModuleSearch", "charset: " + charset);
+//			Log.d("ModuleSearch", "charset: " + charset);
 			InputStreamReader contentReader = new InputStreamReader(content, charset);
 			char[] buf = new char[1000];
 			StringBuilder contentStr = new StringBuilder();
@@ -151,46 +150,55 @@ public class ModuleSearch extends AsyncTask<Void, Void, JSONObject> {
 			// TODO Show an alert dialog if this should ever happen
 			Log.e("ModuleSearch", e.toString());
 		}
-		finally {
-			client.close();
-		}
 
-		return null;
+		return null;	
+	}
+	
+	private Module[] constructModuleList(JSONObject searchResult) throws JSONException {
+		
+		// Slurp up the matches
+		JSONArray hits = searchResult.getJSONObject("hits").getJSONArray("hits");
+		int modulesCount = hits.length();
+		Module[] modules = new Module[modulesCount];
+		for (int i = 0; i < hits.length(); i++) {
+			JSONObject hit = hits.getJSONObject(i).getJSONObject("_source");
+			
+			modules[i] = Module.fromModuleSearch(hit);
+		}
+		
+		return modules;
 	}
 
 	@Override
-	protected void onPostExecute(JSONObject result) {
-		
-		// Nothing useful returned, forget it
-		if (result == null) return;
+	protected Module[] doInBackground(Void... params) {
+		AndroidHttpClient client = AndroidHttpClient.newInstance("CPAN-Sidekick/0.1 (Android)");
+//		Log.d("ModuleSearch", moduleSearchJSON.toString());
 		
 		try {
+			JSONObject moduleSearch = search(client);
+			if (moduleSearch == null) return null;
 			
-			// Slurp up the matches
-			JSONArray hits = result.getJSONObject("hits").getJSONArray("hits");
-			int modulesCount = hits.length();
-			Module[] modules = new Module[modulesCount];
-			for (int i = 0; i < hits.length(); i++) {
-				JSONObject hit = hits.getJSONObject(i).getJSONObject("_source");
-				
-				if (hit.has("module")) {
-					modules[i] = new Module(
-						hit.getJSONArray("module").getJSONObject(0).getString("name")
-					);
-				}
-				else {
-					modules[i] = new Module(hit.getString("name"));
-				}
-			}
-			
-			// Stuff the matches into an adapter and fill the list view
-			ModuleSearchAdapter resultAdapter = new ModuleSearchAdapter(updateView.getContext(), R.layout.module_search_list_item, modules);
-			updateView.setAdapter(resultAdapter);
+			return constructModuleList(moduleSearch);
 		}
 		catch (JSONException e) {
 			// TODO Show an alert dialog if this should ever happen
 			Log.e("ModuleSearch", e.toString());
+			return null;
 		}
+		finally {
+			client.close();
+		}		
+	}
+
+	@Override
+	protected void onPostExecute(Module[] modules) {
+		
+		// Nothing useful returned, forget it
+		if (modules == null) return;
+			
+		// Stuff the matches into an adapter and fill the list view
+		ModuleSearchAdapter resultAdapter = new ModuleSearchAdapter(updateView.getContext(), R.layout.module_search_list_item, modules);
+		updateView.setAdapter(resultAdapter);
 	}
 
 }

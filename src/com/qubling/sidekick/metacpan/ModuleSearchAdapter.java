@@ -1,15 +1,13 @@
 package com.qubling.sidekick.metacpan;
 
-import org.json.JSONObject;
-
-import com.qubling.sidekick.metacpan.model.Module;
+import com.qubling.sidekick.R;
+import com.qubling.sidekick.metacpan.result.Module;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.TextView;
 
 public class ModuleSearchAdapter extends ArrayAdapter<Module> {
@@ -32,8 +30,14 @@ public class ModuleSearchAdapter extends ArrayAdapter<Module> {
 		}
 		
 		Module item = getItem(position);
-		TextView text = (TextView) row;
-		text.setText(item.getName());
+		TextView moduleName = (TextView) row.findViewById(R.id.module_name);
+		moduleName.setText(item.getName());
+		
+		TextView distributionName = (TextView) row.findViewById(R.id.module_author_distribution);
+		distributionName.setText(
+				item.getAuthorPauseId()
+				+ "/" + item.getDistributionName()
+				+ "-" + item.getDistributionVersion());
 		
 		return row;
 	}
