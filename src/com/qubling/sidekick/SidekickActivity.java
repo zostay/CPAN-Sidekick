@@ -17,7 +17,7 @@ public class SidekickActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+        setContentView(R.layout.module_search);
         
         final EditText queryText = (EditText) findViewById(R.id.text_search);
         final ListView resultsView = (ListView) findViewById(R.id.list_search_results);
