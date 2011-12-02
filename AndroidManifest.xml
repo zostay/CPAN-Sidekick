@@ -12,7 +12,7 @@
         android:label="@string/app_name" android:theme="@android:style/Theme.Light">
         <activity
             android:label="@string/app_name"
-            android:name=".SidekickActivity" >
+            android:name=".ModuleSearchActivity" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
 
