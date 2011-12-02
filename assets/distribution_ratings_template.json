@@ -1,0 +1,23 @@
+{
+	"size": 0,
+	"query": {
+		"filtered": {
+			"query": {
+				"match_all": {}
+			},
+			"filter": {
+				"or": [
+						  %1$s
+				]
+			}
+		}
+	},
+	"facets": {
+		"ratings": {
+			"terms_stats": {
+				"value_field": "rating.rating",
+				"key_field": "rating.distribution"
+			}
+		}
+	}
+}

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 public class ModuleSearchAdapter extends ArrayAdapter<Module> {
@@ -38,6 +39,12 @@ public class ModuleSearchAdapter extends ArrayAdapter<Module> {
 				item.getAuthorPauseId()
 				+ "/" + item.getDistributionName()
 				+ "-" + item.getDistributionVersion());
+		
+		RatingBar distRating = (RatingBar) row.findViewById(R.id.module_release_rating);
+		distRating.setRating((float) item.getDistributionRating());
+		
+		TextView distRatingCount = (TextView) row.findViewById(R.id.module_release_rating_count);
+		distRatingCount.setText(String.valueOf(item.getDistributionRatingCount()));
 		
 		return row;
 	}

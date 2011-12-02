@@ -1,0 +1,27 @@
+{
+	"size": 0,
+	"query": {
+		"filtered": {
+			"query": {
+				"match_all": {}
+			},
+			"filter": {
+				"or": [
+				  { "term": { "rating.distribution": "Test-Simple" } },
+				  { "term": { "rating.distribution": "Test-More-Fork" } },
+				  { "term": { "rating.distribution": "Test-More-UTF8" } },
+				  { "term": { "rating.distribution": "Test-More-Strict" } },
+				  { "term": { "rating.distribution": "Basset" } }
+				]
+			}
+		}
+	},
+	"facets": {
+		"ratings": {
+			"terms_stats": {
+				"value_field": "rating.rating",
+				"key_field": "rating.distribution"
+			}
+		}
+	}
+}

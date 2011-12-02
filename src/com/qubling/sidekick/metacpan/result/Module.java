@@ -7,8 +7,11 @@ public class Module {
 	
 	private String name;
 	private String authorPauseId;
+	
 	private String distributionName;
 	private String distributionVersion;
+	private int distributionRatingCount;
+	private double distributionRating;
 	
 	public static Module fromModuleSearch(JSONObject json) throws JSONException {
 		
@@ -64,6 +67,22 @@ public class Module {
 
 	public void setDistributionVersion(String distributionVersion) {
 		this.distributionVersion = distributionVersion;
+	}
+
+	public int getDistributionRatingCount() {
+		return distributionRatingCount;
+	}
+
+	public void setDistributionRatingCount(int distributionRatingCount) {
+		this.distributionRatingCount = distributionRatingCount;
+	}
+
+	public double getDistributionRating() {
+		return distributionRating;
+	}
+
+	public void setDistributionRating(double distributionRating) {
+		this.distributionRating = distributionRating;
 	}
 
 }

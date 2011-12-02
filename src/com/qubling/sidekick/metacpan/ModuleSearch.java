@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Formatter;
+import java.util.HashMap;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -75,19 +76,22 @@ public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 		
 	}
 	
-	private JSONObject search(AndroidHttpClient client) {
-		String moduleSearchTemplate = loadTemplate("module_search_template.json");
-		
+	private String loadAndFormatTemplate(String assetName, Object... params) {
+		String template = loadTemplate(assetName);
+	
 		// Format the query into the actual JSON to run
-		String cleanQuery = query.replace("::", " ");
-		Formatter moduleSearchJSON = new Formatter();
-		moduleSearchJSON.format(moduleSearchTemplate, query, cleanQuery, size, from);//		Log.d("ModuleSearch", moduleSearchJSON.toString());
+		Formatter templateJSON = new Formatter();
+		templateJSON.format(template, params);
 		
+		return templateJSON.toString();
+	}
+	
+	private JSONObject makeMetaCPANRequest(AndroidHttpClient client, String path, String json) {
 		try {
 			
 			// Setup the REST API request
-			HttpPost req = new HttpPost(METACPAN_API_URL + "/v0/file/_search");
-			req.setEntity(new StringEntity(moduleSearchJSON.toString()));
+			HttpPost req = new HttpPost(METACPAN_API_URL + path);
+			req.setEntity(new StringEntity(json));
 			
 			// Make the request
 			HttpResponse res = client.execute(req);
@@ -125,7 +129,7 @@ public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 				contentStr.append(buf, 0, readLength);
 			}
 			
-			Log.d("ModuleSearch", contentStr.toString());
+			Log.d("ModuleSearch", path + ": " + contentStr.toString());
 			
 			// Parse the response into JSON and return it
 			Object parsedContent = new JSONTokener(contentStr.toString()).nextValue();
@@ -152,6 +156,57 @@ public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 		}
 
 		return null;	
+		
+	}
+	
+	private JSONObject search(AndroidHttpClient client) {
+		
+		// Setup the query
+		String cleanQuery = query.replace("::", " ");
+		String moduleSearchJSON = loadAndFormatTemplate(
+				"module_search_template.json", query, cleanQuery, size, from);
+				
+		return makeMetaCPANRequest(client, "/v0/file/_search", moduleSearchJSON);
+	}
+	
+	private void setupReleaseRatings(AndroidHttpClient client, Module[] modules) throws JSONException {
+		HashMap<String, Module> distMap = new HashMap<String, Module>();
+		StringBuilder distributions = new StringBuilder();
+		boolean needAnd = false;
+		for (Module module : modules) {
+			if (distMap.containsKey(module.getDistributionName())) 
+				continue;
+			
+			if (needAnd) distributions.append(", ");
+			needAnd = true;
+			
+			distMap.put(module.getDistributionName(), module);
+			
+			distributions.append("{ \"term\": { \"rating.distribution\": \"");
+			distributions.append(module.getDistributionName().replaceAll("\"", "\\\""));
+			distributions.append("\" } }");
+		}
+		
+		String distRatingsJSON = loadAndFormatTemplate(
+				"distribution_ratings_template.json", distributions);
+		
+		JSONObject ratings = makeMetaCPANRequest(client, "/rating/_search", distRatingsJSON);
+		
+		JSONArray facets = ratings.getJSONObject("facets").getJSONObject("ratings").getJSONArray("terms");
+		
+		for (int i = 0; i < facets.length(); i++) {
+			JSONObject facet = facets.getJSONObject(i);
+			
+			String distributionName = facet.getString("term"); 
+			int ratingCount = facet.getInt("count");
+			double ratingMean = facet.getDouble("mean");
+			
+			Module module = distMap.get(distributionName);
+			if (module != null) {
+				module.setDistributionRatingCount(ratingCount);
+				module.setDistributionRating(ratingMean);
+			}
+		}
 	}
 	
 	private Module[] constructModuleList(JSONObject searchResult) throws JSONException {
@@ -178,7 +233,9 @@ public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 			JSONObject moduleSearch = search(client);
 			if (moduleSearch == null) return null;
 			
-			return constructModuleList(moduleSearch);
+			Module[] modules = constructModuleList(moduleSearch);
+			setupReleaseRatings(client, modules);
+			return modules;
 		}
 		catch (JSONException e) {
 			// TODO Show an alert dialog if this should ever happen
