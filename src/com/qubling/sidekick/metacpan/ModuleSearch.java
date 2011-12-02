@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import com.qubling.sidekick.R;
+import com.qubling.sidekick.metacpan.model.Module;
 
 import android.content.res.Resources;
 import android.net.http.AndroidHttpClient;
@@ -168,20 +169,22 @@ public class ModuleSearch extends AsyncTask<Void, Void, JSONObject> {
 			// Slurp up the matches
 			JSONArray hits = result.getJSONObject("hits").getJSONArray("hits");
 			int modulesCount = hits.length();
-			String[] modules = new String[modulesCount];
+			Module[] modules = new Module[modulesCount];
 			for (int i = 0; i < hits.length(); i++) {
 				JSONObject hit = hits.getJSONObject(i).getJSONObject("_source");
 				
 				if (hit.has("module")) {
-					modules[i] = hit.getJSONArray("module").getJSONObject(0).getString("name");
+					modules[i] = new Module(
+						hit.getJSONArray("module").getJSONObject(0).getString("name")
+					);
 				}
 				else {
-					modules[i] = hit.getString("name");
+					modules[i] = new Module(hit.getString("name"));
 				}
 			}
 			
 			// Stuff the matches into an adapter and fill the list view
-			ArrayAdapter<String> resultAdapter = new ArrayAdapter<String>(updateView.getContext(), R.layout.module_search_list_item, modules);
+			ModuleSearchAdapter resultAdapter = new ModuleSearchAdapter(updateView.getContext(), R.layout.module_search_list_item, modules);
 			updateView.setAdapter(resultAdapter);
 		}
 		catch (JSONException e) {
