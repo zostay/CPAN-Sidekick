@@ -4,6 +4,9 @@ import com.qubling.sidekick.R;
 import com.qubling.sidekick.metacpan.result.Module;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +35,18 @@ public class ModuleSearchAdapter extends ArrayAdapter<Module> {
 		
 		Module item = getItem(position);
 		TextView moduleName = (TextView) row.findViewById(R.id.module_name);
-		moduleName.setText(item.getName());
+		SpannableStringBuilder formattedString = new SpannableStringBuilder(item.getModuleName());
+		if (item.getModuleAbstract() != null) {
+			formattedString.append(" - " + item.getModuleAbstract());
+			
+			ForegroundColorSpan color = new ForegroundColorSpan(Color.GRAY);
+			formattedString.setSpan(
+					color, 
+					formattedString.length() - item.getModuleAbstract().length() - 3, 
+					formattedString.length(), 
+					0);
+		}
+		moduleName.setText((CharSequence) formattedString);
 		
 		TextView distributionName = (TextView) row.findViewById(R.id.module_author_distribution);
 		distributionName.setText(
