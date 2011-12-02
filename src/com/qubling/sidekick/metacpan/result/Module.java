@@ -1,7 +1,12 @@
 package com.qubling.sidekick.metacpan.result;
 
+import java.net.URL;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.graphics.Bitmap;
+import android.net.Uri;
 
 public class Module {
 	
@@ -9,6 +14,7 @@ public class Module {
 	private String moduleAbstract;
 	
 	private String authorPauseId;
+	private Bitmap authorGravatarBitmap;
 	
 	private String distributionName;
 	private String distributionVersion;
@@ -73,6 +79,14 @@ public class Module {
 
 	public void setAuthorPauseId(String authorPauseId) {
 		this.authorPauseId = authorPauseId;
+	}
+
+	public Bitmap getAuthorGravatarBitmap() {
+		return authorGravatarBitmap;
+	}
+
+	public void setAuthorGravatarBitmap(Bitmap authorGravatarBitmap) {
+		this.authorGravatarBitmap = authorGravatarBitmap;
 	}
 
 	public String getDistributionName() {

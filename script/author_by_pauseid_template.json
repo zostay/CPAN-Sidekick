@@ -1,0 +1,13 @@
+{
+    "query": {
+        "filtered": {
+            "query": { "match_all": {} },
+            "filter": {
+                "or": [
+                    { "term": { "pauseid": "DOY" } },
+                    { "term": { "pauseid": "MSCHWERN" } }
+                ]
+            }
+        }
+    }
+}

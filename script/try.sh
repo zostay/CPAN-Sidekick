@@ -10,6 +10,11 @@ case $1 in
         file="distribution_ratings_template.json"
         path="/rating/_search"
         ;;
+
+    authors)
+        file="author_by_pauseid_template.json"
+        path="/author/_search"
+        ;;
 esac
 
 curl -d@$file 'http://api.metacpan.org'$path > /tmp/try-metacpan-api.log

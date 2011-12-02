@@ -3,12 +3,16 @@ package com.qubling.sidekick.metacpan;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Formatter;
 import java.util.HashMap;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
@@ -20,6 +24,9 @@ import com.qubling.sidekick.R;
 import com.qubling.sidekick.metacpan.result.Module;
 
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -84,6 +91,26 @@ public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 		templateJSON.format(template, params);
 		
 		return templateJSON.toString();
+	}
+	
+	private Bitmap getGravatarBitmap(AndroidHttpClient client, String gravatarURL) {
+		try {
+			
+			// Do the request
+			HttpGet req = new HttpGet(gravatarURL);
+			HttpResponse res = client.execute(req);
+			
+			// Get the response content
+			HttpEntity entity = res.getEntity();
+			InputStream content = entity.getContent();
+			Bitmap gravatarBitmap = BitmapFactory.decodeStream(content);
+			return gravatarBitmap;
+		}
+		
+		catch (IOException e) {
+			// TODO Return a generic image when this happens
+			return null;
+		}
 	}
 	
 	private JSONObject makeMetaCPANRequest(AndroidHttpClient client, String path, String json) {
@@ -209,6 +236,46 @@ public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 		}
 	}
 	
+	private void setupAuthorGravatars(AndroidHttpClient client, Module[] modules) throws JSONException {
+		HashMap<String, Module> authorMap = new HashMap<String, Module>();
+		StringBuilder authors = new StringBuilder();
+		boolean needAnd = false;
+		for (Module module : modules) {
+			if (authorMap.containsKey(module.getAuthorPauseId())) 
+				continue;
+			
+			if (needAnd) authors.append(", ");
+			needAnd = true;
+			
+			authorMap.put(module.getAuthorPauseId(), module);
+			
+			authors.append("{ \"term\": { \"pauseid\": \"");
+			authors.append(module.getAuthorPauseId().replaceAll("\"", "\\\""));
+			authors.append("\" } }");
+		}
+		
+		String authorsByPauseIdJSON = loadAndFormatTemplate(
+				"authors_by_pauseids_template.json", authors);
+		
+		JSONObject ratings = makeMetaCPANRequest(client, "/author/_search", authorsByPauseIdJSON);
+		
+		JSONArray hits = ratings.getJSONObject("hits").getJSONArray("hits");
+		
+		for (int i = 0; i < hits.length(); i++) {
+			JSONObject author = hits.getJSONObject(i).getJSONObject("_source");
+			
+			String pauseId = author.getString("pauseid");
+			String gravatarURL = author.getString("gravatar_url");
+			
+			Bitmap gravatarBitmap = getGravatarBitmap(client, gravatarURL);
+			
+			Module module = authorMap.get(pauseId);
+			if (module != null) {
+				module.setAuthorGravatarBitmap(gravatarBitmap);
+			}
+		}
+	}
+	
 	private Module[] constructModuleList(JSONObject searchResult) throws JSONException {
 		
 		// Slurp up the matches
@@ -235,6 +302,7 @@ public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 			
 			Module[] modules = constructModuleList(moduleSearch);
 			setupReleaseRatings(client, modules);
+			setupAuthorGravatars(client, modules);
 			return modules;
 		}
 		catch (JSONException e) {

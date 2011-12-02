@@ -63,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:layout_toLeftOf="@+id/ReleaseDetails"
+                android:layout_toLeftOf="@+id/RatingDetails"
                 android:paddingRight="3dp"
                 android:singleLine="true"
                 android:text="@string/sample_distribution"

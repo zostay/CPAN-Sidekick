@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.QuickContactBadge;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -34,6 +35,7 @@ public class ModuleSearchAdapter extends ArrayAdapter<Module> {
 		}
 		
 		Module item = getItem(position);
+		
 		TextView moduleName = (TextView) row.findViewById(R.id.module_name);
 		SpannableStringBuilder formattedString = new SpannableStringBuilder(item.getModuleName());
 		if (item.getModuleAbstract() != null) {
@@ -59,6 +61,14 @@ public class ModuleSearchAdapter extends ArrayAdapter<Module> {
 		
 		TextView distRatingCount = (TextView) row.findViewById(R.id.module_release_rating_count);
 		distRatingCount.setText(String.valueOf(item.getDistributionRatingCount()));
+		
+		QuickContactBadge badge = (QuickContactBadge) row.findViewById(R.id.module_author_avatar);
+		if (item.getAuthorGravatarBitmap() != null) {
+			badge.setImageBitmap(item.getAuthorGravatarBitmap());
+		}
+		else {
+			badge.setImageResource(R.drawable.ic_contact_picture);
+		}
 		
 		return row;
 	}

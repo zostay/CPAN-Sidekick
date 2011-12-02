@@ -1,0 +1,12 @@
+{
+    "query": {
+        "filtered": {
+            "query": { "match_all": {} },
+            "filter": {
+                "or": [
+                    %1$s
+                ]
+            }
+        }
+    }
+}
