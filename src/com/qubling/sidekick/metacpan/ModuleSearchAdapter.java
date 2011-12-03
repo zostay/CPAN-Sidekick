@@ -67,10 +67,12 @@ public class ModuleSearchAdapter extends ArrayAdapter<Module> {
 		if (item.getDistributionFavoriteCount() > 0) {
 			favoriteCount.setText(item.getDistributionFavoriteCount() + "++ ");
 			favoriteCount.setBackgroundResource(R.drawable.btn_favorite_others);
+			favoriteCount.setShadowLayer(1.5f, 1f, 1f, R.color.favorite_text_shadow_color);
 		}
 		else {
 			favoriteCount.setText("++ ");
 			favoriteCount.setBackgroundResource(R.drawable.btn_favorite_default);
+			favoriteCount.setShadowLayer(0, 0, 0, Color.TRANSPARENT);
 		}
 		
 		if (item.isDistributionMyFavorite()) {

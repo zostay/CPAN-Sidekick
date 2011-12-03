@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="FavoriteButton">
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">1</item>
+        <item name="android:shadowRadius">1.5</item>
+        <item name="android:shadowColor">@color/favorite_text_shadow_color</item>
+    </style>
+    
+    <style name="MyFavoritedButton" parent="@style/FavoriteButton">
+        <item name="android:background">@drawable/btn_favorite_mine</item>
+        <item name="android:textColor">@color/favorite_text_color</item>
+    </style>
+    
+    <style name="OthersFavoritedButton" parent="@style/FavoriteButton">
+        <item name="android:background">@drawable/btn_favorite_others</item>
+        <item name="android:textColor">@color/favorite_text_color</item>
+    </style>
+    
+    <style name="NotFavoritedButton">
+        <item name="android:background">@drawable/btn_favorite_default</item>
+        <item name="android:textColor">@color/favorite_default_text_color</item>
+    </style>
+</resources>

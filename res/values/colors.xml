@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="favorite_text_shadow_color">#333</color>
+    <color name="favorite_text_color">#fff</color>
     
     <color name="favorite_mine_border">#36c</color>
     <color name="favorite_mine_gradient_start">#69f</color>
     <color name="favorite_mine_gradient_end">#36c</color>
-    <color name="favorite_mine_text_color">#fff</color>
     
     <color name="favorite_default_border">#666</color>
     <color name="favorite_default_color">#fff</color>
@@ -13,5 +14,4 @@
     <color name="favorite_others_border">#D39534</color>
     <color name="favorite_others_gradient_start">#FFC874</color>
     <color name="favorite_others_gradient_end">#FCA216</color>
-    <color name="favorite_others_text_color">#fff</color>
 </resources>
