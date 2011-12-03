@@ -3,16 +3,20 @@ package com.qubling.sidekick;
 import com.qubling.sidekick.metacpan.ModuleSearch;
 
 import android.app.Activity;
-import android.inputmethodservice.Keyboard.Key;
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
 public class ModuleSearchActivity extends Activity {
+	private static final int DIALOG_SEARCH_PROGRESS = 1;
+	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,7 +30,10 @@ public class ModuleSearchActivity extends Activity {
         searchButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View searchButton) {
-				new ModuleSearch(resultsView, queryText.getText().toString()).execute();
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(searchButton.getWindowToken(), 0);
+				Dialog dialog = ProgressDialog.show(ModuleSearchActivity.this, "", "Searching CPAN...", true);
+				new ModuleSearch(resultsView, dialog, queryText.getText().toString()).execute();
 			}
 		});
         

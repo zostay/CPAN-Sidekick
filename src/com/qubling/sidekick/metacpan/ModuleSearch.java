@@ -23,6 +23,7 @@ import org.json.JSONTokener;
 import com.qubling.sidekick.R;
 import com.qubling.sidekick.metacpan.result.Module;
 
+import android.app.Dialog;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -43,20 +44,22 @@ public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 	private String query;
 	private int size;
 	private int from;
+	private Dialog progressDialog;
 		
-	public ModuleSearch(ListView updateView, String query, int size, int from) {
-		this.updateView = updateView;
-		this.query      = query.replace("\"", "\\\"");
-		this.size       = size;
-		this.from       = from;
+	public ModuleSearch(ListView updateView,  Dialog dialog, String query, int size, int from) {
+		this.updateView     = updateView;
+		this.query          = query.replace("\"", "\\\"");
+		this.size           = size;
+		this.from           = from;
+		this.progressDialog = dialog;
 	}
 	
-	public ModuleSearch(ListView updateView, String query, int size) {
-		this(updateView, query, size, DEFAULT_FROM);
+	public ModuleSearch(ListView updateView, Dialog dialog, String query, int size) {
+		this(updateView, dialog, query, size, DEFAULT_FROM);
 	}
 	
-	public ModuleSearch(ListView updateView, String query) {
-		this(updateView, query, DEFAULT_SIZE, DEFAULT_FROM);
+	public ModuleSearch(ListView updateView, Dialog dialog, String query) {
+		this(updateView, dialog, query, DEFAULT_SIZE, DEFAULT_FROM);
 	}
 	
 	private String loadTemplate(String assetName) {
@@ -375,6 +378,8 @@ public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 		// Stuff the matches into an adapter and fill the list view
 		ModuleSearchAdapter resultAdapter = new ModuleSearchAdapter(updateView.getContext(), R.layout.module_search_list_item, modules);
 		updateView.setAdapter(resultAdapter);
+		
+		progressDialog.cancel();
 	}
 
 }
