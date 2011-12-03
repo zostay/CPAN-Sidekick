@@ -1,0 +1,25 @@
+{
+    "size": 0,
+    "query": {
+        "filtered": {
+            "query": { "match_all": {} },
+            "filter": {
+                "or": [
+                    %1$s
+                ]
+            }
+        }
+    },
+    "facets": {
+        "favorites": {
+            "terms": {
+                "field": "favorite.distribution",
+                "size": 3
+            }
+        },
+        "myfavorites": {
+        	"terms": { "field": "favorite.distribution" },
+        	"facet_filter": { "term": { "favorite.user": "%2$s" } }
+        }
+    }
+}

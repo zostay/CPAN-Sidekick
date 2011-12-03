@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.QuickContactBadge;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -61,6 +62,20 @@ public class ModuleSearchAdapter extends ArrayAdapter<Module> {
 		
 		TextView distRatingCount = (TextView) row.findViewById(R.id.module_release_rating_count);
 		distRatingCount.setText(String.valueOf(item.getDistributionRatingCount()));
+		
+		Button favoriteCount = (Button) row.findViewById(R.id.module_release_favorite);
+		if (item.getDistributionFavoriteCount() > 0) {
+			favoriteCount.setText(item.getDistributionFavoriteCount() + "++ ");
+			favoriteCount.setBackgroundResource(R.drawable.btn_favorite_others);
+		}
+		else {
+			favoriteCount.setText("++ ");
+			favoriteCount.setBackgroundResource(R.drawable.btn_favorite_default);
+		}
+		
+		if (item.isDistributionMyFavorite()) {
+			favoriteCount.setBackgroundResource(R.drawable.btn_favorite_mine);
+		}
 		
 		QuickContactBadge badge = (QuickContactBadge) row.findViewById(R.id.module_author_avatar);
 		if (item.getAuthorGravatarBitmap() != null) {

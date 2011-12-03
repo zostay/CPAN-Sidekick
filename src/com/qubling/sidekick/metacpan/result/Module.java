@@ -1,12 +1,9 @@
 package com.qubling.sidekick.metacpan.result;
 
-import java.net.URL;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.graphics.Bitmap;
-import android.net.Uri;
 
 public class Module {
 	
@@ -20,6 +17,9 @@ public class Module {
 	private String distributionVersion;
 	private int distributionRatingCount;
 	private double distributionRating;
+	
+	private int distributionFavoriteCount;
+	private boolean distributionMyFavorite;
 	
 	public static Module fromModuleSearch(JSONObject json) {
 		
@@ -119,6 +119,22 @@ public class Module {
 
 	public void setDistributionRating(double distributionRating) {
 		this.distributionRating = distributionRating;
+	}
+
+	public int getDistributionFavoriteCount() {
+		return distributionFavoriteCount;
+	}
+
+	public void setDistributionFavoriteCount(int distributionFavoriteCount) {
+		this.distributionFavoriteCount = distributionFavoriteCount;
+	}
+
+	public boolean isDistributionMyFavorite() {
+		return distributionMyFavorite;
+	}
+
+	public void setDistributionMyFavorite(boolean distributionMyFavorite) {
+		this.distributionMyFavorite = distributionMyFavorite;
 	}
 
 }

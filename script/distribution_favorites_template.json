@@ -1,0 +1,27 @@
+{
+    "size": 0,
+    "query": {
+        "filtered": {
+            "query": { "match_all": {} },
+            "filter": {
+                "or": [
+                    { "term": { "favorite.distribution": "Test-Simple" } },
+                    { "term": { "favorite.distribution": "Test-More-Fork" } },
+                    { "term": { "favorite.distribution": "Test-DBIx-Class" } }
+                ]
+            }
+        }
+    },
+    "facets": {
+        "favorites": {
+            "terms": {
+                "field": "favorite.distribution",
+                "size": 3
+            }
+        },
+        "myfavorites": {
+        	"terms": { "field": "favorite.distribution" },
+        	"facet_filter": { "term": { "favorite.user": "HANENKAMP" } }
+        }
+    }
+}

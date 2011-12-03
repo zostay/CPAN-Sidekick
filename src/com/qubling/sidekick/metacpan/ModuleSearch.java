@@ -236,6 +236,56 @@ public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 		}
 	}
 	
+	private void setupReleaseFavorites(AndroidHttpClient client, Module[] modules) throws JSONException {
+		HashMap<String, Module> distMap = new HashMap<String, Module>();
+		StringBuilder distributions = new StringBuilder();
+		boolean needAnd = false;
+		for (Module module : modules) {
+			if (distMap.containsKey(module.getDistributionName())) 
+				continue;
+			
+			if (needAnd) distributions.append(", ");
+			needAnd = true;
+			
+			distMap.put(module.getDistributionName(), module);
+			
+			distributions.append("{ \"term\": { \"favorite.distribution\": \"");
+			distributions.append(module.getDistributionName().replaceAll("\"", "\\\""));
+			distributions.append("\" } }");
+		}
+		
+		String distFavoritesJSON = loadAndFormatTemplate(
+				"distribution_favorites_template.json", distributions, "todo".replaceAll("\"", "\\\""));
+		
+		JSONObject results = makeMetaCPANRequest(client, "/favorite/_search", distFavoritesJSON);
+		
+		JSONArray favorites = results.getJSONObject("facets").getJSONObject("favorites").getJSONArray("terms");
+		for (int i = 0; i < favorites.length(); i++) {
+			JSONObject favorite = favorites.getJSONObject(i);
+			
+			String distributionName = favorite.getString("term"); 
+			int favoriteCount = favorite.getInt("count");
+			
+			Module module = distMap.get(distributionName);
+			if (module != null) {
+				module.setDistributionFavoriteCount(favoriteCount);
+			}
+		}
+		
+		JSONArray myFavorites = results.getJSONObject("facets").getJSONObject("myfavorites").getJSONArray("terms");
+		for (int i = 0; i < myFavorites.length(); i++) {
+			JSONObject favorite = myFavorites.getJSONObject(i);
+			
+			String distributionName = favorite.getString("term"); 
+			//int favoriteCount = favorite.getInt("count");
+			
+			Module module = distMap.get(distributionName);
+			if (module != null) {
+				module.setDistributionMyFavorite(true);
+			}
+		}
+	}
+	
 	private void setupAuthorGravatars(AndroidHttpClient client, Module[] modules) throws JSONException {
 		HashMap<String, Module> authorMap = new HashMap<String, Module>();
 		StringBuilder authors = new StringBuilder();
@@ -302,6 +352,7 @@ public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 			
 			Module[] modules = constructModuleList(moduleSearch);
 			setupReleaseRatings(client, modules);
+			setupReleaseFavorites(client, modules);
 			setupAuthorGravatars(client, modules);
 			return modules;
 		}

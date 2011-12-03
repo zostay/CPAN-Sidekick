@@ -15,6 +15,10 @@ case $1 in
         file="author_by_pauseid_template.json"
         path="/author/_search"
         ;;
+
+    favorites)
+        file="distribution_favorites_template.json"
+        path="/favorite/_search"
 esac
 
 curl -d@$file 'http://api.metacpan.org'$path > /tmp/try-metacpan-api.log
