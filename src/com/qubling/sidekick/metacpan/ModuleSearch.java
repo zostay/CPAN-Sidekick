@@ -3,10 +3,8 @@ package com.qubling.sidekick.metacpan;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
 import java.nio.charset.UnsupportedCharsetException;
+import java.util.Collections;
 import java.util.Formatter;
 import java.util.HashMap;
 
@@ -20,18 +18,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import com.qubling.sidekick.R;
 import com.qubling.sidekick.metacpan.result.Module;
 
-import android.app.Dialog;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.ListView;
 
 public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 	
@@ -40,32 +35,32 @@ public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 	private static final int DEFAULT_SIZE = 25;
 	private static final int DEFAULT_FROM = 0;
 
-	private ListView updateView;
+	private ModuleList moduleList;
+	private Context context;
 	private String query;
 	private int size;
 	private int from;
-	private Dialog progressDialog;
-		
-	public ModuleSearch(ListView updateView,  Dialog dialog, String query, int size, int from) {
-		this.updateView     = updateView;
-		this.query          = query.replace("\"", "\\\"");
-		this.size           = size;
-		this.from           = from;
-		this.progressDialog = dialog;
+	
+	public ModuleSearch(Context context, ModuleList list, String query, int size, int from) {
+		this.context    = context;
+		this.moduleList = list;
+		this.query      = query.replace("\"", "\\\"");
+		this.size       = size;
+		this.from       = from;
 	}
 	
-	public ModuleSearch(ListView updateView, Dialog dialog, String query, int size) {
-		this(updateView, dialog, query, size, DEFAULT_FROM);
+	public ModuleSearch(Context context, ModuleList list, String query, int size) {
+		this(context, list, query, size, DEFAULT_FROM);
 	}
 	
-	public ModuleSearch(ListView updateView, Dialog dialog, String query) {
-		this(updateView, dialog, query, DEFAULT_SIZE, DEFAULT_FROM);
+	public ModuleSearch(Context context, ModuleList list, String query) {
+		this(context, list, query, DEFAULT_SIZE, DEFAULT_FROM);
 	}
 	
 	private String loadTemplate(String assetName) {
 		
 		// Load the JSON query template
-		Resources resources = updateView.getResources();
+		Resources resources = context.getResources();
 		try {
 			InputStream moduleSearchTemplateIn = resources.getAssets().open(assetName);
 			InputStreamReader moduleSearchTemplateReader = new InputStreamReader(moduleSearchTemplateIn, "UTF-8");
@@ -375,11 +370,8 @@ public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 		// Nothing useful returned, forget it
 		if (modules == null) return;
 			
-		// Stuff the matches into an adapter and fill the list view
-		ModuleSearchAdapter resultAdapter = new ModuleSearchAdapter(updateView.getContext(), R.layout.module_search_list_item, modules);
-		updateView.setAdapter(resultAdapter);
-		
-		progressDialog.cancel();
+		// Stuff the matches into an adapter and fill the list
+		Collections.addAll(moduleList, modules);
 	}
 
 }

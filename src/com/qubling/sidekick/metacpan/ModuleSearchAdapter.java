@@ -21,7 +21,7 @@ public class ModuleSearchAdapter extends ArrayAdapter<Module> {
 	private int layout;
 	private LayoutInflater inflater;
 
-	public ModuleSearchAdapter(Context context, int layout, Module[] items) {
+	public ModuleSearchAdapter(Context context, int layout, ModuleList items) {
 		super(context, layout, items);
 		
 		this.layout = layout;

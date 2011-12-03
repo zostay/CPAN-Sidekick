@@ -1,11 +1,14 @@
 package com.qubling.sidekick;
 
+import com.qubling.sidekick.metacpan.ModuleList;
 import com.qubling.sidekick.metacpan.ModuleSearch;
+import com.qubling.sidekick.metacpan.ModuleSearchAdapter;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -14,8 +17,33 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
-public class ModuleSearchActivity extends Activity {
-	private static final int DIALOG_SEARCH_PROGRESS = 1;
+public class ModuleSearchActivity extends Activity implements ModuleList.OnModuleListUpdated {
+	
+	private ModuleList moduleList;
+	private ProgressDialog progressDialog;
+	
+	public void lockOrientation() {
+		int currentOrientation = getResources().getConfiguration().orientation;
+		switch (currentOrientation) {
+		case Configuration.ORIENTATION_LANDSCAPE:
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+			break;
+		case Configuration.ORIENTATION_PORTRAIT:
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			break;
+		} 
+	}
+	
+	public void unlockOrientation() {
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+	}
+	
+	public void onSearchCompleted(ModuleSearchAdapter adapter) {
+		progressDialog.cancel();
+		
+		ListView resultsView = (ListView) findViewById(R.id.list_search_results);
+        resultsView.setAdapter(adapter);
+	}
 	
     /** Called when the activity is first created. */
     @Override
@@ -23,17 +51,34 @@ public class ModuleSearchActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.module_search);
         
+        moduleList = new ModuleList();
+        moduleList.setModuleListUpdater(this);
+        
         final EditText queryText = (EditText) findViewById(R.id.text_search);
-        final ListView resultsView = (ListView) findViewById(R.id.list_search_results);
         
         final ImageButton searchButton = (ImageButton) findViewById(R.id.button_search);
         searchButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View searchButton) {
+				
+				// Hide the screen keyboard
 				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(searchButton.getWindowToken(), 0);
-				Dialog dialog = ProgressDialog.show(ModuleSearchActivity.this, "", "Searching CPAN...", true);
-				new ModuleSearch(resultsView, dialog, queryText.getText().toString()).execute();
+				
+				// Clear the module list
+				moduleList.clear();
+				
+				// Show the progress bar
+				progressDialog = ProgressDialog.show(ModuleSearchActivity.this, "", "Searching CPAN...", true);
+				
+				// Lock the orientation - prevents the activity from being paused in the middle of the search
+				lockOrientation();
+				
+				// Start the search task
+				new ModuleSearch(
+						ModuleSearchActivity.this, 
+						moduleList, 
+						queryText.getText().toString()).execute();
 			}
 		});
         
@@ -50,5 +95,19 @@ public class ModuleSearchActivity extends Activity {
 				return false;
 			}
 		});
+    }
+    
+    public void onModuleListUpdate(ModuleList list) {
+    	
+    	// Show search results
+    	ModuleSearchAdapter adapter = list.toModuleSearchAdapter(this);
+    	ListView moduleListView = (ListView) findViewById(R.id.list_search_results);
+    	moduleListView.setAdapter(adapter);
+    	
+    	// Dismiss the progress dialog
+    	if (progressDialog != null) progressDialog.cancel();
+    	
+    	// Unlock the screen orientation
+    	unlockOrientation();
     }
 }
