@@ -1,6 +1,7 @@
 package com.qubling.sidekick.metacpan;
 
 import com.qubling.sidekick.R;
+import com.qubling.sidekick.collection.ModuleList;
 import com.qubling.sidekick.metacpan.result.Module;
 
 import android.content.Context;

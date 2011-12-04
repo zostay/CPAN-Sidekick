@@ -1,8 +1,6 @@
 package com.qubling.sidekick;
 
-import java.util.ArrayList;
-
-import com.qubling.sidekick.metacpan.ModuleList;
+import com.qubling.sidekick.collection.ModuleList;
 import com.qubling.sidekick.metacpan.ModuleSearch;
 import com.qubling.sidekick.metacpan.ModuleSearchAdapter;
 import com.qubling.sidekick.metacpan.result.Module;
@@ -13,7 +11,7 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -119,9 +117,13 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
 	}
 
 	public void onModuleListUpdate(ModuleList list) {
-    	
+		
+		// Load the module list in case this is a change of some kind
+		moduleList = list;
+		Log.d("ModuleSearch", "moduleList.size(): " + moduleList.size());
+			
     	// Show search results
-    	ModuleSearchAdapter adapter = list.toModuleSearchAdapter(this);
+		ModuleSearchAdapter adapter = list.toModuleSearchAdapter(this);
     	ListView moduleListView = (ListView) findViewById(R.id.list_search_results);
     	moduleListView.setAdapter(adapter);
     	

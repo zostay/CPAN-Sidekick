@@ -18,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import com.qubling.sidekick.collection.ModuleList;
 import com.qubling.sidekick.metacpan.result.Module;
 
 import android.content.Context;
@@ -372,6 +373,7 @@ public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 			
 		// Stuff the matches into an adapter and fill the list
 		Collections.addAll(moduleList, modules);
+		moduleList.notifyModuleListUpdater();
 	}
 
 }
