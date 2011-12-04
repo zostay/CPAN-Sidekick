@@ -18,7 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import com.qubling.sidekick.collection.ModuleList;
+import com.qubling.sidekick.metacpan.collection.ModuleList;
 import com.qubling.sidekick.metacpan.result.Module;
 
 import android.content.Context;
@@ -33,14 +33,16 @@ public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 	
 	private static final String METACPAN_API_URL = "http://api.metacpan.org";
 		
-	private static final int DEFAULT_SIZE = 25;
+	private static final int DEFAULT_SIZE = 10;
 	private static final int DEFAULT_FROM = 0;
 
-	private ModuleList moduleList;
 	private Context context;
 	private String query;
 	private int size;
 	private int from;
+	
+	private ModuleList moduleList;
+	private int totalCount = 0;
 	
 	public ModuleSearch(Context context, ModuleList list, String query, int size, int from) {
 		this.context    = context;
@@ -337,6 +339,8 @@ public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 			modules[i] = Module.fromModuleSearch(hit);
 		}
 		
+		totalCount = searchResult.getJSONObject("hits").getInt("total");
+		
 		return modules;
 	}
 
@@ -373,7 +377,8 @@ public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 			
 		// Stuff the matches into an adapter and fill the list
 		Collections.addAll(moduleList, modules);
-		moduleList.notifyModuleListUpdater();
+		moduleList.setTotalCount(totalCount);
+		moduleList.notifyModuleListUpdaters();
 	}
 
 }

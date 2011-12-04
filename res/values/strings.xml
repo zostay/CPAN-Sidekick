@@ -8,5 +8,6 @@
     <string name="favorite_not_favorited">++</string>
     <string name="activity_module_search_name">CPAN Module Search</string>
     <string name="dialog_searching_cpan">Searching CPAN...</string>
+    <string name="item_load_more_from_cpan">Loading from CPAN...</string>
 
 </resources>

@@ -1,9 +1,9 @@
 package com.qubling.sidekick;
 
-import com.qubling.sidekick.collection.ModuleList;
 import com.qubling.sidekick.metacpan.ModuleSearch;
-import com.qubling.sidekick.metacpan.ModuleSearchAdapter;
+import com.qubling.sidekick.metacpan.collection.ModuleList;
 import com.qubling.sidekick.metacpan.result.Module;
+import com.qubling.sidekick.widget.ModuleListAdapter;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -14,15 +14,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
-public class ModuleSearchActivity extends Activity implements ModuleList.OnModuleListUpdated {
+public class ModuleSearchActivity extends Activity implements ModuleList.OnModuleListUpdated, ModuleList.OnMoreItemsRequested {
 	
 	private ModuleList moduleList;
 	private ProgressDialog progressDialog;
+	private String lastSearchText;
 	
 	public void lockOrientation() {
 		int currentOrientation = getResources().getConfiguration().orientation;
@@ -40,7 +42,7 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
 	}
 	
-	public void onSearchCompleted(ModuleSearchAdapter adapter) {
+	public void onSearchCompleted(ModuleListAdapter adapter) {
 		progressDialog.cancel();
 		
 		ListView resultsView = (ListView) findViewById(R.id.list_search_results);
@@ -51,10 +53,17 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.module_search);
         
         moduleList = new ModuleList();
-        moduleList.setModuleListUpdater(this);
+        moduleList.addModuleListUpdater(this);
+        moduleList.addMoreItemsRequestedListener(this);
+		
+		ModuleListAdapter adapter = new ModuleListAdapter(this, moduleList);
+    	ListView moduleListView = (ListView) findViewById(R.id.list_search_results);
+    	moduleListView.setAdapter(adapter);
         
         final EditText queryText = (EditText) findViewById(R.id.text_search);
         
@@ -80,7 +89,7 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
 				new ModuleSearch(
 						ModuleSearchActivity.this, 
 						moduleList, 
-						queryText.getText().toString()).execute();
+						lastSearchText = queryText.getText().toString()).execute();
 			}
 		});
         
@@ -104,7 +113,10 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
 		super.onRestoreInstanceState(state);
 		
 		Module[] modules = (Module[]) state.getParcelableArray("moduleList");
-		moduleList = new ModuleList(modules);
+		int totalCount = state.getInt("moduleListTotalCount");
+		lastSearchText = state.getString("lastSearchText");
+		
+		moduleList = new ModuleList(modules, totalCount);
 		onModuleListUpdate(moduleList);
 	}
 
@@ -114,23 +126,49 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
 		
 		Module[] modules = new Module[moduleList.size()];
 		state.putParcelableArray("moduleList", moduleList.toArray(modules));
+		state.putInt("moduleListTotalCount", moduleList.getTotalCount());
+		state.putString("lastSearchText", lastSearchText);
 	}
 
 	public void onModuleListUpdate(ModuleList list) {
 		
-		// Load the module list in case this is a change of some kind
-		moduleList = list;
-		Log.d("ModuleSearch", "moduleList.size(): " + moduleList.size());
-			
-    	// Show search results
-		ModuleSearchAdapter adapter = list.toModuleSearchAdapter(this);
-    	ListView moduleListView = (ListView) findViewById(R.id.list_search_results);
-    	moduleListView.setAdapter(adapter);
+		// Load the module list if this is a change in the underlying model
+		if (moduleList != list) {
+			moduleList = list;
+			Log.d("ModuleSearch", "moduleList.size(): " + moduleList.size());
+				
+	    	// Show search results
+			ModuleListAdapter adapter = new ModuleListAdapter(this, list);
+	    	ListView moduleListView = (ListView) findViewById(R.id.list_search_results);
+	    	moduleListView.setAdapter(adapter);
+		}
+		
+		// Turn off the background progress meter in case it's set
+		setProgressBarIndeterminateVisibility(false);
     	
     	// Dismiss the progress dialog
-    	if (progressDialog != null) progressDialog.cancel();
+    	if (progressDialog != null) {
+    		progressDialog.dismiss();
+    		progressDialog = null;
+    	}
     	
     	// Unlock the screen orientation
     	unlockOrientation();
     }
+	
+	public void onMoreItemsRequested(ModuleList list) {				
+		// Lock the orientation - prevents the activity from being paused in the middle of the search
+		lockOrientation();
+		
+		// Turn on the background activity progress bar too
+		setProgressBarIndeterminateVisibility(true);
+		
+		// Start the search task
+		new ModuleSearch(
+				ModuleSearchActivity.this, 
+				moduleList, 
+				lastSearchText,
+				10,
+				moduleList.size()).execute();
+	}
 }
