@@ -2,6 +2,7 @@ package com.qubling.sidekick.metacpan;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import android.content.Context;
 
@@ -20,6 +21,12 @@ public class ModuleList extends ArrayList<Module> {
 
 	public ModuleList() {
 		super();
+	}
+	
+	public ModuleList(Module[] modules) {
+		super(modules.length);
+		
+		Collections.addAll(this, modules);
 	}
 
 	public ModuleList(Collection<? extends Module> collection) {

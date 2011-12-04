@@ -4,8 +4,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Module {
+public class Module implements Parcelable {
 	
 	private String moduleName;
 	private String moduleAbstract;
@@ -55,6 +57,19 @@ public class Module {
 		this.authorPauseId       = authorPauseId;
 		this.distributionName    = distributionName;
 		this.distributionVersion = distributionVersion;
+	}
+	
+	public Module(Parcel in) {
+		moduleName                = in.readString();
+		moduleAbstract            = in.readString();
+		authorPauseId             = in.readString();
+		authorGravatarBitmap      = in.readParcelable(null);
+		distributionName          = in.readString();
+		distributionVersion       = in.readString();
+		distributionRatingCount   = in.readInt();
+		distributionRating        = in.readDouble();
+		distributionFavoriteCount = in.readInt();
+		distributionMyFavorite    = in.readByte() != 0 ? true : false;
 	}
 	
 	public String getModuleName() {
@@ -135,6 +150,36 @@ public class Module {
 
 	public void setDistributionMyFavorite(boolean distributionMyFavorite) {
 		this.distributionMyFavorite = distributionMyFavorite;
+	}
+	
+    public static final Parcelable.Creator<Module> CREATOR
+            = new Parcelable.Creator<Module>() {
+        public Module createFromParcel(Parcel in) {
+        	return new Module(in);
+        }
+
+        public Module[] newArray(int size) {
+            return new Module[size];
+        }
+    };
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(moduleName);
+		dest.writeString(moduleAbstract);
+		dest.writeString(authorPauseId);
+		dest.writeParcelable(authorGravatarBitmap, 0);
+		dest.writeString(distributionName);
+		dest.writeString(distributionVersion);
+		dest.writeInt(distributionRatingCount);
+		dest.writeDouble(distributionRating);
+		dest.writeInt(distributionFavoriteCount);
+		dest.writeByte((byte) (distributionMyFavorite ? 1 : 0));
 	}
 
 }

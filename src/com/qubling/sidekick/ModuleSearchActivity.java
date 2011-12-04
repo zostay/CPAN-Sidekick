@@ -1,8 +1,11 @@
 package com.qubling.sidekick;
 
+import java.util.ArrayList;
+
 import com.qubling.sidekick.metacpan.ModuleList;
 import com.qubling.sidekick.metacpan.ModuleSearch;
 import com.qubling.sidekick.metacpan.ModuleSearchAdapter;
+import com.qubling.sidekick.metacpan.result.Module;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -10,6 +13,7 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -97,7 +101,24 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
 		});
     }
     
-    public void onModuleListUpdate(ModuleList list) {
+    @Override
+	protected void onRestoreInstanceState(Bundle state) {
+		super.onRestoreInstanceState(state);
+		
+		Module[] modules = (Module[]) state.getParcelableArray("moduleList");
+		moduleList = new ModuleList(modules);
+		onModuleListUpdate(moduleList);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle state) {
+		super.onSaveInstanceState(state);
+		
+		Module[] modules = new Module[moduleList.size()];
+		state.putParcelableArray("moduleList", moduleList.toArray(modules));
+	}
+
+	public void onModuleListUpdate(ModuleList list) {
     	
     	// Show search results
     	ModuleSearchAdapter adapter = list.toModuleSearchAdapter(this);
