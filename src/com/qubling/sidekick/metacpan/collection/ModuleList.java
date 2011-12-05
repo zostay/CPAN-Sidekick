@@ -54,6 +54,12 @@ public class ModuleList extends ArrayList<Module> {
 		this.moreItemsRequested = new ArrayList<OnMoreItemsRequested>();
 	}
 
+	@Override
+	public void clear() {
+		super.clear();
+		setTotalCount(0);
+	}
+
 	public int getTotalCount() {
 		return totalCount;
 	}

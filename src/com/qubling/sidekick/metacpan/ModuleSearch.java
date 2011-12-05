@@ -7,6 +7,8 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.Collections;
 import java.util.Formatter;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -32,9 +34,13 @@ import android.util.Log;
 public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 	
 	private static final String METACPAN_API_URL = "http://api.metacpan.org";
+	
+	private static final float GRAVATAR_DP_SIZE = 35f;
 		
 	private static final int DEFAULT_SIZE = 10;
 	private static final int DEFAULT_FROM = 0;
+	
+	private static final Pattern RESIZE_GRAVATAR_PATTERN = Pattern.compile("([?&])s=[0-9]+\\b");
 
 	private Context context;
 	private String query;
@@ -95,10 +101,20 @@ public class ModuleSearch extends AsyncTask<Void, Void, Module[]> {
 	}
 	
 	private Bitmap getGravatarBitmap(AndroidHttpClient client, String gravatarURL) {
+		
+		// Calculate the pixel size of the Gravatar
+		int gravatarPixelSize = Math.min(
+				(int) (GRAVATAR_DP_SIZE * context.getResources().getDisplayMetrics().density + 0.5f),
+				512);
+		
+		Matcher resizeGravatarMatcher = RESIZE_GRAVATAR_PATTERN.matcher(gravatarURL);
+		String resizedGravatarURL = resizeGravatarMatcher.replaceFirst("$1s=" + gravatarPixelSize);
+		
 		try {
 			
 			// Do the request
-			HttpGet req = new HttpGet(gravatarURL);
+			Log.d("ModuleSearch", "Gravatar: " + resizedGravatarURL);
+			HttpGet req = new HttpGet(resizedGravatarURL);
 			HttpResponse res = client.execute(req);
 			
 			// Get the response content
