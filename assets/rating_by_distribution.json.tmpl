@@ -1,14 +1,12 @@
 {
-	"size": 0,
+	"size": %size|j%,
 	"query": {
 		"filtered": {
 			"query": {
 				"match_all": {}
 			},
 			"filter": {
-				"or": [
-						  %1$s
-				]
+				"or": %distributions|j%
 			}
 		}
 	},

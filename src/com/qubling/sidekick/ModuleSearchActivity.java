@@ -100,7 +100,9 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
 				switch (keyCode) {
 				case KeyEvent.KEYCODE_ENTER:
 				case KeyEvent.KEYCODE_NUMPAD_ENTER:
-					searchButton.performClick();
+					// TODO Probably need a better indicator that we've already started
+					if (progressDialog == null)
+						searchButton.performClick();
 					return true;
 				}
 				return false;
@@ -164,11 +166,8 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
 		setProgressBarIndeterminateVisibility(true);
 		
 		// Start the search task
-		new ModuleSearch(
-				ModuleSearchActivity.this, 
-				moduleList, 
-				lastSearchText,
-				10,
-				moduleList.size()).execute();
+		ModuleSearch search = new ModuleSearch(ModuleSearchActivity.this, moduleList, lastSearchText);
+		search.setFrom(moduleList.size());
+		search.execute();
 	}
 }

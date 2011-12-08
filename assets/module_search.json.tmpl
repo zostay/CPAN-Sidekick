@@ -11,8 +11,8 @@
               "positive": {
                 "bool": {
                   "should": [
-                    { "term": { "file.documentation": { "value": "%1$s", "boost": 20 } } },
-                    { "term": { "file.module.name": { "value": "%1$s", "boost": 20 } } },
+                    { "term": { "file.documentation": { "value": "%query|s%", "boost": 20 } } },
+                    { "term": { "file.module.name": { "value": "%query|s%", "boost": 20 } } },
                     { 
                       "dis_max": {
                         "queries": [
@@ -22,7 +22,7 @@
                                 "documentation.analyzed^2", "file.module.name.analyzed^2", "distribution.analyzed",
                                 "documentation.camelcase", "file.module.name.camelcase", "distribution.camelcase"
                               ],
-                              "query": "%2$s",
+                              "query": "%cleanQuery|s%",
                               "boost": 3,
                               "default_operator": "AND",
                               "allow_leading_wildcard": 0,
@@ -32,7 +32,7 @@
                           {
                             "query_string": {
                               "fields": [ "abstract.analyzed", "pod.analyzed" ],
-                              "query": "%2$s",
+                              "query": "%cleanQuery|s%",
                               "default_operator": "AND",
                               "allow_leading_wildcard": 0,
                               "use_dis_max": 1
@@ -83,6 +83,6 @@
       }
     }
   },
-  "size": %3$d,
-  "from": %4$d
+  "size": %size|j%,
+  "from": %from|j%
 }

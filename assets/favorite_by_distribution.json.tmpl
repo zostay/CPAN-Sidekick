@@ -1,12 +1,10 @@
 {
-    "size": 0,
+    "size": %size|j%,
     "query": {
         "filtered": {
             "query": { "match_all": {} },
             "filter": {
-                "or": [
-                    %1$s
-                ]
+                "or": %distributions|j%
             }
         }
     },
@@ -19,7 +17,7 @@
         },
         "myfavorites": {
         	"terms": { "field": "favorite.distribution" },
-        	"facet_filter": { "term": { "favorite.user": "%2$s" } }
+        	"facet_filter": { "term": { "favorite.user": "%myPrivateToken|s%" } }
         }
     }
 }
