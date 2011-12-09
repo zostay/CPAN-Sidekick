@@ -1,22 +1,13 @@
 package com.qubling.sidekick.metacpan;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.qubling.sidekick.metacpan.collection.ModuleList;
@@ -24,11 +15,9 @@ import com.qubling.sidekick.metacpan.result.Module;
 
 public class AuthorByDistributionSearch extends MetaCPANSearch<Void> {
 	
-	private static final float GRAVATAR_DP_SIZE = 35f;
-	private static final Pattern RESIZE_GRAVATAR_PATTERN = Pattern.compile("([?&])s=[0-9]+\\b");
-	
 	private ModuleList moduleList;
 	private Map<String, Module> authorMap;
+	private int countGravatarURLs = 0;
 	
 	public AuthorByDistributionSearch(HttpClientManager clientManager, Context context, ModuleList moduleList) {
 		super(clientManager, context, SearchSection.AUTHOR, "author_by_pauseid");
@@ -79,37 +68,6 @@ public class AuthorByDistributionSearch extends MetaCPANSearch<Void> {
 		
 		return makeMetaCPANRequest(variables);
 	}
-	
-	private Bitmap fetchBitmap(String gravatarURL) {
-		
-		// Calculate the pixel size of the Gravatar
-		int gravatarPixelSize = Math.min(
-				(int) (GRAVATAR_DP_SIZE * getContext().getResources().getDisplayMetrics().density + 0.5f),
-				512);
-		
-		Matcher resizeGravatarMatcher = RESIZE_GRAVATAR_PATTERN.matcher(gravatarURL);
-		String resizedGravatarURL = resizeGravatarMatcher.replaceFirst("$1s=" + gravatarPixelSize);
-		
-		try {
-			
-			// Do the request
-			Log.d("AuthorByDistributionSearch", "Gravatar: " + resizedGravatarURL);
-			HttpGet req = new HttpGet(resizedGravatarURL);
-			HttpResponse res = getClient().execute(req);
-			
-			// Get the response content
-			HttpEntity entity = res.getEntity();
-			InputStream content = entity.getContent();
-			Bitmap gravatarBitmap = BitmapFactory.decodeStream(content);
-			return gravatarBitmap;
-		}
-		
-		catch (IOException e) {
-			// TODO Return a generic image when this happens
-			Log.e("AuthorByDistributionSearch", "Error loading Gravatar: " + e);
-			return null;
-		}
-	}
 
 	@Override
 	public Void constructCompiledResult(JSONObject results)
@@ -123,11 +81,10 @@ public class AuthorByDistributionSearch extends MetaCPANSearch<Void> {
 			String pauseId = author.getString("pauseid");
 			String gravatarURL = author.getString("gravatar_url");
 			
-			Bitmap gravatarBitmap = fetchBitmap(gravatarURL);
-			
 			Module module = authorMap.get(pauseId);
 			if (module != null) {
-				module.setAuthorGravatarBitmap(gravatarBitmap);
+				module.setAuthorGravatarURL(gravatarURL);
+				countGravatarURLs++;
 			}
 		}
 
@@ -136,6 +93,12 @@ public class AuthorByDistributionSearch extends MetaCPANSearch<Void> {
 
 	@Override
 	protected void onPostExecute(Void result) {
-		moduleList.notifyModuleListUpdaters();
+		HttpClientManager clientManager = new HttpClientManager(countGravatarURLs);
+		for (Module module : moduleList) {
+			if (module.getAuthorGravatarURL() == null)
+				continue;
+			
+			new GravatarFetcher(getContext(), clientManager, moduleList).execute(module);
+		}
 	}
 }

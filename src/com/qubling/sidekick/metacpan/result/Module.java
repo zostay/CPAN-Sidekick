@@ -13,6 +13,7 @@ public class Module implements Parcelable {
 	private String moduleAbstract;
 	
 	private String authorPauseId;
+	private String authorGravatarURL;
 	private Bitmap authorGravatarBitmap;
 	
 	private String distributionName;
@@ -94,6 +95,14 @@ public class Module implements Parcelable {
 
 	public void setAuthorPauseId(String authorPauseId) {
 		this.authorPauseId = authorPauseId;
+	}
+
+	public String getAuthorGravatarURL() {
+		return authorGravatarURL;
+	}
+
+	public void setAuthorGravatarURL(String authorGravatarURL) {
+		this.authorGravatarURL = authorGravatarURL;
 	}
 
 	public Bitmap getAuthorGravatarBitmap() {
