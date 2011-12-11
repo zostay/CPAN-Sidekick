@@ -1,5 +1,6 @@
 package com.qubling.sidekick;
 
+import com.qubling.sidekick.metacpan.MetaCPANSearch;
 import com.qubling.sidekick.metacpan.result.Module;
 import com.qubling.sidekick.widget.ModuleHelper;
 
@@ -7,6 +8,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebView;
 
 public class ModuleViewActivity extends Activity {
 	public static final String EXTRA_MODULE = "com.qubling.sidekick.intent.extra.MODULE";
@@ -26,5 +28,8 @@ public class ModuleViewActivity extends Activity {
 		ModuleHelper.updateItem(moduleHeader, module);
 		
 		setTitle(module.getModuleName());
+		
+		WebView podView = (WebView) findViewById(R.id.module_pod);
+		podView.loadUrl(MetaCPANSearch.METACPAN_API_URL + "/pod/" + module.getModuleName());
 	}
 }

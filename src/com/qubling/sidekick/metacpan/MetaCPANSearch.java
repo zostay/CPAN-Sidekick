@@ -40,7 +40,7 @@ public abstract class MetaCPANSearch<ResultType> extends AsyncTask<Void, Void, R
 		}
 	}
 
-	private static final String METACPAN_API_URL = "http://api.metacpan.org";
+	public static final String METACPAN_API_URL = "http://api.metacpan.org";
 	
 	public static final int DEFAULT_SIZE = 10;
 	public static final int DEFAULT_FROM = 0;
