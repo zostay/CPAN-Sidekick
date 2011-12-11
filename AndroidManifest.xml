@@ -19,6 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="ModuleViewActivity" android:label="@string/activity_module_view"></activity>
     </application>
 
 </manifest>

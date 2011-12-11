@@ -8,6 +8,7 @@ import com.qubling.sidekick.widget.ModuleListAdapter;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -107,6 +110,19 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
 				}
 				return false;
 			}
+		});
+        
+        moduleListView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View row, int position, long id) {
+				ListView moduleListView = (ListView) parent;
+				Module currentModule = (Module) moduleListView.getItemAtPosition(position);
+				
+				Intent moduleViewIntent = new Intent(ModuleSearchActivity.this, ModuleViewActivity.class);
+				moduleViewIntent.putExtra(ModuleViewActivity.EXTRA_MODULE, currentModule);
+				startActivity(moduleViewIntent);
+			}
+        	
 		});
     }
     

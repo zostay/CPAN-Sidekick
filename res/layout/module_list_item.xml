@@ -9,7 +9,8 @@
     <QuickContactBadge
         android:id="@+id/module_author_avatar"
         android:layout_width="35dp"
-        android:layout_height="35dp" />
+        android:layout_height="35dp"
+        android:focusable="false" />
 
     <LinearLayout
         android:id="@+id/ModuleDetails"
@@ -37,12 +38,13 @@
                 android:textSize="18dp" />
 
             <Button
-                style="@style/NotFavoritedButton"
                 android:id="@+id/module_release_favorite"
+                style="@style/NotFavoritedButton"
                 android:layout_width="35dp"
                 android:layout_height="22dp"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
+                android:focusable="false"
                 android:gravity="center_vertical|right"
                 android:text="@string/favorite_not_favorited"
                 android:textSize="8dp" />
@@ -80,6 +82,7 @@
                     style="?android:attr/ratingBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:focusable="false"
                     android:max="5" />
 
                 <TextView
