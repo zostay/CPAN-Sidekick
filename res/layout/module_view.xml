@@ -98,26 +98,33 @@
                         android:text="0"
                         android:textColor="@android:color/darker_gray"
                         android:textSize="12dp" />
+
                 </LinearLayout>
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
 
-    <View
-        android:id="@+id/DropShadow"
-        android:layout_width="match_parent"
-        android:layout_height="6dp"
-        android:background="@drawable/header_shadow" />
-
     <FrameLayout
-        android:id="@+id/ModuleWebView"
-        android:layout_width="match_parent"
+        android:id="@+id/MainBody"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent" >
 
-        <WebView
-            android:id="@+id/module_pod"
+        <FrameLayout
+            android:id="@+id/ModuleWebView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent" >
+
+            <WebView
+                android:id="@+id/module_pod"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
+
+        <View
+            android:id="@+id/DropShadow"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:background="@drawable/header_shadow" />
 
     </FrameLayout>
 
