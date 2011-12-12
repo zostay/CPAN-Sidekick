@@ -15,11 +15,16 @@
             android:name=".ModuleSearchActivity" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="ModuleViewActivity" android:label="@string/activity_module_view"></activity>
+        <activity android:name=".ModuleViewActivity" android:label="@string/activity_module_view">
+        </activity>
+        <activity android:label="@string/app_launcher_name" android:name=".SidekickLauncher">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
