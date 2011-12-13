@@ -12,24 +12,23 @@ import org.apache.http.client.methods.HttpGet;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.qubling.sidekick.metacpan.collection.ModuleList;
 import com.qubling.sidekick.metacpan.result.Module;
 
-public class GravatarFetcher extends AsyncTask<Module, Void, Void> {
+public class GravatarFetcher extends RemoteAPI<Module, Void, Void> {
 	
 	private static final float GRAVATAR_DP_SIZE = 35f;
 	private static final Pattern RESIZE_GRAVATAR_PATTERN = Pattern.compile("([?&])s=[0-9]+\\b");
 	
 	private Context context;
-	private HttpClientManager clientManager;
 	private ModuleList moduleList;
 	
 	public GravatarFetcher(Context context, HttpClientManager clientManager, ModuleList moduleList) {
+		super(clientManager);
+		
 		this.context       = context;
-		this.clientManager = clientManager;
 		this.moduleList    = moduleList;
 	}
 	
@@ -48,7 +47,7 @@ public class GravatarFetcher extends AsyncTask<Module, Void, Void> {
 			// Do the request
 			Log.d("AuthorByDistributionSearch", "Gravatar: " + resizedGravatarURL);
 			HttpGet req = new HttpGet(resizedGravatarURL);
-			HttpResponse res = clientManager.getClient().execute(req);
+			HttpResponse res = getClient().execute(req);
 			
 			// Get the response content
 			HttpEntity entity = res.getEntity();
@@ -78,7 +77,8 @@ public class GravatarFetcher extends AsyncTask<Module, Void, Void> {
 
 	@Override
 	protected void onPostExecute(Void result) {
-		clientManager.markActionCompleted();
+		super.onPostExecute(result);
+		
 		moduleList.notifyModuleListUpdaters();
 	}
 }

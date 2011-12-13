@@ -23,7 +23,7 @@ public class StringTemplate {
 
 	private String loadTemplate(String templateName) {
 		
-		String assetName = templateName + ".tmpl";
+		String assetName = "template/" + templateName + ".tmpl";
 		
 		// Load the JSON query template
 		Resources resources = context.getResources();

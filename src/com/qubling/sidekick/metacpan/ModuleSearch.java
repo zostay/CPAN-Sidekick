@@ -58,6 +58,7 @@ public class ModuleSearch extends MetaCPANSearch<Module[]> {
 
 	@Override
 	protected void onPostExecute(Module[] modules) {
+		super.onPostExecute(modules);
 		
 		// Nothing useful returned, forget it
 		if (modules == null) return;

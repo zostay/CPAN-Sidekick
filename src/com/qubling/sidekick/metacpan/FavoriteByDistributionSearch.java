@@ -95,6 +95,8 @@ public class FavoriteByDistributionSearch extends MetaCPANSearch<Void> {
 
 	@Override
 	protected void onPostExecute(Void result) {
+		super.onPostExecute(result);
+		
 		moduleList.notifyModuleListUpdaters();
 	}
 }

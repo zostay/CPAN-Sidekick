@@ -1,12 +1,15 @@
 package com.qubling.sidekick;
 
-import com.qubling.sidekick.metacpan.MetaCPANSearch;
+import com.qubling.sidekick.metacpan.HttpClientManager;
+import com.qubling.sidekick.metacpan.MetaCPANAPI;
+import com.qubling.sidekick.metacpan.ModulePODFetcher;
 import com.qubling.sidekick.metacpan.result.Module;
 import com.qubling.sidekick.widget.ModuleHelper;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -36,15 +39,18 @@ public class ModuleViewActivity extends Activity {
 		podView.setWebViewClient(new WebViewClient() {
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView podView, String url) {
-				if (url.startsWith(MetaCPANSearch.METACPAN_API_URL)) {
+				Log.d("ModuleViewActivity", "URL: " + url);
+				
+				if (url.startsWith("file:///")) {
 					return false;
 				}
 				
 				Toast.makeText(ModuleViewActivity.this, "Not Yet Implemented", Toast.LENGTH_SHORT).show();
+				
 				return true;
 			}
 		});
 		
-		podView.loadUrl(MetaCPANSearch.METACPAN_API_URL + "/pod/" + module.getModuleName());
+		new ModulePODFetcher(new HttpClientManager(1), podView).execute(module);
 	}
 }

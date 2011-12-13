@@ -16,11 +16,9 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import android.content.Context;
-import android.net.http.AndroidHttpClient;
-import android.os.AsyncTask;
 import android.util.Log;
 
-public abstract class MetaCPANSearch<ResultType> extends AsyncTask<Void, Void, ResultType> {
+public abstract class MetaCPANSearch<ResultType> extends MetaCPANAPI<Void, Void, ResultType> {
 	
 	public enum SearchSection {
 		AUTHOR ("/v0/author/_search"),
@@ -40,12 +38,9 @@ public abstract class MetaCPANSearch<ResultType> extends AsyncTask<Void, Void, R
 		}
 	}
 
-	public static final String METACPAN_API_URL = "http://api.metacpan.org";
-	
 	public static final int DEFAULT_SIZE = 10;
 	public static final int DEFAULT_FROM = 0;
 	
-	private HttpClientManager clientManager;
 	private Context context;
 	private SearchSection searchSection;
 	private String searchTemplate;
@@ -53,7 +48,8 @@ public abstract class MetaCPANSearch<ResultType> extends AsyncTask<Void, Void, R
 	private int from = DEFAULT_FROM;
 	
 	public MetaCPANSearch(HttpClientManager clientManager, Context context, SearchSection searchSection, String searchTemplate) {
-		this.clientManager  = clientManager;
+		super(clientManager);
+		
 		this.context        = context;
 		this.searchSection  = searchSection;
 		this.searchTemplate = searchTemplate + ".json";
@@ -89,49 +85,19 @@ public abstract class MetaCPANSearch<ResultType> extends AsyncTask<Void, Void, R
 			
 			// Make the request
 			HttpResponse res = getClient().execute(req);
-			
-			// Get the response content
-			HttpEntity entity = res.getEntity();
-			InputStream content = entity.getContent();
-//			Log.d("ModuleSearch", "res.getHeaders(\"Content-Type\"): " + res.getHeaders("Content-Type")[0].getValue());
-//			Log.d("ModuleSearch", "entity.getContentType(): " + entity.getContentType());
-			
-			// Determine the charset
-			String charset;
-			String contentType = entity.getContentType().getValue();
-			int charsetIndex = contentType.indexOf("charset=");
-			if (charsetIndex >= 0) {
-				int endingIndex = contentType.indexOf(";", charsetIndex + 8);
-				if (endingIndex >= 0) {
-					charset = contentType.substring(charsetIndex + 8, endingIndex);
-				}
-				else {
-					charset = contentType.substring(charsetIndex + 8);
-				}
-			}
-			else {
-				charset = "UTF-8";
-			}
 
 			// Read the content
-//			Log.d("ModuleSearch", "charset: " + charset);
-			InputStreamReader contentReader = new InputStreamReader(content, charset);
-			char[] buf = new char[1000];
-			StringBuilder contentStr = new StringBuilder();
-			int readLength;
-			while ((readLength = contentReader.read(buf)) > -1) {
-				contentStr.append(buf, 0, readLength);
-			}
+			String content = slurpContent(res);
 			
-			Log.d("MetaCPANSearch", "RES " + searchSection.getPath() + ": " + contentStr.toString());
+			Log.d("MetaCPANSearch", "RES " + searchSection.getPath() + ": " + content);
 			
 			// Parse the response into JSON and return it
-			Object parsedContent = new JSONTokener(contentStr.toString()).nextValue();
+			Object parsedContent = new JSONTokener(content).nextValue();
 			if (parsedContent instanceof JSONObject) {
 				return (JSONObject) parsedContent;
 			}
 			else {
-				// TODO Show an alert dialog when this happens
+				// TODO Show an alert dialog or toast when this happens
 				Log.e("MetaCPANSearch", "Unexpected JSON content: " + parsedContent);
 				return null;
 			} 
@@ -151,14 +117,6 @@ public abstract class MetaCPANSearch<ResultType> extends AsyncTask<Void, Void, R
 
 		return null;	
 		
-	}
-	
-	public HttpClientManager getClientManager() {
-		return clientManager;
-	}
-
-	public AndroidHttpClient getClient() {
-		return clientManager.getClient();
 	}
 
 	public Context getContext() {
@@ -201,10 +159,7 @@ public abstract class MetaCPANSearch<ResultType> extends AsyncTask<Void, Void, R
 			// TODO Show an alert dialog if this should ever happen
 			Log.e("ModuleSearch", e.toString());
 			return null;
-		}
-		finally {
-			clientManager.markActionCompleted();
-		}		
+		}	
 	}
 
 }

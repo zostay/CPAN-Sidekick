@@ -93,6 +93,8 @@ public class AuthorByDistributionSearch extends MetaCPANSearch<Void> {
 
 	@Override
 	protected void onPostExecute(Void result) {
+		super.onPostExecute(result);
+		
 		HttpClientManager clientManager = new HttpClientManager(countGravatarURLs);
 		for (Module module : moduleList) {
 			if (module.getAuthorGravatarURL() == null)
