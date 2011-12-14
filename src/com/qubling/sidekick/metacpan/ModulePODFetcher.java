@@ -45,7 +45,7 @@ public class ModulePODFetcher extends MetaCPANAPI<Module, Void, String> {
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
 		
-		String wrappedResult = "<html><head><link href=\"style/pod.css\" type=\"text/css\" rel=\"stylesheet\"/></head><body>"
+		String wrappedResult = "<html><head><link href=\"style/pod.css\" type=\"text/css\" rel=\"stylesheet\"/></head><body class=\"pod\">"
 				             + result
 				             + "</body></html>";
 	
