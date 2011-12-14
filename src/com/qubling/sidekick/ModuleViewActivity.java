@@ -31,7 +31,7 @@ public class ModuleViewActivity extends Activity {
 		View moduleHeader = findViewById(R.id.module_view_header);
 		ModuleHelper.updateItem(moduleHeader, module);
 		
-		setTitle(module.getModuleName());
+		setTitle(module.getName());
 		
 		WebView podView = (WebView) findViewById(R.id.module_pod);
 		

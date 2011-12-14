@@ -9,20 +9,11 @@ import android.os.Parcelable;
 
 public class Module implements Parcelable {
 	
-	private String moduleName;
+	private String name;
 	private String moduleAbstract;
 	
-	private String authorPauseId;
-	private String authorGravatarURL;
-	private Bitmap authorGravatarBitmap;
-	
-	private String distributionName;
-	private String distributionVersion;
-	private int distributionRatingCount;
-	private double distributionRating;
-	
-	private int distributionFavoriteCount;
-	private boolean distributionMyFavorite;
+	private Author author;
+	private Distribution distribution;
 	
 	public static Module fromModuleSearch(JSONObject json) {
 		
@@ -53,112 +44,105 @@ public class Module implements Parcelable {
 	}
 
 	public Module(String name, String moduleAbstract, String authorPauseId, String distributionName, String distributionVersion) {
-		this.moduleName          = name;
-		this.moduleAbstract      = moduleAbstract;
-		this.authorPauseId       = authorPauseId;
-		this.distributionName    = distributionName;
-		this.distributionVersion = distributionVersion;
+		this.name           = name;
+		this.moduleAbstract = moduleAbstract;
+		this.author         = new Author(authorPauseId);
+		this.distribution   = new Distribution(distributionName, distributionVersion);
 	}
 	
 	public Module(Parcel in) {
-		moduleName                = in.readString();
-		moduleAbstract            = in.readString();
-		authorPauseId             = in.readString();
-		authorGravatarBitmap      = in.readParcelable(null);
-		distributionName          = in.readString();
-		distributionVersion       = in.readString();
-		distributionRatingCount   = in.readInt();
-		distributionRating        = in.readDouble();
-		distributionFavoriteCount = in.readInt();
-		distributionMyFavorite    = in.readByte() != 0 ? true : false;
+		name           = in.readString();
+		moduleAbstract = in.readString();
+		author         = in.readParcelable(Module.class.getClassLoader());
+		distribution   = in.readParcelable(Module.class.getClassLoader());
 	}
 	
-	public String getModuleName() {
-		return moduleName;
+	public String getName() {
+		return name;
 	}
 
-	public void setModuleName(String name) {
-		this.moduleName = name;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getModuleAbstract() {
+	public String getAbstract() {
 		return moduleAbstract;
 	}
 
-	public void setModuleAbstract(String moduleAbstract) {
+	public void setAbstract(String moduleAbstract) {
 		this.moduleAbstract = moduleAbstract;
 	}
 
 	public String getAuthorPauseId() {
-		return authorPauseId;
+		return author.getPauseId();
 	}
 
 	public void setAuthorPauseId(String authorPauseId) {
-		this.authorPauseId = authorPauseId;
+		author.setPauseId(authorPauseId);
 	}
 
 	public String getAuthorGravatarURL() {
-		return authorGravatarURL;
+		return author.getGravatarURL();
 	}
 
 	public void setAuthorGravatarURL(String authorGravatarURL) {
-		this.authorGravatarURL = authorGravatarURL;
+		author.setGravatarURL(authorGravatarURL);
 	}
 
 	public Bitmap getAuthorGravatarBitmap() {
-		return authorGravatarBitmap;
+		return author.getGravatarBitmap();
 	}
 
 	public void setAuthorGravatarBitmap(Bitmap authorGravatarBitmap) {
-		this.authorGravatarBitmap = authorGravatarBitmap;
+		author.setGravatarBitmap(authorGravatarBitmap);
 	}
 
 	public String getDistributionName() {
-		return distributionName;
+		return distribution.getName();
 	}
 
 	public void setDistributionName(String distributionName) {
-		this.distributionName = distributionName;
+		distribution.setName(distributionName);
 	}
 
 	public String getDistributionVersion() {
-		return distributionVersion;
+		return distribution.getVersion();
 	}
 
 	public void setDistributionVersion(String distributionVersion) {
-		this.distributionVersion = distributionVersion;
+		distribution.setVersion(distributionVersion);
 	}
 
 	public int getDistributionRatingCount() {
-		return distributionRatingCount;
+		return distribution.getRatingCount();
 	}
 
 	public void setDistributionRatingCount(int distributionRatingCount) {
-		this.distributionRatingCount = distributionRatingCount;
+		distribution.setRatingCount(distributionRatingCount);
 	}
 
 	public double getDistributionRating() {
-		return distributionRating;
+		return distribution.getRating();
 	}
 
 	public void setDistributionRating(double distributionRating) {
-		this.distributionRating = distributionRating;
+		distribution.setRating(distributionRating);
 	}
 
 	public int getDistributionFavoriteCount() {
-		return distributionFavoriteCount;
+		return distribution.getFavoriteCount();
 	}
 
 	public void setDistributionFavoriteCount(int distributionFavoriteCount) {
-		this.distributionFavoriteCount = distributionFavoriteCount;
+		this.distribution.setFavoriteCount(distributionFavoriteCount);
 	}
 
 	public boolean isDistributionMyFavorite() {
-		return distributionMyFavorite;
+		return distribution.isMyFavorite();
 	}
 
 	public void setDistributionMyFavorite(boolean distributionMyFavorite) {
-		this.distributionMyFavorite = distributionMyFavorite;
+		distribution.setMyFavorite(distributionMyFavorite);
 	}
 	
     public static final Parcelable.Creator<Module> CREATOR
@@ -179,16 +163,10 @@ public class Module implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(moduleName);
+		dest.writeString(name);
 		dest.writeString(moduleAbstract);
-		dest.writeString(authorPauseId);
-		dest.writeParcelable(authorGravatarBitmap, 0);
-		dest.writeString(distributionName);
-		dest.writeString(distributionVersion);
-		dest.writeInt(distributionRatingCount);
-		dest.writeDouble(distributionRating);
-		dest.writeInt(distributionFavoriteCount);
-		dest.writeByte((byte) (distributionMyFavorite ? 1 : 0));
+		dest.writeParcelable(author, flags);
+		dest.writeParcelable(distribution, flags);
 	}
 
 }

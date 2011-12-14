@@ -20,14 +20,14 @@ public final class ModuleHelper {
 		
 		// Set the module name and abstract
 		TextView moduleName = (TextView) row.findViewById(R.id.module_name);
-		SpannableStringBuilder formattedString = new SpannableStringBuilder(item.getModuleName());
-		if (item.getModuleAbstract() != null) {
-			formattedString.append(" - " + item.getModuleAbstract());
+		SpannableStringBuilder formattedString = new SpannableStringBuilder(item.getName());
+		if (item.getAbstract() != null) {
+			formattedString.append(" - " + item.getAbstract());
 			
 			ForegroundColorSpan color = new ForegroundColorSpan(Color.GRAY);
 			formattedString.setSpan(
 					color, 
-					formattedString.length() - item.getModuleAbstract().length() - 3, 
+					formattedString.length() - item.getAbstract().length() - 3, 
 					formattedString.length(), 
 					0);
 		}

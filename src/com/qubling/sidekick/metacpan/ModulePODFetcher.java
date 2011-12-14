@@ -26,14 +26,14 @@ public class ModulePODFetcher extends MetaCPANAPI<Module, Void, String> {
 		
 		String podContent;
 		try {
-			HttpGet podReq = new HttpGet(METACPAN_API_URL + "/pod/" + module.getModuleName());
+			HttpGet podReq = new HttpGet(METACPAN_API_URL + "/pod/" + module.getName());
 			HttpResponse podRes = getClient().execute(podReq);
 			
 			podContent = slurpContent(podRes);
 		}
 		
 		catch (IOException e) {
-			Log.e("ModulePODFetcher", "Cannot fetch POD for " + module.getModuleName() + ": " + e);
+			Log.e("ModulePODFetcher", "Cannot fetch POD for " + module.getName() + ": " + e);
 			return null;
 		}
 		
