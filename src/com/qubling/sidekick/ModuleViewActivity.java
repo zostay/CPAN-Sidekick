@@ -1,7 +1,6 @@
 package com.qubling.sidekick;
 
 import com.qubling.sidekick.metacpan.HttpClientManager;
-import com.qubling.sidekick.metacpan.MetaCPANAPI;
 import com.qubling.sidekick.metacpan.ModulePODFetcher;
 import com.qubling.sidekick.metacpan.result.Module;
 import com.qubling.sidekick.widget.ModuleHelper;
