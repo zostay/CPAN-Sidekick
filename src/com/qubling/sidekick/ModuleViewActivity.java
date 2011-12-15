@@ -5,6 +5,9 @@ import com.qubling.sidekick.metacpan.FavoriteByDistributionSearch;
 import com.qubling.sidekick.metacpan.HttpClientManager;
 import com.qubling.sidekick.metacpan.ModulePODFetcher;
 import com.qubling.sidekick.metacpan.RatingByDistributionSearch;
+import com.qubling.sidekick.metacpan.collection.DistributionList;
+import com.qubling.sidekick.metacpan.collection.ModelList;
+import com.qubling.sidekick.metacpan.collection.ModuleList;
 import com.qubling.sidekick.metacpan.result.Module;
 import com.qubling.sidekick.widget.ModuleHelper;
 
@@ -31,7 +34,7 @@ public class ModuleViewActivity extends Activity {
 		Intent intent = getIntent();
 		module = (Module) intent.getParcelableExtra(EXTRA_MODULE);
 		
-		View moduleHeader = findViewById(R.id.module_view_header);
+		final View moduleHeader = findViewById(R.id.module_view_header);
 		ModuleHelper.updateItem(moduleHeader, module);
 		
 		setTitle(module.getName());
@@ -61,13 +64,26 @@ public class ModuleViewActivity extends Activity {
 		HttpClientManager clientManager = new HttpClientManager(taskCount);
 		new ModulePODFetcher(clientManager, podView).execute(module);
 		
-		if (module.getAuthor().isGravatarBitmapNeeded())
-			new AuthorByDistributionSearch(clientManager, this, module.getAuthor());
-		
-		if (module.getDistribution().isFavoriteNeeded())
-			new FavoriteByDistributionSearch(clientManager, this, module.getDistribution());
-		
-		if (module.getDistribution().isRatingNeeded())
-			new RatingByDistributionSearch(clientManager, this, module.getDistribution());
+		if (taskCount > 1) {
+			ModuleList moduleList = module.toModuleList();
+			moduleList.addModelListUpdatedListener(new ModuleList.OnModuleListUpdated() {
+				@Override
+				public void onModelListUpdated(ModelList<Module> modelList) {
+					ModuleHelper.updateItem(moduleHeader, module);
+				}
+			});
+			
+			if (module.getAuthor().isGravatarBitmapNeeded())
+				new AuthorByDistributionSearch(clientManager, this, moduleList.extractAuthorList()).execute();
+			
+			if (module.getDistribution().isFavoriteNeeded() || module.getDistribution().isRatingNeeded()) {
+				DistributionList distributionList = moduleList.extractDistributionList();
+				if (module.getDistribution().isFavoriteNeeded())
+					new FavoriteByDistributionSearch(clientManager, this, distributionList).execute();
+				
+				if (module.getDistribution().isRatingNeeded())
+					new RatingByDistributionSearch(clientManager, this, distributionList).execute();
+			}
+		}
 	}
 }

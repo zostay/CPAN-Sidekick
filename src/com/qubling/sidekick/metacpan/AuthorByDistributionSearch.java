@@ -27,17 +27,6 @@ public class AuthorByDistributionSearch extends MetaCPANSearch<Void> {
 		
 		this.setSize(0);
 	}
-	
-	public AuthorByDistributionSearch(HttpClientManager clientManager, Context context, Author author) {
-		super(clientManager, context, SearchSection.AUTHOR, "author_by_pauseid");
-		
-		this.authorList = new AuthorList();
-		this.authorMap  = new HashMap<String, Author>();
-		
-		this.setSize(0);
-		
-		this.authorList.add(author);
-	}
 
 	@Override
 	public JSONObject search() {

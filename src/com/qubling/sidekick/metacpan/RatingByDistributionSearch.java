@@ -26,16 +26,17 @@ public class RatingByDistributionSearch extends MetaCPANSearch<Void> {
 		this.setSize(0);
 	}
 	
-	public RatingByDistributionSearch(HttpClientManager clientManager, Context context, Distribution distribution) {
+	public RatingByDistributionSearch(HttpClientManager clientManager, Context context, DistributionList distributionList) {
 		super(clientManager, context, SearchSection.RATING, "rating_by_distribution");
 		
-		this.distributionList = new DistributionList();
+		this.distributionList = distributionList;
 		this.distributionMap  = new HashMap<String, Distribution>();
 		
 		this.setSize(0);
 		
-		this.distributionList.add(distribution);
-		this.distributionMap.put(distribution.getName(), distribution);
+		for (Distribution distribution : distributionList) {
+			this.distributionMap.put(distribution.getName(), distribution);
+		}
 	}
 
 	public JSONObject search() {

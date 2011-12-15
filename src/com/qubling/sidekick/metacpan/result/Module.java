@@ -3,6 +3,8 @@ package com.qubling.sidekick.metacpan.result;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.qubling.sidekick.metacpan.collection.ModuleList;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -110,6 +112,12 @@ public class Module extends Model {
 		dest.writeString(moduleAbstract);
 		dest.writeParcelable(author, flags);
 		dest.writeParcelable(distribution, flags);
+	}
+	
+	public ModuleList toModuleList() {
+		ModuleList moduleList = new ModuleList();
+		moduleList.add(this);
+		return moduleList;
 	}
 
 }

@@ -26,16 +26,17 @@ public class FavoriteByDistributionSearch extends MetaCPANSearch<Void> {
 		this.setSize(0);
 	}
 	
-	public FavoriteByDistributionSearch(HttpClientManager clientManager, Context context, Distribution distribution) {
+	public FavoriteByDistributionSearch(HttpClientManager clientManager, Context context, DistributionList distributionList) {
 		super(clientManager, context, SearchSection.FAVORITE, "favorite_by_distribution");
 		
-		this.distributionList = new DistributionList();
+		this.distributionList = distributionList;
 		this.distributionMap  = new HashMap<String, Distribution>();
 		
 		this.setSize(0);
 		
-		this.distributionList.add(distribution);
-		this.distributionMap.put(distribution.getName(), distribution);
+		for (Distribution distribution : distributionList) {
+			this.distributionMap.put(distribution.getName(), distribution);
+		}
 	}
 
 	@Override
