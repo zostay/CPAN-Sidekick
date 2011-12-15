@@ -14,22 +14,22 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import com.qubling.sidekick.metacpan.collection.ModuleList;
-import com.qubling.sidekick.metacpan.result.Module;
+import com.qubling.sidekick.metacpan.collection.AuthorList;
+import com.qubling.sidekick.metacpan.result.Author;
 
-public class GravatarFetcher extends RemoteAPI<Module, Void, Void> {
+public class GravatarFetcher extends RemoteAPI<Author, Void, Void> {
 	
 	private static final float GRAVATAR_DP_SIZE = 35f;
 	private static final Pattern RESIZE_GRAVATAR_PATTERN = Pattern.compile("([?&])s=[0-9]+\\b");
 	
 	private Context context;
-	private ModuleList moduleList;
+	private AuthorList authorList;
 	
-	public GravatarFetcher(Context context, HttpClientManager clientManager, ModuleList moduleList) {
+	public GravatarFetcher(Context context, HttpClientManager clientManager, AuthorList authorList) {
 		super(clientManager);
 		
 		this.context       = context;
-		this.moduleList    = moduleList;
+		this.authorList    = authorList;
 	}
 	
 	private Bitmap fetchBitmap(String gravatarURL) {
@@ -64,12 +64,12 @@ public class GravatarFetcher extends RemoteAPI<Module, Void, Void> {
 	}
 
 	@Override
-	protected Void doInBackground(Module... modules) {
+	protected Void doInBackground(Author... authors) {
 		
-		for (Module module : modules) {
-			String url = module.getAuthorGravatarURL();
+		for (Author author : authors) {
+			String url = author.getGravatarURL();
 			Bitmap gravatar = fetchBitmap(url);
-			module.setAuthorGravatarBitmap(gravatar);
+			author.setGravatarBitmap(gravatar);
 		}
 
 		return null;
@@ -79,6 +79,6 @@ public class GravatarFetcher extends RemoteAPI<Module, Void, Void> {
 	protected void onPostExecute(Void result) {
 		super.onPostExecute(result);
 		
-		moduleList.notifyModuleListUpdaters();
+		authorList.notifyModelListUpdated();
 	}
 }

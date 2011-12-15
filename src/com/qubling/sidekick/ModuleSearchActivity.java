@@ -1,6 +1,7 @@
 package com.qubling.sidekick;
 
 import com.qubling.sidekick.metacpan.ModuleSearch;
+import com.qubling.sidekick.metacpan.collection.ModelList;
 import com.qubling.sidekick.metacpan.collection.ModuleList;
 import com.qubling.sidekick.metacpan.result.Module;
 import com.qubling.sidekick.widget.ModuleListAdapter;
@@ -61,7 +62,7 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
         setContentView(R.layout.module_search);
         
         moduleList = new ModuleList();
-        moduleList.addModuleListUpdater(this);
+        moduleList.addModelListUpdatedListener(this);
         moduleList.addMoreItemsRequestedListener(this);
 		
 		ModuleListAdapter adapter = new ModuleListAdapter(this, moduleList);
@@ -135,7 +136,7 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
 		lastSearchText = state.getString("lastSearchText");
 		
 		moduleList = new ModuleList(modules, totalCount);
-		onModuleListUpdate(moduleList);
+		onModelListUpdated(moduleList);
 	}
 
 	@Override
@@ -148,7 +149,8 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
 		state.putString("lastSearchText", lastSearchText);
 	}
 
-	public void onModuleListUpdate(ModuleList list) {
+	public void onModelListUpdated(ModelList<Module> modelList) {
+		ModuleList list = (ModuleList) modelList;
 		
 		// Load the module list if this is a change in the underlying model
 		if (moduleList != list) {

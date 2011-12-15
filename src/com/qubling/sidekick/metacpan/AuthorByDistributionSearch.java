@@ -10,20 +10,20 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.util.Log;
 
-import com.qubling.sidekick.metacpan.collection.ModuleList;
-import com.qubling.sidekick.metacpan.result.Module;
+import com.qubling.sidekick.metacpan.collection.AuthorList;
+import com.qubling.sidekick.metacpan.result.Author;
 
 public class AuthorByDistributionSearch extends MetaCPANSearch<Void> {
 	
-	private ModuleList moduleList;
-	private Map<String, Module> authorMap;
+	private AuthorList authorList;
+	private Map<String, Author> authorMap;
 	private int countGravatarURLs = 0;
 	
-	public AuthorByDistributionSearch(HttpClientManager clientManager, Context context, ModuleList moduleList) {
+	public AuthorByDistributionSearch(HttpClientManager clientManager, Context context, AuthorList authorList) {
 		super(clientManager, context, SearchSection.AUTHOR, "author_by_pauseid");
 		
-		this.moduleList = moduleList;
-		this.authorMap  = new HashMap<String, Module>();
+		this.authorList = authorList;
+		this.authorMap  = new HashMap<String, Author>();
 		
 		this.setSize(0);
 	}
@@ -37,16 +37,16 @@ public class AuthorByDistributionSearch extends MetaCPANSearch<Void> {
 				JSONArray terms = new JSONArray();
 				
 				try {
-					for (Module module : moduleList) {
-						if (AuthorByDistributionSearch.this.authorMap.containsKey(module.getAuthorPauseId())) 
+					for (Author author : authorList) {
+						if (AuthorByDistributionSearch.this.authorMap.containsKey(author.getPauseId())) 
 							continue;
 						
-						Log.d("AuthorByDistributionSearch", "Adding Author: " + module.getAuthorPauseId());
+						Log.d("AuthorByDistributionSearch", "Adding Author: " + author.getPauseId());
 						
-						AuthorByDistributionSearch.this.authorMap.put(module.getAuthorPauseId(), module);
+						AuthorByDistributionSearch.this.authorMap.put(author.getPauseId(), author);
 						
 						JSONObject pauseid = new JSONObject()
-								.put("pauseid", module.getAuthorPauseId());
+								.put("pauseid", author.getPauseId());
 						
 						JSONObject term = new JSONObject()
 								.put("term", pauseid);
@@ -76,14 +76,14 @@ public class AuthorByDistributionSearch extends MetaCPANSearch<Void> {
 		JSONArray hits = results.getJSONObject("hits").getJSONArray("hits");
 		
 		for (int i = 0; i < hits.length(); i++) {
-			JSONObject author = hits.getJSONObject(i).getJSONObject("_source");
+			JSONObject jsonAuthor = hits.getJSONObject(i).getJSONObject("_source");
 			
-			String pauseId = author.getString("pauseid");
-			String gravatarURL = author.getString("gravatar_url");
+			String pauseId = jsonAuthor.getString("pauseid");
+			String gravatarURL = jsonAuthor.getString("gravatar_url");
 			
-			Module module = authorMap.get(pauseId);
-			if (module != null) {
-				module.setAuthorGravatarURL(gravatarURL);
+			Author author = authorMap.get(pauseId);
+			if (author != null) {
+				author.setGravatarURL(gravatarURL);
 				countGravatarURLs++;
 			}
 		}
@@ -96,11 +96,11 @@ public class AuthorByDistributionSearch extends MetaCPANSearch<Void> {
 		super.onPostExecute(result);
 		
 		HttpClientManager clientManager = new HttpClientManager(countGravatarURLs);
-		for (Module module : moduleList) {
-			if (module.getAuthorGravatarURL() == null)
+		for (Author author : authorList) {
+			if (author.getGravatarURL() == null)
 				continue;
 			
-			new GravatarFetcher(getContext(), clientManager, moduleList).execute(module);
+			new GravatarFetcher(getContext(), clientManager, authorList).execute(author);
 		}
 	}
 }

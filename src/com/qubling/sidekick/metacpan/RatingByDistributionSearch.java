@@ -83,6 +83,6 @@ public class RatingByDistributionSearch extends MetaCPANSearch<Void> {
 	protected void onPostExecute(Void result) {
 		super.onPostExecute(result);
 		
-		moduleList.notifyModuleListUpdaters();
+		moduleList.notifyModelListUpdated();
 	}
 }

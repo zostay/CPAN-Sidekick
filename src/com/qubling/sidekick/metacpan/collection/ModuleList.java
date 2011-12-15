@@ -7,11 +7,9 @@ import java.util.List;
 
 import com.qubling.sidekick.metacpan.result.Module;
 
-public class ModuleList extends ArrayList<Module> {
+public class ModuleList extends ModelList<Module> {
 	
-	public interface OnModuleListUpdated {
-		public void onModuleListUpdate(ModuleList moduleList);
-	}
+	public interface OnModuleListUpdated extends OnModelListUpdated<Module> { }
 	
 	public interface OnMoreItemsRequested {
 		public void onMoreItemsRequested(ModuleList moduleList);
@@ -20,8 +18,7 @@ public class ModuleList extends ArrayList<Module> {
 	private static final long serialVersionUID = 2182482391570721434L;
 	
 	private int totalCount;
-
-	private List<OnModuleListUpdated> moduleListUpdaters;
+	
 	private List<OnMoreItemsRequested> moreItemsRequested;
 	
 	public ModuleList() {
@@ -32,7 +29,6 @@ public class ModuleList extends ArrayList<Module> {
 		super();
 		
 		this.totalCount = totalCount;
-		this.moduleListUpdaters = new ArrayList<OnModuleListUpdated>();
 		this.moreItemsRequested = new ArrayList<OnMoreItemsRequested>();
 	}
 	
@@ -40,7 +36,6 @@ public class ModuleList extends ArrayList<Module> {
 		super(modules.length);
 		
 		this.totalCount = totalCount;
-		this.moduleListUpdaters = new ArrayList<OnModuleListUpdated>();
 		this.moreItemsRequested = new ArrayList<OnMoreItemsRequested>();
 		
 		Collections.addAll(this, modules);
@@ -50,7 +45,6 @@ public class ModuleList extends ArrayList<Module> {
 		super(collection);
 		
 		this.totalCount = totalCount;
-		this.moduleListUpdaters = new ArrayList<OnModuleListUpdated>();
 		this.moreItemsRequested = new ArrayList<OnMoreItemsRequested>();
 	}
 
@@ -68,20 +62,6 @@ public class ModuleList extends ArrayList<Module> {
 		this.totalCount = totalCount;
 	}
 	
-	public synchronized void addModuleListUpdater(OnModuleListUpdated listener) {
-		moduleListUpdaters.add(listener);
-	}
-	
-	public synchronized void removeModuleListUpdater(OnModuleListUpdated listener) {
-		moduleListUpdaters.remove(listener);
-	}
-	
-	public synchronized void notifyModuleListUpdaters() {
-		for (OnModuleListUpdated listener : moduleListUpdaters) {
-			listener.onModuleListUpdate(this);
-		}
-	}
-	
 	public synchronized void addMoreItemsRequestedListener(OnMoreItemsRequested listener) {
 		moreItemsRequested.add(listener);
 	}
@@ -94,5 +74,14 @@ public class ModuleList extends ArrayList<Module> {
 		for (OnMoreItemsRequested listener : moreItemsRequested) {
 			listener.onMoreItemsRequested(this);
 		}
+	}
+	
+	public AuthorList extractAuthorList() {
+		AuthorList authorList = new AuthorList();
+		for (Module module : this) {
+			authorList.add(module.getAuthor());
+		}
+		
+		return authorList;
 	}
 }

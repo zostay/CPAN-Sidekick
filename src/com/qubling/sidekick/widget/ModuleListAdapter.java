@@ -1,6 +1,7 @@
 package com.qubling.sidekick.widget;
 
 import com.qubling.sidekick.R;
+import com.qubling.sidekick.metacpan.collection.ModelList;
 import com.qubling.sidekick.metacpan.collection.ModuleList;
 import com.qubling.sidekick.metacpan.result.Module;
 
@@ -28,14 +29,14 @@ public class ModuleListAdapter extends BaseAdapter implements ModuleList.OnModul
 		this.inflater    = LayoutInflater.from(context);
 		this.moduleList  = items;
 		
-		moduleList.addModuleListUpdater(this);
+		moduleList.addModelListUpdatedListener(this);
 	}
 	
 	private boolean hasMoreItems() {
 		return moduleList.getTotalCount() > moduleList.size();
 	}
 	
-	public void onModuleListUpdate(ModuleList list) {
+	public void onModelListUpdated(ModelList<Module> list) {
 		notifyDataSetChanged();
 	}
 

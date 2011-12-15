@@ -73,6 +73,22 @@ public class Module extends Model {
 		this.moduleAbstract = moduleAbstract;
 	}
 
+	public Author getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(Author author) {
+		this.author = author;
+	}
+
+	public Distribution getDistribution() {
+		return distribution;
+	}
+
+	public void setDistribution(Distribution distribution) {
+		this.distribution = distribution;
+	}
+
 	public String getAuthorPauseId() {
 		return author.getPauseId();
 	}

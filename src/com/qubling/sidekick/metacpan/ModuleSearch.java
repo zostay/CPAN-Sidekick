@@ -66,7 +66,7 @@ public class ModuleSearch extends MetaCPANSearch<Module[]> {
 		// Stuff the matches into an adapter and fill the list
 		Collections.addAll(moduleList, modules);
 		moduleList.setTotalCount(totalCount);
-		moduleList.notifyModuleListUpdaters();
+		moduleList.notifyModelListUpdated();
 		
 		// Build a distributionMap, which will be reused
 		Map<String, Module> distributionMap = new HashMap<String, Module>();
@@ -77,7 +77,7 @@ public class ModuleSearch extends MetaCPANSearch<Module[]> {
 		}
 		
 		// Now, fire off the tasks that fill in the details
-		new AuthorByDistributionSearch(getClientManager(), getContext(), moduleList).execute();
+		new AuthorByDistributionSearch(getClientManager(), getContext(), moduleList.extractAuthorList()).execute();
 		new FavoriteByDistributionSearch(getClientManager(), getContext(), moduleList, distributionMap).execute();
 		new RatingByDistributionSearch(getClientManager(), getContext(), moduleList, distributionMap).execute();
 	}
