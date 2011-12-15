@@ -82,6 +82,17 @@ public class ModuleList extends ModelList<Module> {
 			authorList.add(module.getAuthor());
 		}
 		
+		authorList.setParent(this);
 		return authorList;
+	}
+	
+	public DistributionList extractDistributionList() {
+		DistributionList distributionList = new DistributionList();
+		for (Module module : this) {
+			distributionList.add(module.getDistribution());
+		}
+		
+		distributionList.setParent(this);
+		return distributionList;
 	}
 }

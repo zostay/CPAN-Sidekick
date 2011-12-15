@@ -8,19 +8,19 @@ import org.json.JSONObject;
 
 import android.content.Context;
 
-import com.qubling.sidekick.metacpan.collection.ModuleList;
-import com.qubling.sidekick.metacpan.result.Module;
+import com.qubling.sidekick.metacpan.collection.DistributionList;
+import com.qubling.sidekick.metacpan.result.Distribution;
 
 public class FavoriteByDistributionSearch extends MetaCPANSearch<Void> {
 	
-	private ModuleList moduleList;
-	private Map<String, Module> distributionMap;
+	private DistributionList distributionList;
+	private Map<String, Distribution> distributionMap;
 	
-	public FavoriteByDistributionSearch(HttpClientManager clientManager, Context context, ModuleList moduleList, Map<String, Module> distributionMap) {
+	public FavoriteByDistributionSearch(HttpClientManager clientManager, Context context, DistributionList distributionList, Map<String, Distribution> distributionMap) {
 		super(clientManager, context, SearchSection.FAVORITE, "favorite_by_distribution");
 		
-		this.moduleList      = moduleList;
-		this.distributionMap = distributionMap;
+		this.distributionList = distributionList;
+		this.distributionMap  = distributionMap;
 		
 		this.setSize(0);
 	}
@@ -34,10 +34,10 @@ public class FavoriteByDistributionSearch extends MetaCPANSearch<Void> {
 				JSONArray terms = new JSONArray();
 				
 				try {
-					for (Module module : FavoriteByDistributionSearch.this.distributionMap.values()) {
+					for (Distribution distribution : FavoriteByDistributionSearch.this.distributionMap.values()) {
 						
 						JSONObject favoriteDistribution = new JSONObject()
-								.put("favorite.distribution", module.getDistributionName());
+								.put("favorite.distribution", distribution.getName());
 						
 						JSONObject term = new JSONObject()
 								.put("term", favoriteDistribution);
@@ -71,9 +71,9 @@ public class FavoriteByDistributionSearch extends MetaCPANSearch<Void> {
 			String distributionName = favorite.getString("term"); 
 			int favoriteCount = favorite.getInt("count");
 			
-			Module module = distributionMap.get(distributionName);
-			if (module != null) {
-				module.setDistributionFavoriteCount(favoriteCount);
+			Distribution distribution = distributionMap.get(distributionName);
+			if (distribution != null) {
+				distribution.setFavoriteCount(favoriteCount);
 			}
 		}
 		
@@ -84,9 +84,9 @@ public class FavoriteByDistributionSearch extends MetaCPANSearch<Void> {
 			String distributionName = favorite.getString("term"); 
 			//int favoriteCount = favorite.getInt("count");
 			
-			Module module = distributionMap.get(distributionName);
-			if (module != null) {
-				module.setDistributionMyFavorite(true);
+			Distribution distribution = distributionMap.get(distributionName);
+			if (distribution != null) {
+				distribution.setMyFavorite(true);
 			}
 		}
 		
@@ -97,6 +97,6 @@ public class FavoriteByDistributionSearch extends MetaCPANSearch<Void> {
 	protected void onPostExecute(Void result) {
 		super.onPostExecute(result);
 		
-		moduleList.notifyModelListUpdated();
+		distributionList.notifyModelListUpdated();
 	}
 }

@@ -7,7 +7,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.qubling.sidekick.metacpan.collection.DistributionList;
 import com.qubling.sidekick.metacpan.collection.ModuleList;
+import com.qubling.sidekick.metacpan.result.Distribution;
 import com.qubling.sidekick.metacpan.result.Module;
 
 import android.content.Context;
@@ -69,17 +71,19 @@ public class ModuleSearch extends MetaCPANSearch<Module[]> {
 		moduleList.notifyModelListUpdated();
 		
 		// Build a distributionMap, which will be reused
-		Map<String, Module> distributionMap = new HashMap<String, Module>();
+		Map<String, Distribution> distributionMap = new HashMap<String, Distribution>();
 		for (Module module : moduleList) {
-			if (distributionMap.containsKey(module.getDistributionName()))
+			Distribution distribution = module.getDistribution();
+			if (distributionMap.containsKey(distribution.getName()))
 				continue;
-			distributionMap.put(module.getDistributionName(), module);
+			distributionMap.put(distribution.getName(), distribution);
 		}
 		
 		// Now, fire off the tasks that fill in the details
+		DistributionList distributionList = moduleList.extractDistributionList();
 		new AuthorByDistributionSearch(getClientManager(), getContext(), moduleList.extractAuthorList()).execute();
-		new FavoriteByDistributionSearch(getClientManager(), getContext(), moduleList, distributionMap).execute();
-		new RatingByDistributionSearch(getClientManager(), getContext(), moduleList, distributionMap).execute();
+		new FavoriteByDistributionSearch(getClientManager(), getContext(), distributionList, distributionMap).execute();
+		new RatingByDistributionSearch(getClientManager(), getContext(), distributionList, distributionMap).execute();
 	}
 
 }
