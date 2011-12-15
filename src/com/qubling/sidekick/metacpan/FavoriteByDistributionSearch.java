@@ -1,5 +1,6 @@
 package com.qubling.sidekick.metacpan;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -23,6 +24,18 @@ public class FavoriteByDistributionSearch extends MetaCPANSearch<Void> {
 		this.distributionMap  = distributionMap;
 		
 		this.setSize(0);
+	}
+	
+	public FavoriteByDistributionSearch(HttpClientManager clientManager, Context context, Distribution distribution) {
+		super(clientManager, context, SearchSection.FAVORITE, "favorite_by_distribution");
+		
+		this.distributionList = new DistributionList();
+		this.distributionMap  = new HashMap<String, Distribution>();
+		
+		this.setSize(0);
+		
+		this.distributionList.add(distribution);
+		this.distributionMap.put(distribution.getName(), distribution);
 	}
 
 	@Override

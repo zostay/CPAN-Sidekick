@@ -1,7 +1,10 @@
 package com.qubling.sidekick;
 
+import com.qubling.sidekick.metacpan.AuthorByDistributionSearch;
+import com.qubling.sidekick.metacpan.FavoriteByDistributionSearch;
 import com.qubling.sidekick.metacpan.HttpClientManager;
 import com.qubling.sidekick.metacpan.ModulePODFetcher;
+import com.qubling.sidekick.metacpan.RatingByDistributionSearch;
 import com.qubling.sidekick.metacpan.result.Module;
 import com.qubling.sidekick.widget.ModuleHelper;
 
@@ -50,6 +53,21 @@ public class ModuleViewActivity extends Activity {
 			}
 		});
 		
-		new ModulePODFetcher(new HttpClientManager(1), podView).execute(module);
+		int taskCount = 1;
+		if (module.getAuthor().isGravatarBitmapNeeded()) taskCount++;
+		if (module.getDistribution().isFavoriteNeeded()) taskCount++;
+		if (module.getDistribution().isRatingNeeded()) taskCount++;
+		
+		HttpClientManager clientManager = new HttpClientManager(taskCount);
+		new ModulePODFetcher(clientManager, podView).execute(module);
+		
+		if (module.getAuthor().isGravatarBitmapNeeded())
+			new AuthorByDistributionSearch(clientManager, this, module.getAuthor());
+		
+		if (module.getDistribution().isFavoriteNeeded())
+			new FavoriteByDistributionSearch(clientManager, this, module.getDistribution());
+		
+		if (module.getDistribution().isRatingNeeded())
+			new RatingByDistributionSearch(clientManager, this, module.getDistribution());
 	}
 }
