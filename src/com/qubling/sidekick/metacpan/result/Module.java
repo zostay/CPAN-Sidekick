@@ -7,7 +7,7 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Module implements Parcelable {
+public class Module extends Model {
 	
 	private String name;
 	private String moduleAbstract;

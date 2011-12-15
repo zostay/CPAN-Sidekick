@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Author implements Parcelable {
+public class Author extends Model {
 	
 	private String pauseId;
 	private String gravatarURL;
@@ -42,6 +42,10 @@ public class Author implements Parcelable {
 
 	public void setGravatarBitmap(Bitmap authorGravatarBitmap) {
 		this.gravatarBitmap = authorGravatarBitmap;
+	}
+	
+	public boolean isGravatarBitmapNeeded() {
+		return this.gravatarURL != null && this.gravatarBitmap == null;
 	}
 
 	@Override
