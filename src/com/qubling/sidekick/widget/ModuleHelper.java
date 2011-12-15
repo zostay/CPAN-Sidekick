@@ -36,22 +36,22 @@ public final class ModuleHelper {
 		// Set the distribution author, name, and version
 		TextView distributionName = (TextView) row.findViewById(R.id.module_author_distribution);
 		distributionName.setText(
-				item.getAuthorPauseId()
-				+ "/" + item.getDistributionName()
-				+ "-" + item.getDistributionVersion());
+				item.getAuthor().getPauseId()
+				+ "/" + item.getDistribution().getName()
+				+ "-" + item.getDistribution().getVersion());
 		
 		// Set the rating bar
 		RatingBar distRating = (RatingBar) row.findViewById(R.id.module_release_rating);
-		distRating.setRating((float) item.getDistributionRating());
+		distRating.setRating((float) item.getDistribution().getRating());
 		
 		// Set the rating count
 		TextView distRatingCount = (TextView) row.findViewById(R.id.module_release_rating_count);
-		distRatingCount.setText(String.valueOf(item.getDistributionRatingCount()));
+		distRatingCount.setText(String.valueOf(item.getDistribution().getRatingCount()));
 		
 		// Set the favorite count
 		Button favoriteCount = (Button) row.findViewById(R.id.module_release_favorite);
-		if (item.getDistributionFavoriteCount() > 0) {
-			favoriteCount.setText(item.getDistributionFavoriteCount() + "++ ");
+		if (item.getDistribution().getFavoriteCount() > 0) {
+			favoriteCount.setText(item.getDistribution().getFavoriteCount() + "++ ");
 			favoriteCount.setBackgroundResource(R.drawable.btn_favorite_others);
 			favoriteCount.setShadowLayer(1.5f, 1f, 1f, R.color.favorite_text_shadow_color);
 		}
@@ -64,14 +64,14 @@ public final class ModuleHelper {
 		}
 		
 		// Mark this as our favorite
-		if (item.isDistributionMyFavorite()) {
+		if (item.getDistribution().isMyFavorite()) {
 			favoriteCount.setBackgroundResource(R.drawable.btn_favorite_mine);
 		}
 		
 		// Set the quick contact badge to the author's picture
 		QuickContactBadge badge = (QuickContactBadge) row.findViewById(R.id.module_author_avatar);
-		if (item.getAuthorGravatarBitmap() != null) {
-			badge.setImageBitmap(item.getAuthorGravatarBitmap());
+		if (item.getAuthor().getGravatarBitmap() != null) {
+			badge.setImageBitmap(item.getAuthor().getGravatarBitmap());
 		}
 		
 		// No user picture, set to default

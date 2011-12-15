@@ -3,7 +3,6 @@ package com.qubling.sidekick.metacpan.result;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -87,78 +86,6 @@ public class Module extends Model {
 
 	public void setDistribution(Distribution distribution) {
 		this.distribution = distribution;
-	}
-
-	public String getAuthorPauseId() {
-		return author.getPauseId();
-	}
-
-	public void setAuthorPauseId(String authorPauseId) {
-		author.setPauseId(authorPauseId);
-	}
-
-	public String getAuthorGravatarURL() {
-		return author.getGravatarURL();
-	}
-
-	public void setAuthorGravatarURL(String authorGravatarURL) {
-		author.setGravatarURL(authorGravatarURL);
-	}
-
-	public Bitmap getAuthorGravatarBitmap() {
-		return author.getGravatarBitmap();
-	}
-
-	public void setAuthorGravatarBitmap(Bitmap authorGravatarBitmap) {
-		author.setGravatarBitmap(authorGravatarBitmap);
-	}
-
-	public String getDistributionName() {
-		return distribution.getName();
-	}
-
-	public void setDistributionName(String distributionName) {
-		distribution.setName(distributionName);
-	}
-
-	public String getDistributionVersion() {
-		return distribution.getVersion();
-	}
-
-	public void setDistributionVersion(String distributionVersion) {
-		distribution.setVersion(distributionVersion);
-	}
-
-	public int getDistributionRatingCount() {
-		return distribution.getRatingCount();
-	}
-
-	public void setDistributionRatingCount(int distributionRatingCount) {
-		distribution.setRatingCount(distributionRatingCount);
-	}
-
-	public double getDistributionRating() {
-		return distribution.getRating();
-	}
-
-	public void setDistributionRating(double distributionRating) {
-		distribution.setRating(distributionRating);
-	}
-
-	public int getDistributionFavoriteCount() {
-		return distribution.getFavoriteCount();
-	}
-
-	public void setDistributionFavoriteCount(int distributionFavoriteCount) {
-		this.distribution.setFavoriteCount(distributionFavoriteCount);
-	}
-
-	public boolean isDistributionMyFavorite() {
-		return distribution.isMyFavorite();
-	}
-
-	public void setDistributionMyFavorite(boolean distributionMyFavorite) {
-		distribution.setMyFavorite(distributionMyFavorite);
 	}
 	
     public static final Parcelable.Creator<Module> CREATOR
