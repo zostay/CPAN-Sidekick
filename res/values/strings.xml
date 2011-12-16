@@ -11,5 +11,6 @@
     <string name="item_load_more_from_cpan">Loading from CPAN...</string>
     <string name="activity_module_view">CPAN Module View</string>
     <string name="app_launcher_name">CPAN</string>
+    <string name="not_yet_implemented">Not yet implemented.</string>
 
 </resources>

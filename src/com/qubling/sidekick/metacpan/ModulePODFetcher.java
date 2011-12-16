@@ -26,7 +26,7 @@ public class ModulePODFetcher extends MetaCPANAPI<Module, Void, String> {
 		
 		String podContent;
 		try {
-			HttpGet podReq = new HttpGet(METACPAN_API_URL + "/pod/" + module.getName());
+			HttpGet podReq = new HttpGet(METACPAN_API_POD_URL + module.getName());
 			HttpResponse podRes = getClient().execute(podReq);
 			
 			podContent = slurpContent(podRes);

@@ -13,8 +13,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 public final class ModuleHelper {
-	private ModuleHelper() {
-	}
+	private ModuleHelper() { }
 	
 	public static void updateItem(View row, Module item) {
 		

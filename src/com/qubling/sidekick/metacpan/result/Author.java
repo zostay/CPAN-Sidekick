@@ -7,6 +7,7 @@ import android.os.Parcelable;
 public class Author extends Model {
 	
 	private String pauseId;
+	private boolean gravatarURLLoaded = false;
 	private String gravatarURL;
 	private Bitmap gravatarBitmap;
 
@@ -15,9 +16,10 @@ public class Author extends Model {
 	}
 	
 	public Author(Parcel in) {
-		pauseId        = in.readString();
-		gravatarURL    = in.readString();
-		gravatarBitmap = in.readParcelable(Author.class.getClassLoader());
+		pauseId           = in.readString();
+		gravatarURLLoaded = readParcelBoolean(in);
+		gravatarURL       = in.readString();
+		gravatarBitmap    = in.readParcelable(Author.class.getClassLoader());
 	}
 
 	public String getPauseId() {
@@ -34,6 +36,7 @@ public class Author extends Model {
 
 	public void setGravatarURL(String authorGravatarURL) {
 		this.gravatarURL = authorGravatarURL;
+		this.gravatarURLLoaded = true;
 	}
 
 	public Bitmap getGravatarBitmap() {
@@ -42,6 +45,10 @@ public class Author extends Model {
 
 	public void setGravatarBitmap(Bitmap authorGravatarBitmap) {
 		this.gravatarBitmap = authorGravatarBitmap;
+	}
+	
+	public boolean isGravatarURLNeeded() {
+		return !gravatarURLLoaded;
 	}
 	
 	public boolean isGravatarBitmapNeeded() {
@@ -56,6 +63,7 @@ public class Author extends Model {
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeString(pauseId);
+		writeParcelBoolean(dest, gravatarURLLoaded);
 		dest.writeString(gravatarURL);
 		dest.writeParcelable(gravatarBitmap, flags);
 	}

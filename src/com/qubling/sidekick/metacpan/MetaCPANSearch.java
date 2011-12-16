@@ -18,11 +18,11 @@ import android.util.Log;
 public abstract class MetaCPANSearch<ResultType> extends MetaCPANAPI<Void, Void, ResultType> {
 	
 	public enum SearchSection {
-		AUTHOR ("/v0/author/_search"),
-		FAVORITE ("/v0/favorite/_search"),
-		FILE ("/v0/file/_search"),
-		RATING ("/v0/rating/_search"),
-		RELEASE ("/v0/release/_search");
+		AUTHOR ("v0/author/_search"),
+		FAVORITE ("v0/favorite/_search"),
+		FILE ("v0/file/_search"),
+		RATING ("v0/rating/_search"),
+		RELEASE ("v0/release/_search");
 		
 		private String path;
 		

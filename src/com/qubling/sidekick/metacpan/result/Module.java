@@ -51,6 +51,13 @@ public class Module extends Model {
 		this.distribution   = new Distribution(distributionName, distributionVersion);
 	}
 	
+	public Module(String name) {
+		this.name           = name;
+		this.moduleAbstract = "...";
+		this.author         = new Author("...");
+		this.distribution   = new Distribution("...", "...");
+	}
+	
 	public Module(Parcel in) {
 		name           = in.readString();
 		moduleAbstract = in.readString();
@@ -84,6 +91,10 @@ public class Module extends Model {
 
 	public Distribution getDistribution() {
 		return distribution;
+	}
+	
+	public boolean isModuleFetchNeeded() {
+		return "...".equals(this.moduleAbstract);
 	}
 
 	public void setDistribution(Distribution distribution) {
