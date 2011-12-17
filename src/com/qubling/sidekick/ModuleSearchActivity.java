@@ -87,7 +87,7 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
 				progressDialog = ProgressDialog.show(ModuleSearchActivity.this, "", "Searching CPAN...", true);
 				
 				// Lock the orientation - prevents the activity from being paused in the middle of the search
-				lockOrientation();
+				// lockOrientation();
 				
 				// Start the search task
 				new ModuleSearch(
@@ -182,12 +182,12 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
     	}
     	
     	// Unlock the screen orientation
-    	unlockOrientation();
+    	// unlockOrientation();
     }
 	
 	public void onMoreItemsRequested(ModuleList list) {				
 		// Lock the orientation - prevents the activity from being paused in the middle of the search
-		lockOrientation();
+		// lockOrientation();
 		
 		// Turn on the background activity progress bar too
 		setProgressBarIndeterminateVisibility(true);
