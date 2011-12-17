@@ -2,15 +2,15 @@
 <resources>
     <string name="app_name">CPAN Sidekick</string>
     <string name="button_search">Search</string>
-    <string name="url_metacpan_api_base">http://api.metacpan.org</string>
     <string name="sample_module_name">Test::More - yet another framework for writing test scripts</string>
     <string name="sample_distribution">MSCHWERN/Test-Simple-0.98</string>
     <string name="favorite_not_favorited">++</string>
     <string name="activity_module_search_name">CPAN Module Search</string>
-    <string name="dialog_searching_cpan">Searching CPAN...</string>
-    <string name="item_load_more_from_cpan">Loading from CPAN...</string>
+    <string name="dialog_searching_cpan">Searching CPAN&#8230;</string>
+    <string name="item_load_more_from_cpan">Loading from CPAN&#8230;</string>
     <string name="activity_module_view">CPAN Module View</string>
     <string name="app_launcher_name">CPAN</string>
     <string name="not_yet_implemented">Not yet implemented.</string>
+    <string name="default_ratings_0">0</string>
 
 </resources>

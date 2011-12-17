@@ -11,17 +11,20 @@
 
         <EditText
             android:id="@+id/text_search"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.06"
             android:imeOptions="actionSearch"
+            android:inputType="textNoSuggestions"
             android:singleLine="true" />
 
         <ImageButton
             android:id="@+id/button_search"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
+            android:contentDescription="@string/button_search"
             android:src="@android:drawable/ic_menu_search" />
+
     </LinearLayout>
 
     <FrameLayout

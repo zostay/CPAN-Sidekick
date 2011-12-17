@@ -84,7 +84,8 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
 				moduleList.clear();
 				
 				// Show the progress bar
-				progressDialog = ProgressDialog.show(ModuleSearchActivity.this, "", "Searching CPAN...", true);
+				String searchingCPAN = getResources().getString(R.string.dialog_searching_cpan);
+				progressDialog = ProgressDialog.show(ModuleSearchActivity.this, "", searchingCPAN, true);
 				
 				// Lock the orientation - prevents the activity from being paused in the middle of the search
 				// lockOrientation();
