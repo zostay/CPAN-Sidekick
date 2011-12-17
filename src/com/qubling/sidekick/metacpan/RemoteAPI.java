@@ -5,8 +5,8 @@ import java.io.InputStreamReader;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 
-import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 
 public abstract class RemoteAPI<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> {
@@ -26,7 +26,7 @@ public abstract class RemoteAPI<Params, Progress, Result> extends AsyncTask<Para
 		return clientManager;
 	}
 
-	public AndroidHttpClient getClient() {
+	public HttpClient getClient() {
 		return clientManager.getClient();
 	}
 	

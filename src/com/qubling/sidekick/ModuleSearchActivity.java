@@ -101,14 +101,23 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
 			
 			@Override
 			public boolean onKey(View v, int keyCode, KeyEvent event) {
-				switch (keyCode) {
-				case KeyEvent.KEYCODE_ENTER:
-				case KeyEvent.KEYCODE_NUMPAD_ENTER:
+				
+				// Support KEYCODE_NUMPAD_ENTER added in API 11
+	        	int KEYCODE_NUMPAD_ENTER = KeyEvent.KEYCODE_UNKNOWN;
+	        	try {
+	        		KEYCODE_NUMPAD_ENTER = KeyEvent.class.getField("KEYCODE_NUMPAD_ENTER").getInt(null);
+	        	}
+	        	catch (Throwable t) {
+	        		// ignore
+	        	}
+	        	
+	        	if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KEYCODE_NUMPAD_ENTER) {
 					// TODO Probably need a better indicator that we've already started
 					if (progressDialog == null)
 						searchButton.performClick();
 					return true;
 				}
+	        	
 				return false;
 			}
 		});

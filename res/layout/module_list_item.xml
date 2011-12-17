@@ -14,14 +14,14 @@
 
     <LinearLayout
         android:id="@+id/ModuleDetails"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingLeft="8dp" >
 
         <RelativeLayout
             android:id="@+id/ModuleTopDetails"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content" >
 
             <TextView
@@ -53,7 +53,7 @@
 
         <RelativeLayout
             android:id="@+id/ModuleBottomDetails"
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
