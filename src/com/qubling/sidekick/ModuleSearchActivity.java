@@ -145,6 +145,8 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
 		lastSearchText = state.getString("lastSearchText");
 		
 		moduleList = new ModuleList(modules, totalCount);
+        moduleList.addModelListUpdatedListener(this);
+        moduleList.addMoreItemsRequestedListener(this);
 		onModelListUpdated(moduleList);
 	}
 
@@ -160,10 +162,13 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
 
 	public void onModelListUpdated(ModelList<Module> modelList) {
 		ModuleList list = (ModuleList) modelList;
+		Log.d("ModuleSearch", "onModelListUpdated");
 		
 		// Load the module list if this is a change in the underlying model
 		if (moduleList != list) {
 			moduleList = list;
+	        moduleList.addModelListUpdatedListener(this);
+	        moduleList.addMoreItemsRequestedListener(this);
 			Log.d("ModuleSearch", "moduleList.size(): " + moduleList.size());
 				
 	    	// Show search results
