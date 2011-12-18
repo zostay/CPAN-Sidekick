@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import com.qubling.sidekick.metacpan.collection.DistributionList;
 import com.qubling.sidekick.metacpan.collection.ModuleList;
+import com.qubling.sidekick.metacpan.result.Author;
 import com.qubling.sidekick.metacpan.result.Distribution;
 import com.qubling.sidekick.metacpan.result.Module;
 
@@ -70,13 +71,28 @@ public class ModuleSearch extends MetaCPANSearch<Module[]> {
 		moduleList.setTotalCount(totalCount);
 		moduleList.notifyModelListUpdated();
 		
-		// Build a distributionMap, which will be reused
+		// Build a distributionMap, and authorMap, and eliminate dupes
+		Map<String, Author> authorMap = new HashMap<String, Author>();
 		Map<String, Distribution> distributionMap = new HashMap<String, Distribution>();
 		for (Module module : moduleList) {
+			
+			// map distributions and eliminate dupes
 			Distribution distribution = module.getDistribution();
-			if (distributionMap.containsKey(distribution.getName()))
-				continue;
-			distributionMap.put(distribution.getName(), distribution);
+			if (distributionMap.containsKey(distribution.getName())) {
+				module.setDistribution(distributionMap.get(distribution.getName()));
+			}
+			else {
+				distributionMap.put(distribution.getName(), distribution);
+			}
+			
+			// map authors and eliminate dupes
+			Author author = module.getAuthor();
+			if (authorMap.containsKey(author.getPauseId())) {
+				module.setAuthor(authorMap.get(author.getPauseId()));
+			}
+			else {
+				authorMap.put(author.getPauseId(), author);
+			}
 		}
 		
 		// Now, fire off the tasks that fill in the details

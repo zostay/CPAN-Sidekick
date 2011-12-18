@@ -14,8 +14,6 @@ public class ModuleList extends ModelList<Module> {
 	public interface OnMoreItemsRequested {
 		public void onMoreItemsRequested(ModuleList moduleList);
 	}
-
-	private static final long serialVersionUID = 2182482391570721434L;
 	
 	private int totalCount;
 	

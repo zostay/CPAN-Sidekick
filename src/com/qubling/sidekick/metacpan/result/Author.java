@@ -21,6 +21,10 @@ public class Author extends Model {
 		gravatarURL       = in.readString();
 		gravatarBitmap    = in.readParcelable(Author.class.getClassLoader());
 	}
+	
+	public int hashCode() {
+		return pauseId.hashCode();
+	}
 
 	public String getPauseId() {
 		return pauseId;

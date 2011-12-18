@@ -65,6 +65,10 @@ public class Module extends Model {
 		distribution   = in.readParcelable(Module.class.getClassLoader());
 	}
 	
+	public int hashCode() {
+		return name.hashCode();
+	}
+	
 	public String getName() {
 		return name;
 	}

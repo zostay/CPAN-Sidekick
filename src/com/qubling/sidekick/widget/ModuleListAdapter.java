@@ -1,4 +1,4 @@
-package com.qubling.sidekick.widget;
+ package com.qubling.sidekick.widget;
 
 import com.qubling.sidekick.R;
 import com.qubling.sidekick.metacpan.collection.ModelList;

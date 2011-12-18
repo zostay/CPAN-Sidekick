@@ -2,6 +2,8 @@ package com.qubling.sidekick.metacpan;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,7 +43,7 @@ public class GravatarFetcher extends RemoteAPI<Author, Void, Void> {
 		
 		Matcher resizeGravatarMatcher = RESIZE_GRAVATAR_PATTERN.matcher(gravatarURL);
 		String resizedGravatarURL = resizeGravatarMatcher.replaceFirst("$1s=" + gravatarPixelSize);
-		
+
 		try {
 			
 			// Do the request
@@ -66,7 +68,14 @@ public class GravatarFetcher extends RemoteAPI<Author, Void, Void> {
 	@Override
 	protected Void doInBackground(Author... authors) {
 		
+		Set<String> encounteredAuthors = new HashSet<String>();
 		for (Author author : authors) {
+			
+			// Don't fetch the same author's gravatar twice, it can only lead to tears
+			// (or concurrency problems, whichever comes first)
+			if (encounteredAuthors.contains(author.getPauseId())) continue;
+			encounteredAuthors.add(author.getPauseId());
+			
 			String url = author.getGravatarURL();
 			Bitmap gravatar = fetchBitmap(url);
 			author.setGravatarBitmap(gravatar);

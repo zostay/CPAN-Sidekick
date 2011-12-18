@@ -32,6 +32,10 @@ public class Distribution extends Model {
 		favoriteCount  = in.readInt();
 		myFavorite     = readParcelBoolean(in);
 	}
+	
+	public int hashCode() {
+		return name.hashCode() ^ version.hashCode();
+	}
 
 	public String getName() {
 		return name;
