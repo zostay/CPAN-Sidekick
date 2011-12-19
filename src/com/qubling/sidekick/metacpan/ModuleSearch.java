@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.qubling.sidekick.metacpan.collection.AuthorList;
 import com.qubling.sidekick.metacpan.collection.DistributionList;
 import com.qubling.sidekick.metacpan.collection.ModuleList;
 import com.qubling.sidekick.metacpan.result.Author;
@@ -44,6 +45,9 @@ public class ModuleSearch extends MetaCPANSearch<Module[]> {
 	
 	public Module[] constructCompiledResult(JSONObject searchResult) throws JSONException {
 		
+		AuthorList authors = moduleList.extractAuthorList();
+		DistributionList distributions = moduleList.extractDistributionList();
+		
 		// Slurp up the matches
 		JSONArray hits = searchResult.getJSONObject("hits").getJSONArray("hits");
 		int modulesCount = hits.length();
@@ -51,7 +55,7 @@ public class ModuleSearch extends MetaCPANSearch<Module[]> {
 		for (int i = 0; i < hits.length(); i++) {
 			JSONObject hit = hits.getJSONObject(i).getJSONObject("_source");
 			
-			modules[i] = Module.fromModuleSearch(hit);
+			modules[i] = Module.fromModuleSearch(hit, authors, distributions);
 		}
 		
 		totalCount = searchResult.getJSONObject("hits").getInt("total");

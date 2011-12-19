@@ -33,8 +33,24 @@ public class Distribution extends Model {
 		myFavorite     = readParcelBoolean(in);
 	}
 	
+	@Override
+	public String getPrimaryID() {
+		return makePrimaryID(name, version);
+	}
+	
+	public static String makePrimaryID(String name, String version) {
+		return name + "-" + version;
+	}
+	
+	@Override
 	public int hashCode() {
 		return name.hashCode() ^ version.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		return (object instanceof Distribution) && ((Distribution) object).name.equals(name)
+										        && ((Distribution) object).version.equals(version);
 	}
 
 	public String getName() {

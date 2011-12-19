@@ -22,8 +22,19 @@ public class Author extends Model {
 		gravatarBitmap    = in.readParcelable(Author.class.getClassLoader());
 	}
 	
+	@Override
+	public String getPrimaryID() {
+		return pauseId;
+	}
+	
+	@Override
 	public int hashCode() {
 		return pauseId.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		return (object instanceof Author) && ((Author) object).pauseId.equals(pauseId);
 	}
 
 	public String getPauseId() {

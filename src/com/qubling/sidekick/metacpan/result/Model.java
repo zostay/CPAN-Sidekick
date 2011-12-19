@@ -26,4 +26,6 @@ public abstract class Model implements Parcelable {
 	protected static void writeParcelBoolean(Parcel dest, boolean value) {
 		dest.writeByte((byte) (value ? 1 : 0));
 	}
+	
+	public abstract Object getPrimaryID();
 }

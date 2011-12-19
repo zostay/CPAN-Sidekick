@@ -3,11 +3,10 @@ package com.qubling.sidekick.metacpan.collection;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import com.qubling.sidekick.metacpan.result.Model;
 
@@ -20,29 +19,37 @@ public abstract class ModelList<SomeModel extends Model> extends AbstractList<So
 	private ModelList<? extends Model> parent;
 	
 	private List<SomeModel> modelList;
-	private Set<SomeModel> modelSet;
+	private Map<Object, SomeModel> modelSet;
 
 	private List<OnModelListUpdated<SomeModel>> modelListUpdaters = new ArrayList<OnModelListUpdated<SomeModel>>();
 
 	public ModelList() {
-		modelSet  = new HashSet<SomeModel>();
+		modelSet  = new HashMap<Object, SomeModel>();
 		modelList = new ArrayList<SomeModel>();
 	}
 
 	public ModelList(Collection<? extends SomeModel> collection) {
-		modelSet  = new HashSet<SomeModel>(collection);
-		modelList = new ArrayList<SomeModel>(modelSet.size());
+		modelSet  = new HashMap<Object, SomeModel>(collection.size());
+		modelList = new ArrayList<SomeModel>(collection.size());
 		
 		addAll(collection);
 	}
 
 	public ModelList(int capacity) {
-		modelSet  = new HashSet<SomeModel>(capacity);
+		modelSet  = new HashMap<Object, SomeModel>(capacity);
 		modelList = new ArrayList<SomeModel>(capacity);
 	}
 
 	public ModelList<? extends Model> getParent() {
 		return parent;
+	}
+	
+	protected List<SomeModel> getModelList() {
+		return modelList;
+	}
+	
+	protected Map<Object, SomeModel> getModelMap() {
+		return modelSet;
 	}
 
 	public synchronized void setParent(ModelList<? extends Model> parent) {
@@ -69,34 +76,33 @@ public abstract class ModelList<SomeModel extends Model> extends AbstractList<So
 	
 	@Override
 	public synchronized void add(int location, SomeModel object) {
-		if (modelSet.contains(object)) return;
+		if (modelSet.containsKey(object.getPrimaryID())) return;
 		
 		modelList.add(location, object);
-		modelSet.add(object);
+		modelSet.put(object.getPrimaryID(), object);
 	}
 
 	@Override
 	public synchronized boolean add(SomeModel object) {
-		if (modelSet.contains(object)) return false;
+		if (modelSet.containsKey(object.getPrimaryID())) return false;
 		
 		modelList.add(object);
-		modelSet.add(object);
+		modelSet.put(object.getPrimaryID(), object);
 		
 		return true;
 	}
 
 	@Override
 	public synchronized boolean addAll(int location, Collection<? extends SomeModel> collection) {
-		LinkedHashSet<SomeModel> uniqueModels = new LinkedHashSet<SomeModel>();
 		int originalSize = modelSet.size();
+		int scrollingLocation = location;
 		
 		for (SomeModel item : collection) {
-			if (modelSet.contains(item)) continue;
-			uniqueModels.add(item);
+			if (modelSet.containsKey(item.getPrimaryID())) continue;
+			
+			modelList.add(scrollingLocation++, item);
+			modelSet.put(item.getPrimaryID(), item);
 		}
-		
-		modelList.addAll(location, uniqueModels);
-		modelSet.addAll(uniqueModels);
 		
 		return modelSet.size() > originalSize;
 	}
@@ -106,10 +112,10 @@ public abstract class ModelList<SomeModel extends Model> extends AbstractList<So
 		int originalSize = modelSet.size();
 		
 		for (SomeModel item : collection) {
-			if (modelSet.contains(item)) continue;
+			if (modelSet.containsKey(item.getPrimaryID())) continue;
 			
 			modelList.add(item);
-			modelSet.add(item);
+			modelSet.put(item.getPrimaryID(), item);
 		}
 		
 		return modelSet.size() > originalSize;
@@ -136,6 +142,10 @@ public abstract class ModelList<SomeModel extends Model> extends AbstractList<So
 		}
 		
 		return true;
+	}
+	
+	public synchronized SomeModel find(Object primaryID) {
+		return modelSet.get(primaryID);
 	}
 
 	@Override
@@ -189,7 +199,8 @@ public abstract class ModelList<SomeModel extends Model> extends AbstractList<So
 
 	@Override
 	public synchronized boolean contains(Object object) {
-		return modelSet.contains(object);
+		if (!(object instanceof Model)) return false;
+		return modelSet.containsKey(((Model) object).getPrimaryID());
 	}
 
 	@Override

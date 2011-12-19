@@ -3,6 +3,8 @@ package com.qubling.sidekick.metacpan.result;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.qubling.sidekick.metacpan.collection.AuthorList;
+import com.qubling.sidekick.metacpan.collection.DistributionList;
 import com.qubling.sidekick.metacpan.collection.ModuleList;
 
 import android.os.Parcel;
@@ -16,7 +18,7 @@ public class Module extends Model {
 	private Author author;
 	private Distribution distribution;
 	
-	public static Module fromModuleSearch(JSONObject json) {
+	public static Module fromModuleSearch(JSONObject json, AuthorList authors, DistributionList distributions) {
 		
 		String name = null;
 		try {
@@ -41,21 +43,31 @@ public class Module extends Model {
 		try { distributionName    = json.getString("distribution"); } catch (JSONException e) {}
 		try { distributionVersion = json.getString("version");      } catch (JSONException e) {}
 		
-		return new Module(name, moduleAbstract, authorPauseId, distributionName, distributionVersion);
-	}
-
-	public Module(String name, String moduleAbstract, String authorPauseId, String distributionName, String distributionVersion) {
-		this.name           = name;
-		this.moduleAbstract = moduleAbstract;
-		this.author         = new Author(authorPauseId);
-		this.distribution   = new Distribution(distributionName, distributionVersion);
+		Author author = authors.load(authorPauseId);
+		Distribution distribution = distributions.load(distributionName, distributionVersion);
+		
+		return new Module(name, moduleAbstract, author, distribution);
 	}
 	
 	public Module(String name) {
+		this.name = name;
+		this.moduleAbstract = "...";
+		this.author = null;
+		this.distribution = null;
+	}
+
+	public Module(String name, String moduleAbstract, Author author, Distribution distribution) {
+		this.name           = name;
+		this.moduleAbstract = moduleAbstract;
+		this.author         = author;
+		this.distribution   = distribution;
+	}
+	
+	public Module(String name, Author author, Distribution distribution) {
 		this.name           = name;
 		this.moduleAbstract = "...";
-		this.author         = new Author("...");
-		this.distribution   = new Distribution("...", "...");
+		this.author         = author;
+		this.distribution   = distribution;
 	}
 	
 	public Module(Parcel in) {
@@ -65,8 +77,19 @@ public class Module extends Model {
 		distribution   = in.readParcelable(Module.class.getClassLoader());
 	}
 	
+	@Override
+	public String getPrimaryID() {
+		return name;
+	}
+	
+	@Override
 	public int hashCode() {
 		return name.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		return (object instanceof Module) && ((Module) object).name.equals(name);
 	}
 	
 	public String getName() {
@@ -98,7 +121,9 @@ public class Module extends Model {
 	}
 	
 	public boolean isModuleFetchNeeded() {
-		return "...".equals(this.moduleAbstract);
+		return "...".equals(this.moduleAbstract)
+			|| author == null
+			|| distribution == null;
 	}
 
 	public void setDistribution(Distribution distribution) {
