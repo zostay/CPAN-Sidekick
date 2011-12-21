@@ -6,12 +6,9 @@ import com.qubling.sidekick.metacpan.collection.ModuleList;
 import com.qubling.sidekick.metacpan.result.Module;
 import com.qubling.sidekick.widget.ModuleListAdapter;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -24,27 +21,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
-public class ModuleSearchActivity extends Activity implements ModuleList.OnModuleListUpdated, ModuleList.OnMoreItemsRequested {
+public class ModuleSearchActivity extends ModuleActivity implements ModuleList.OnModuleListUpdated, ModuleList.OnMoreItemsRequested {
 	
 	private ModuleList moduleList;
 	private ProgressDialog progressDialog;
 	private String lastSearchText;
-	
-	public void lockOrientation() {
-		int currentOrientation = getResources().getConfiguration().orientation;
-		switch (currentOrientation) {
-		case Configuration.ORIENTATION_LANDSCAPE:
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-			break;
-		case Configuration.ORIENTATION_PORTRAIT:
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-			break;
-		} 
-	}
-	
-	public void unlockOrientation() {
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-	}
 	
 	public void onSearchCompleted(ModuleListAdapter adapter) {
 		progressDialog.cancel();
@@ -55,15 +36,35 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
 	
     /** Called when the activity is first created. */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreate(Bundle state) {
+        super.onCreate(state);
         
+        // Setup the view
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.module_search);
+
+        // Load from the state, if we can
+        if (state != null && state.containsKey("moduleList")) {
+        	Module[] modules = (Module[]) state.getParcelableArray("moduleList");
+        	int totalCount = state.getInt("moduleListTotalCount");
+        	lastSearchText = state.getString("lastSearchText");
+		
+			moduleList = new ModuleList(modules, totalCount);
+			
+	        moduleList.addModelListUpdatedListener(this);
+	        moduleList.addMoreItemsRequestedListener(this);
+	        
+			onModelListUpdated(moduleList);
+			freshenModuleList();
+        }
         
-        moduleList = new ModuleList();
-        moduleList.addModelListUpdatedListener(this);
-        moduleList.addMoreItemsRequestedListener(this);
+        // Or load from scratch
+        else {
+        	moduleList = new ModuleList();
+        	
+        	moduleList.addModelListUpdatedListener(this);
+        	moduleList.addMoreItemsRequestedListener(this);
+        }
 		
 		ModuleListAdapter adapter = new ModuleListAdapter(this, moduleList);
     	ListView moduleListView = (ListView) findViewById(R.id.list_search_results);
@@ -86,9 +87,6 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
 				// Show the progress bar
 				String searchingCPAN = getResources().getString(R.string.dialog_searching_cpan);
 				progressDialog = ProgressDialog.show(ModuleSearchActivity.this, "", searchingCPAN, true);
-				
-				// Lock the orientation - prevents the activity from being paused in the middle of the search
-				// lockOrientation();
 				
 				// Start the search task
 				new ModuleSearch(
@@ -140,20 +138,17 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
     @Override
 	protected void onRestoreInstanceState(Bundle state) {
 		super.onRestoreInstanceState(state);
-		
-		Module[] modules = (Module[]) state.getParcelableArray("moduleList");
-		int totalCount = state.getInt("moduleListTotalCount");
-		lastSearchText = state.getString("lastSearchText");
-		
-		moduleList = new ModuleList(modules, totalCount);
-        moduleList.addModelListUpdatedListener(this);
-        moduleList.addMoreItemsRequestedListener(this);
-		onModelListUpdated(moduleList);
 	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle state) {
 		super.onSaveInstanceState(state);
+		
+		// Just make this go away, we won't need it...
+		if (progressDialog != null) {
+			progressDialog.dismiss();
+			progressDialog = null;
+		}
 		
 		Module[] modules = new Module[moduleList.size()];
 		state.putParcelableArray("moduleList", moduleList.toArray(modules));
@@ -163,14 +158,14 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
 
 	public void onModelListUpdated(ModelList<Module> modelList) {
 		ModuleList list = (ModuleList) modelList;
-		Log.d("ModuleSearch", "onModelListUpdated");
+		Log.d("ModuleSearchActivity", "onModelListUpdated");
 		
 		// Load the module list if this is a change in the underlying model
 		if (moduleList != list) {
 			moduleList = list;
 	        moduleList.addModelListUpdatedListener(this);
 	        moduleList.addMoreItemsRequestedListener(this);
-			Log.d("ModuleSearch", "moduleList.size(): " + moduleList.size());
+			Log.d("ModuleSearchActivity", "moduleList.size(): " + moduleList.size());
 				
 	    	// Show search results
 			ModuleListAdapter adapter = new ModuleListAdapter(this, list);
@@ -186,14 +181,9 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
     		progressDialog.dismiss();
     		progressDialog = null;
     	}
-    	
-    	// Unlock the screen orientation
-    	// unlockOrientation();
     }
 	
-	public void onMoreItemsRequested(ModuleList list) {				
-		// Lock the orientation - prevents the activity from being paused in the middle of the search
-		// lockOrientation();
+	public void onMoreItemsRequested(ModuleList list) {
 		
 		// Turn on the background activity progress bar too
 		setProgressBarIndeterminateVisibility(true);
@@ -202,5 +192,17 @@ public class ModuleSearchActivity extends Activity implements ModuleList.OnModul
 		ModuleSearch search = new ModuleSearch(ModuleSearchActivity.this, moduleList, lastSearchText);
 		search.setFrom(moduleList.size());
 		search.execute();
+	}
+	
+	private void freshenModuleList() {
+		for (Module module : moduleList) {
+			fetchModule(module, new ModuleList.OnModuleListUpdated() {
+				
+				@Override
+				public void onModelListUpdated(ModelList<Module> modelList) {
+					moduleList.notifyModelListUpdated();
+				}
+			});
+		}
 	}
 }

@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import android.util.Log;
+
 import com.qubling.sidekick.metacpan.result.Model;
 
 public abstract class ModelList<SomeModel extends Model> extends AbstractList<SomeModel> {
@@ -65,6 +67,8 @@ public abstract class ModelList<SomeModel extends Model> extends AbstractList<So
 	}
 	
 	public synchronized void notifyModelListUpdated() {
+		Log.d("ModuleList", "notifyModelListUpdated");
+		
 		for (OnModelListUpdated<SomeModel> listener : modelListUpdaters) {
 			listener.onModelListUpdated(this);
 		}

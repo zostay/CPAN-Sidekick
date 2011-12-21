@@ -18,14 +18,12 @@ public class ModuleListAdapter extends BaseAdapter implements ModuleList.OnModul
 	private int VIEW_TYPE_LOAD_MORE = 1;
 	private int VIEW_TYPE_COUNT     = 2;
 	
-	private Context context;
 	private ModuleList moduleList;
 	private LayoutInflater inflater;
 	
 	private View loadMoreItemsRow;
 
 	public ModuleListAdapter(Context context, ModuleList items) {
-		this.context     = context;
 		this.inflater    = LayoutInflater.from(context);
 		this.moduleList  = items;
 		
