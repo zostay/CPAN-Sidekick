@@ -10,6 +10,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -45,10 +46,14 @@ public class ModuleSearchActivity extends ModuleActivity implements ModuleList.O
 
         // Load from the state, if we can
         if (state != null && state.containsKey("moduleList")) {
-        	Module[] modules = (Module[]) state.getParcelableArray("moduleList");
+        	Parcelable[] moduleParcels = state.getParcelableArray("moduleList");
         	int totalCount = state.getInt("moduleListTotalCount");
         	lastSearchText = state.getString("lastSearchText");
-		
+        	
+        	// Is this necessary? Had a class cast exception at one point.
+        	Module[] modules = new Module[moduleParcels.length];
+        	System.arraycopy(moduleParcels, 0, modules, 0, moduleParcels.length);
+        	
 			moduleList = new ModuleList(modules, totalCount);
 			
 	        moduleList.addModelListUpdatedListener(this);
