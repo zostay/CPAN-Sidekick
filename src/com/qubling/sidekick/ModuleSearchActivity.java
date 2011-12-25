@@ -132,6 +132,10 @@ public class ModuleSearchActivity extends ModuleActivity implements ModuleList.O
 				ListView moduleListView = (ListView) parent;
 				Module currentModule = (Module) moduleListView.getItemAtPosition(position);
 				
+				// This happens when you click on the progress throbber item
+				if (currentModule == null)
+					return;
+				
 				Intent moduleViewIntent = new Intent(ModuleSearchActivity.this, ModuleViewActivity.class);
 				moduleViewIntent.putExtra(ModuleViewActivity.EXTRA_MODULE, currentModule);
 				startActivity(moduleViewIntent);
