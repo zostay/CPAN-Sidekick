@@ -22,6 +22,13 @@ public abstract class RemoteAPI<Params, Progress, Result> extends AsyncTask<Para
 		clientManager.markActionCompleted();
 	}
 
+	@Override
+	protected void onCancelled() {
+		
+		// Even if we don't do anything, we must mark this as completed to avoid a leak
+		clientManager.markActionCompleted();
+	}
+
 	public HttpClientManager getClientManager() {
 		return clientManager;
 	}
