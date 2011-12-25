@@ -8,6 +8,7 @@ import com.qubling.sidekick.widget.ModuleListAdapter;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -27,6 +28,8 @@ public class ModuleSearchActivity extends ModuleActivity implements ModuleList.O
 	private ModuleList moduleList;
 	private ProgressDialog progressDialog;
 	private String lastSearchText;
+	
+	private ModuleSearch currentSearch;
 	
 	public void onSearchCompleted(ModuleListAdapter adapter) {
 		progressDialog.cancel();
@@ -82,22 +85,19 @@ public class ModuleSearchActivity extends ModuleActivity implements ModuleList.O
 			@Override
 			public void onClick(View searchButton) {
 				
-				// Hide the screen keyboard
-				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-				imm.hideSoftInputFromWindow(searchButton.getWindowToken(), 0);
-				
-				// Clear the module list
-				moduleList.clear();
-				
-				// Show the progress bar
-				String searchingCPAN = getResources().getString(R.string.dialog_searching_cpan);
-				progressDialog = ProgressDialog.show(ModuleSearchActivity.this, "", searchingCPAN, true);
-				
-				// Start the search task
-				new ModuleSearch(
-						ModuleSearchActivity.this, 
-						moduleList, 
-						lastSearchText = queryText.getText().toString()).execute();
+					// Hide the screen keyboard
+					InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(searchButton.getWindowToken(), 0);
+					
+					// Clear the module list
+					moduleList.clear();
+					
+					// Start the search task
+					ModuleSearch search = new ModuleSearch(
+							ModuleSearchActivity.this, 
+							moduleList, 
+							lastSearchText = queryText.getText().toString());
+					startSearch(search, true);
 			}
 		});
         
@@ -149,11 +149,8 @@ public class ModuleSearchActivity extends ModuleActivity implements ModuleList.O
 	protected void onSaveInstanceState(Bundle state) {
 		super.onSaveInstanceState(state);
 		
-		// Just make this go away, we won't need it...
-		if (progressDialog != null) {
-			progressDialog.dismiss();
-			progressDialog = null;
-		}
+		// If running, it should stop now...
+		cancelSearch();
 		
 		Module[] modules = new Module[moduleList.size()];
 		state.putParcelableArray("moduleList", moduleList.toArray(modules));
@@ -178,25 +175,16 @@ public class ModuleSearchActivity extends ModuleActivity implements ModuleList.O
 	    	moduleListView.setAdapter(adapter);
 		}
 		
-		// Turn off the background progress meter in case it's set
-		setProgressBarIndeterminateVisibility(false);
-    	
-    	// Dismiss the progress dialog
-    	if (progressDialog != null) {
-    		progressDialog.dismiss();
-    		progressDialog = null;
-    	}
+		cancelSearch();
     }
 	
 	public void onMoreItemsRequested(ModuleList list) {
 		
-		// Turn on the background activity progress bar too
-		setProgressBarIndeterminateVisibility(true);
-		
 		// Start the search task
 		ModuleSearch search = new ModuleSearch(ModuleSearchActivity.this, moduleList, lastSearchText);
 		search.setFrom(moduleList.size());
-		search.execute();
+		
+		startSearch(search, false);
 	}
 	
 	private void freshenModuleList() {
@@ -208,6 +196,49 @@ public class ModuleSearchActivity extends ModuleActivity implements ModuleList.O
 					moduleList.notifyModelListUpdated();
 				}
 			});
+		}
+	}
+	
+	private synchronized void startSearch(ModuleSearch newSearch, boolean modal) {
+
+		// If modal, show the progress bar dialog
+		if (modal) {
+			String searchingCPAN = getResources().getString(R.string.dialog_searching_cpan);
+			progressDialog = ProgressDialog.show(ModuleSearchActivity.this, "", searchingCPAN, true);
+			progressDialog.setCancelable(true);
+			progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+				
+				@Override
+				public void onCancel(DialogInterface dialog) {
+					cancelSearch();
+				}
+			});
+		}
+		
+		// Turn on the background activity progress bar instead	
+		else {
+			setProgressBarIndeterminateVisibility(true);
+		}
+		
+		currentSearch = newSearch;
+		currentSearch.execute();
+	}
+	
+	private synchronized void cancelSearch() {
+		
+		// Stop the search right now
+		if (currentSearch != null) {
+			currentSearch.cancel(false);
+			currentSearch = null;
+		}
+		
+		// Turn off the background progress meter in case it's set
+		setProgressBarIndeterminateVisibility(false);
+		
+		// Clear the modal progress dialog if it is going
+		if (progressDialog != null) {
+			progressDialog.dismiss();
+			progressDialog = null;
 		}
 	}
 }
