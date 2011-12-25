@@ -35,8 +35,8 @@ public class HttpClientManager {
 		return actionsRemaining <= 0;
 	}
 	
-	public synchronized void markActionCompleted() {
-		actionsRemaining--;
+	public synchronized void markActionCompleted(int count) {
+		actionsRemaining -= count;
 		
 		if (isComplete()) {
 			try {
@@ -47,5 +47,10 @@ public class HttpClientManager {
 			}
 			client = null;
 		}
+		
+	}
+	
+	public synchronized void markActionCompleted() {
+		markActionCompleted(1);
 	}
 }

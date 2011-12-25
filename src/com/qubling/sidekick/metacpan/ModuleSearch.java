@@ -106,4 +106,13 @@ public class ModuleSearch extends MetaCPANSearch<Module[]> {
 		new RatingByDistributionSearch(getClientManager(), getContext(), distributionList, distributionMap).execute();
 	}
 
+	@Override
+	protected void onCancelled() {
+		super.onCancelled();
+		
+		// Since we start these actions in the post execute, which won't be running,
+		// mark them as completed
+		getClientManager().markActionCompleted(3);
+	}
+
 }
