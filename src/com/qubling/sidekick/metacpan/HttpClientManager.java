@@ -25,6 +25,9 @@ public class HttpClientManager {
 	}
 
 	public synchronized HttpClient getClient() {
+		if (isComplete())
+			throw new IllegalStateException("Cannot fetch client again after last action has completed.");
+		
 		return client;
 	}
 	
