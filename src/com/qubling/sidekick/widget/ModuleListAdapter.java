@@ -1,4 +1,9 @@
- package com.qubling.sidekick.widget;
+/*
+ * Copyright 2011 Qubling Software, LLC.
+ * 
+ * This software may be distributed under the terms of the Artistic License 2.0.
+ */
+package com.qubling.sidekick.widget;
 
 import com.qubling.sidekick.R;
 import com.qubling.sidekick.metacpan.collection.ModelList;
