@@ -15,6 +15,12 @@ import android.webkit.WebView;
 
 import com.qubling.sidekick.metacpan.result.Module;
 
+/**
+ * A class for fetching a single module's POD.
+ * 
+ * @author sterling
+ *
+ */
 public class ModulePODFetcher extends MetaCPANAPI<Module, Void, String> {
 
     private WebView webView;

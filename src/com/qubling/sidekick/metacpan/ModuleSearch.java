@@ -22,6 +22,12 @@ import com.qubling.sidekick.metacpan.result.Author;
 import com.qubling.sidekick.metacpan.result.Distribution;
 import com.qubling.sidekick.metacpan.result.Module;
 
+/**
+ * A module for performing a keyword search on modules.
+ * 
+ * @author sterling
+ *
+ */
 public class ModuleSearch extends MetaCPANSearch<Module[]> {
 
     private String query;

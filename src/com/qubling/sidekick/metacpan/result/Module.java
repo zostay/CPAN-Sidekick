@@ -15,6 +15,12 @@ import com.qubling.sidekick.metacpan.collection.AuthorList;
 import com.qubling.sidekick.metacpan.collection.DistributionList;
 import com.qubling.sidekick.metacpan.collection.ModuleList;
 
+/**
+ * Information for a single Perl module loaded from CPAN.
+ * 
+ * @author sterling
+ *
+ */
 public class Module extends Model {
 
     private String name;

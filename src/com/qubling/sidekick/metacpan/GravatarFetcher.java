@@ -24,6 +24,12 @@ import android.util.Log;
 import com.qubling.sidekick.metacpan.collection.AuthorList;
 import com.qubling.sidekick.metacpan.result.Author;
 
+/**
+ * Used to fetch Gravatar bitmaps for a list of authors.
+ * 
+ * @author sterling
+ *
+ */
 public class GravatarFetcher extends RemoteAPI<Author, Void, Void> {
 
     private static final float GRAVATAR_DP_SIZE = 35f;

@@ -18,10 +18,25 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 
+/**
+ * A special subclass of {@link MetaCPANAPI} that provides tools useful 
+ * especially for the search API of MetaCPAN.
+ * 
+ * @author sterling
+ *
+ * @param <ResultType> See {@link AsyncTask}
+ */
 public abstract class MetaCPANSearch<ResultType> extends MetaCPANAPI<Void, Void, ResultType> {
 
+	/**
+	 * An enumeration of search types on MetaCPAN.
+	 * 
+	 * @author sterling
+	 *
+	 */
     public enum SearchSection {
         AUTHOR ("v0/author/_search"),
         FAVORITE ("v0/favorite/_search"),

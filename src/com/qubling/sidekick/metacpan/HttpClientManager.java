@@ -8,7 +8,13 @@ package com.qubling.sidekick.metacpan;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-
+/**
+ * The HTTP client manager lets us reuse an {@link HttpClient} without risking
+ * a memory leak (or that's the hope).
+ * 
+ * @author sterling
+ *
+ */
 public class HttpClientManager {
     private static final String METACPAN_API_USER_AGENT = "CPAN-Sidekick/0.1 (Android)";
 

@@ -12,6 +12,12 @@ import java.util.List;
 
 import com.qubling.sidekick.metacpan.result.Module;
 
+/**
+ * An ordered, unique list of {@link Module} objects.
+ * 
+ * @author sterling
+ *
+ */
 public class ModuleList extends ModelList<Module> {
 
     public interface OnModuleListUpdated extends OnModelListUpdated<Module> { }

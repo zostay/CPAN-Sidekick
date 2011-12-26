@@ -17,6 +17,12 @@ import android.content.Context;
 import com.qubling.sidekick.metacpan.collection.DistributionList;
 import com.qubling.sidekick.metacpan.result.Distribution;
 
+/**
+ * Fetches the ratings for a list of distributions.
+ * 
+ * @author sterling
+ *
+ */
 public class RatingByDistributionSearch extends MetaCPANSearch<Void> {
 
     private DistributionList distributionList;

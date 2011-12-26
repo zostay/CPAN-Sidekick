@@ -9,6 +9,12 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * Details about a single CPAN author.
+ * 
+ * @author sterling
+ *
+ */
 public class Author extends Model {
 
     private String pauseId;

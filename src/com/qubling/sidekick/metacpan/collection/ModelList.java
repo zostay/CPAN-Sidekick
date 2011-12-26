@@ -17,6 +17,13 @@ import android.util.Log;
 
 import com.qubling.sidekick.metacpan.result.Model;
 
+/**
+ * Base class for building ordered, unique collections of {@link Model} objects.
+ * 
+ * @author sterling
+ *
+ * @param <SomeModel> The type of {@link Model} being collected.
+ */
 public abstract class ModelList<SomeModel extends Model> extends AbstractList<SomeModel> {
 
     public interface OnModelListUpdated<SomeModel extends Model> {

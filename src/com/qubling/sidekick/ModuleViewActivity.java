@@ -24,6 +24,12 @@ import com.qubling.sidekick.metacpan.collection.ModuleList;
 import com.qubling.sidekick.metacpan.result.Module;
 import com.qubling.sidekick.widget.ModuleHelper;
 
+/**
+ * An activity for viewing a single CPAN module.
+ * 
+ * @author sterling
+ *
+ */
 public class ModuleViewActivity extends ModuleActivity {
     public static final String EXTRA_MODULE = "com.qubling.sidekick.intent.extra.MODULE";
 

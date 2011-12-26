@@ -8,6 +8,12 @@ package com.qubling.sidekick.metacpan.result;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * Details regarding a single CPAN distribution (a.k.a. release).
+ * 
+ * @author sterling
+ *
+ */
 public class Distribution extends Model {
 
     private String name;

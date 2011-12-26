@@ -18,6 +18,12 @@ import android.util.Log;
 import com.qubling.sidekick.metacpan.collection.AuthorList;
 import com.qubling.sidekick.metacpan.result.Author;
 
+/**
+ * This fetches the details for a group of authors, given the PAUSE ID for each.
+ * 
+ * @author sterling
+ *
+ */
 public class AuthorByDistributionSearch extends MetaCPANSearch<Void> {
 
     private AuthorList authorList;

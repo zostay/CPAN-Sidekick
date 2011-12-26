@@ -17,6 +17,13 @@ import com.qubling.sidekick.metacpan.collection.ModelList;
 import com.qubling.sidekick.metacpan.collection.ModuleList;
 import com.qubling.sidekick.metacpan.result.Module;
 
+/**
+ * This is a {@link BaseAdapter} for displaying module infomration in a list
+ * view.
+ * 
+ * @author sterling
+ *
+ */
 public class ModuleListAdapter extends BaseAdapter implements ModuleList.OnModuleListUpdated {
 
     private int VIEW_TYPE_MODULE    = 0;

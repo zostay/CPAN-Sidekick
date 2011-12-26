@@ -18,6 +18,12 @@ import android.util.Log;
 import com.qubling.sidekick.metacpan.collection.ModuleList;
 import com.qubling.sidekick.metacpan.result.Module;
 
+/**
+ * A tool for fetching the details regarding a single module.
+ * 
+ * @author sterling
+ *
+ */
 public class ModuleFetcher extends MetaCPANAPI<Void, Void, Void> {
 
     private ModuleList moduleList;

@@ -8,6 +8,12 @@ package com.qubling.sidekick.metacpan.result;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * Base class for data models.
+ * 
+ * @author sterling
+ *
+ */
 public abstract class Model implements Parcelable {
     public interface OnModelChanged {
         public void onModelChange(Model changedModel);

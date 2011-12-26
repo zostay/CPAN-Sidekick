@@ -17,6 +17,12 @@ import android.content.Context;
 import com.qubling.sidekick.metacpan.collection.DistributionList;
 import com.qubling.sidekick.metacpan.result.Distribution;
 
+/**
+ * This fetches the favorites for a list of distributions.
+ * 
+ * @author sterling
+ *
+ */
 public class FavoriteByDistributionSearch extends MetaCPANSearch<Void> {
 
     private DistributionList distributionList;

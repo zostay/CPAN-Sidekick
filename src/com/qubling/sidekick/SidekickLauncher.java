@@ -9,6 +9,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+/**
+ * An activity for starting up the application. This is mostly used to give the
+ * application a name of "CPAN", but jump into the module search activity. This
+ * may do some other initial application setup or switch activities based upon
+ * the type of device, etc.
+ * 
+ * @author sterling
+ *
+ */
 public class SidekickLauncher extends Activity {
 
     @Override

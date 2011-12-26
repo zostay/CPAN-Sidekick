@@ -16,6 +16,13 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
 
+/**
+ * A very simple tool for building JSON from a template and set of input
+ * variables.
+ * 
+ * @author sterling
+ *
+ */
 public class StringTemplate {
 
     private static final Pattern VARIABLE_PATTERN = Pattern.compile("%(\\w+)\\|([js])%");

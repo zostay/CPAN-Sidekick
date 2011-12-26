@@ -5,6 +5,13 @@
  */
 package com.qubling.sidekick.metacpan;
 
+/**
+ * Used with {@link StringTemplate} to allow for a complete JSON object or
+ * array to be filled into a template.
+ * 
+ * @author sterling
+ *
+ */
 public interface JSONFragment {
     public String toJSONString();
 }

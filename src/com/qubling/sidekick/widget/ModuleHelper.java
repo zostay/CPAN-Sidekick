@@ -17,6 +17,12 @@ import android.widget.TextView;
 import com.qubling.sidekick.R;
 import com.qubling.sidekick.metacpan.result.Module;
 
+/**
+ * Tools for filling in module data into views.
+ * 
+ * @author sterling
+ *
+ */
 public final class ModuleHelper {
     private ModuleHelper() { }
 

@@ -5,6 +5,17 @@
  */
 package com.qubling.sidekick.metacpan;
 
+import android.os.AsyncTask;
+
+/**
+ * A subclass of {@link RemoteAPI} with some tools for accessing MetaCPAN.
+ * 
+ * @author sterling
+ *
+ * @param <Params> See {@link AsyncTask}
+ * @param <Progress> See {@link AsyncTask}
+ * @param <Result> See {@link AsyncTask}
+ */
 public abstract class MetaCPANAPI<Params, Progress, Result> extends RemoteAPI<Params, Progress, Result> {
 
     public static final String METACPAN_API_URL = "http://api.metacpan.org/";

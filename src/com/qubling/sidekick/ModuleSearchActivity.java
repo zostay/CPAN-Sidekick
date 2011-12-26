@@ -28,6 +28,12 @@ import com.qubling.sidekick.metacpan.collection.ModuleList;
 import com.qubling.sidekick.metacpan.result.Module;
 import com.qubling.sidekick.widget.ModuleListAdapter;
 
+/**
+ * An activity for searching for CPAN modules.
+ * 
+ * @author sterling
+ *
+ */
 public class ModuleSearchActivity extends ModuleActivity implements ModuleList.OnModuleListUpdated, ModuleList.OnMoreItemsRequested {
 
     private ModuleList moduleList;
