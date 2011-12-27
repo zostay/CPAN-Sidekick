@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayout1"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
     android:layout_gravity="center"
-    android:orientation="horizontal"
     android:padding="10dp" >
 
     <ProgressBar
         android:id="@+id/progressBar1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/textView1"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_margin="5dp"
         android:text="@string/item_load_more_from_cpan"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 

@@ -14,6 +14,16 @@ import org.apache.http.client.HttpClient;
 
 import android.os.AsyncTask;
 
+/**
+ * General purpose remote API class that provides tools for initiating HTTP
+ * requests through {@link HttpClientManager}.
+ * 
+ * @author sterling
+ *
+ * @param <Params> See {@link AsyncTask}
+ * @param <Progress> See {@link AsyncTask}
+ * @param <Result> See {@link AsyncTask}
+ */
 public abstract class RemoteAPI<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> {
 
     private final HttpClientManager clientManager;
