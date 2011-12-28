@@ -51,7 +51,7 @@ public class AuthorByDistributionSearch extends MetaCPANSearch<Void> {
                         if (AuthorByDistributionSearch.this.authorMap.containsKey(author.getPauseId()))
                             continue;
 
-                        Log.d("AuthorByDistributionSearch", "Adding Author: " + author.getPauseId());
+//                        Log.d("AuthorByDistributionSearch", "Adding Author: " + author.getPauseId());
 
                         AuthorByDistributionSearch.this.authorMap.put(author.getPauseId(), author);
 

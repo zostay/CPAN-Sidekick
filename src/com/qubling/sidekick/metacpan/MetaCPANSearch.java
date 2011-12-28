@@ -92,7 +92,7 @@ public abstract class MetaCPANSearch<ResultType> extends MetaCPANAPI<Void, Void,
         StringTemplate templater = new StringTemplate(context);
         String json = templater.processTemplate(searchTemplate, variables);
 
-        Log.d("MetaCPANSearch", "REQ " + searchSection.getPath() + ": " + json);
+//        Log.d("MetaCPANSearch", "REQ " + searchSection.getPath() + ": " + json);
 
         try {
 
@@ -106,7 +106,7 @@ public abstract class MetaCPANSearch<ResultType> extends MetaCPANAPI<Void, Void,
             // Read the content
             String content = slurpContent(res);
 
-            Log.d("MetaCPANSearch", "RES " + searchSection.getPath() + ": " + content);
+//            Log.d("MetaCPANSearch", "RES " + searchSection.getPath() + ": " + content);
 
             // Parse the response into JSON and return it
             Object parsedContent = new JSONTokener(content).nextValue();

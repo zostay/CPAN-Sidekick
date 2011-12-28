@@ -58,7 +58,7 @@ public class GravatarFetcher extends RemoteAPI<Author, Void, Void> {
         try {
 
             // Do the request
-            Log.d("AuthorByDistributionSearch", "Gravatar: " + resizedGravatarURL);
+//            Log.d("AuthorByDistributionSearch", "Gravatar: " + resizedGravatarURL);
             HttpGet req = new HttpGet(resizedGravatarURL);
             HttpResponse res = getClient().execute(req);
 

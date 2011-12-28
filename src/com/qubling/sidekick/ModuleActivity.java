@@ -73,7 +73,7 @@ public abstract class ModuleActivity extends Activity {
                 moduleList.addModelListUpdatedListener(listener);
 
             if (module.getAuthor().isGravatarURLNeeded() || module.getAuthor().isGravatarBitmapNeeded()) {
-                Log.d("ModuleViewActivity", "isGravatarBitmapNeeded: true");
+//                Log.d("ModuleViewActivity", "isGravatarBitmapNeeded: true");
                 new AuthorByDistributionSearch(clientManager, this, moduleList.extractAuthorList()).execute();
             }
 

@@ -176,14 +176,14 @@ public class ModuleSearchActivity extends ModuleActivity implements ModuleList.O
     @Override
     public void onModelListUpdated(ModelList<Module> modelList) {
         ModuleList list = (ModuleList) modelList;
-        Log.d("ModuleSearchActivity", "onModelListUpdated");
+//        Log.d("ModuleSearchActivity", "onModelListUpdated");
 
         // Load the module list if this is a change in the underlying model
         if (moduleList != list) {
             moduleList = list;
             moduleList.addModelListUpdatedListener(this);
             moduleList.addMoreItemsRequestedListener(this);
-            Log.d("ModuleSearchActivity", "moduleList.size(): " + moduleList.size());
+//            Log.d("ModuleSearchActivity", "moduleList.size(): " + moduleList.size());
 
             // Show search results
             ModuleListAdapter adapter = new ModuleListAdapter(this, list);

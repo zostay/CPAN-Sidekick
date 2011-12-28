@@ -56,7 +56,7 @@ public class ModuleViewActivity extends ModuleActivity {
         podView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView podView, String url) {
-                Log.d("ModuleViewActivity", "URL: " + url);
+//                Log.d("ModuleViewActivity", "URL: " + url);
 
                 // Let the built-in handler get all the internal URLs
                 if (url.startsWith("file:///android_asset/web/")) {
@@ -119,7 +119,7 @@ public class ModuleViewActivity extends ModuleActivity {
                 new ModuleList.OnModuleListUpdated() {
                     @Override
                     public void onModelListUpdated(ModelList<Module> modelList) {
-                        Log.d("ModuleViewActivity", "onModelListUpdated updating header");
+//                        Log.d("ModuleViewActivity", "onModelListUpdated updating header");
                         ModuleHelper.updateItem(moduleHeader, module);
                     }
                 },

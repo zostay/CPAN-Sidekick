@@ -79,7 +79,7 @@ public abstract class ModelList<SomeModel extends Model> extends AbstractList<So
     }
 
     public synchronized void notifyModelListUpdated() {
-        Log.d("ModuleList", "notifyModelListUpdated");
+//        Log.d("ModuleList", "notifyModelListUpdated");
 
         for (OnModelListUpdated<SomeModel> listener : modelListUpdaters) {
             listener.onModelListUpdated(this);
