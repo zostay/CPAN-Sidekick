@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.os.Handler;
 
 import com.qubling.sidekick.metacpan.collection.AuthorList;
 import com.qubling.sidekick.metacpan.result.Author;
@@ -101,12 +102,18 @@ public class AuthorByDistributionSearch extends MetaCPANSearch<Void> {
 
     @Override
     protected void onPostExecute(Void result) {
+    	RemoteAPIReaper<GravatarFetcher> reaper = new RemoteAPIReaper<GravatarFetcher>();
         for (Author author : authorList) {
             if (author.getGravatarURL() == null)
                 continue;
 
-            new GravatarFetcher(getContext(), getClientManager(), authorList).execute(author);
+            GravatarFetcher gravatarFetcher = new GravatarFetcher(getContext(), getClientManager(), authorList);
+            gravatarFetcher.execute(author);
+            reaper.addTaskToReap(gravatarFetcher);
         }
+        
+        Handler handler = new Handler();
+        handler.postDelayed(reaper, GravatarFetcher.TIMEOUT_ABSOLUTE);
         
         super.onPostExecute(result);
     }

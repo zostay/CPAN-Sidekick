@@ -40,6 +40,7 @@ public class GravatarFetcher extends RemoteAPI<Author, Void, Void> {
     
     private static final int TIMEOUT_CONNECTION = 2000;
     private static final int TIMEOUT_SOCKET = 3000;
+    public static final int TIMEOUT_ABSOLUTE = 10000;
 
     private Context context;
     private AuthorList authorList;
