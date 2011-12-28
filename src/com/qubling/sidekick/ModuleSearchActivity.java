@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -21,7 +20,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
-import com.qubling.sidekick.api.HttpClientManager;
 import com.qubling.sidekick.api.cpan.ModuleSearch;
 import com.qubling.sidekick.cpan.collection.ModelList;
 import com.qubling.sidekick.cpan.collection.ModuleList;
@@ -34,25 +32,14 @@ import com.qubling.sidekick.widget.ModuleListAdapter;
  * @author sterling
  *
  */
-public class ModuleSearchActivity extends ModuleActivity implements ModuleList.OnModuleListUpdated, ModuleList.OnMoreItemsRequested, HttpClientManager.OnHttpClientAction {
+public class ModuleSearchActivity extends ModuleActivity implements ModuleList.OnModuleListUpdated, ModuleList.OnMoreItemsRequested {
 
     private ModuleList moduleList;
     private ProgressDialog progressDialog;
     private String lastSearchText;
     
-    private HttpClientManager clientManager;
-
     private ModuleSearch currentSearch;
     
-    private HttpClientManager getClientManager() {
-    	if (clientManager == null) {
-    		clientManager = new HttpClientManager();
-    		clientManager.addOnHttpClientActionListener(this);
-    	}
-    	
-    	return clientManager;
-    }
-
     public void onSearchCompleted(ModuleListAdapter adapter) {
         progressDialog.cancel();
 
@@ -66,7 +53,6 @@ public class ModuleSearchActivity extends ModuleActivity implements ModuleList.O
         super.onCreate(state);
 
         // Setup the view
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.module_search);
 
         // Load from the state, if we can
@@ -261,15 +247,5 @@ public class ModuleSearchActivity extends ModuleActivity implements ModuleList.O
             progressDialog.dismiss();
             progressDialog = null;
         }
-    }
-
-	@Override
-    public void onActionsStart() {
-	    setProgressBarIndeterminateVisibility(true);
-    }
-
-	@Override
-    public void onActionsComplete() {
-	    setProgressBarIndeterminateVisibility(false);
     }
 }
