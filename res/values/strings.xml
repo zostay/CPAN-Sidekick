@@ -12,5 +12,6 @@
     <string name="app_launcher_name">CPAN</string>
     <string name="not_yet_implemented">Not yet implemented.</string>
     <string name="default_ratings_0">0</string>
+    <string name="app_version">0.1</string>
 
 </resources>
