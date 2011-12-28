@@ -53,12 +53,12 @@ public class ModulePODFetcher extends MetaCPANAPI<Module, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        super.onPostExecute(result);
-
         String wrappedResult = "<html><head><link href=\"style/pod.css\" type=\"text/css\" rel=\"stylesheet\"/></head><body class=\"pod\">"
                              + result
                              + "</body></html>";
 
         webView.loadDataWithBaseURL("file:///android_asset/web/pod/", wrappedResult, "text/html", "UTF-8", null);
+
+        super.onPostExecute(result);
     }
 }

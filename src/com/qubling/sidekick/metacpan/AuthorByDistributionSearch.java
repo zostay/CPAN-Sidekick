@@ -28,7 +28,6 @@ public class AuthorByDistributionSearch extends MetaCPANSearch<Void> {
 
     private AuthorList authorList;
     private Map<String, Author> authorMap;
-    private int countGravatarURLs = 0;
 
     public AuthorByDistributionSearch(HttpClientManager clientManager, Context context, AuthorList authorList) {
         super(clientManager, context, SearchSection.AUTHOR, "author_by_pauseid");
@@ -95,7 +94,6 @@ public class AuthorByDistributionSearch extends MetaCPANSearch<Void> {
             Author author = authorMap.get(pauseId);
             if (author != null) {
                 author.setGravatarURL(gravatarURL);
-                countGravatarURLs++;
             }
         }
 
@@ -104,14 +102,13 @@ public class AuthorByDistributionSearch extends MetaCPANSearch<Void> {
 
     @Override
     protected void onPostExecute(Void result) {
-        super.onPostExecute(result);
-
-        HttpClientManager clientManager = new HttpClientManager(countGravatarURLs);
         for (Author author : authorList) {
             if (author.getGravatarURL() == null)
                 continue;
 
-            new GravatarFetcher(getContext(), clientManager, authorList).execute(author);
+            new GravatarFetcher(getContext(), getClientManager(), authorList).execute(author);
         }
+        
+        super.onPostExecute(result);
     }
 }

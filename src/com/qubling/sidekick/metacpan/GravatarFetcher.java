@@ -70,9 +70,16 @@ public class GravatarFetcher extends RemoteAPI<Author, Void, Void> {
         }
 
         catch (IOException e) {
-            // TODO Return a generic image when this happens
-            Log.e("AuthorByDistributionSearch", "Error loading Gravatar: " + e);
+            Log.e("GravatarFetcher", "Error loading Gravatar: " + e);
             return null;
+        }
+        
+        // During testing, I sometimes get an IllegalStateException: Connection is not open.
+        // This is a stupid exception and nearly any illegal state exception we can ignore by
+        // just not loading the Gravatar. The bitmap is not *that* important.
+        catch (IllegalStateException e) {
+        	Log.e("GravatarFetcher", "Error fetching Gravatar: " + e);
+        	return null;
         }
     }
 
@@ -97,8 +104,8 @@ public class GravatarFetcher extends RemoteAPI<Author, Void, Void> {
 
     @Override
     protected void onPostExecute(Void result) {
-        super.onPostExecute(result);
-
         authorList.notifyModelListUpdated();
+        
+        super.onPostExecute(result);
     }
 }

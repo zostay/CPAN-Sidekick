@@ -16,6 +16,8 @@ import org.json.JSONTokener;
 import android.util.Log;
 
 import com.qubling.sidekick.metacpan.collection.ModuleList;
+import com.qubling.sidekick.metacpan.result.Author;
+import com.qubling.sidekick.metacpan.result.Distribution;
 import com.qubling.sidekick.metacpan.result.Module;
 
 /**
@@ -52,12 +54,13 @@ public class ModuleFetcher extends MetaCPANAPI<Void, Void, Void> {
                 module.setAbstract(json.getString("abstract"));
 
                 // Basic Author Info
-                module.getAuthor().setPauseId(json.getString("author"));
+                module.setAuthor(new Author(json.getString("author")));
 
                 // Basic Distribution Info
-                module.getDistribution().setName(json.getString("distribution"));
-                module.getDistribution().setVersion(json.getString("version"));
-
+                module.setDistribution(
+                		new Distribution(
+                				json.getString("distribution"), 
+                				json.getString("version")));
             }
             else {
                 // TODO Show an alert dialog or toast when this happens
@@ -81,9 +84,9 @@ public class ModuleFetcher extends MetaCPANAPI<Void, Void, Void> {
 
     @Override
     protected void onPostExecute(Void result) {
-        super.onPostExecute(result);
-
         moduleList.notifyModelListUpdated();
+        
+        super.onPostExecute(result);
     }
 
 }

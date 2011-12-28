@@ -36,7 +36,7 @@ public class ModuleSearch extends MetaCPANSearch<Module[]> {
     private int totalCount = 0;
 
     public ModuleSearch(Context context, ModuleList list, String query) {
-        super(new HttpClientManager(4), context, SearchSection.FILE, "module_search");
+        super(new HttpClientManager(), context, SearchSection.FILE, "module_search");
 
         this.query          = query.replace("\"", "\\\"");
         this.moduleList = list;
@@ -79,7 +79,6 @@ public class ModuleSearch extends MetaCPANSearch<Module[]> {
 
     @Override
     protected void onPostExecute(Module[] modules) {
-        super.onPostExecute(modules);
 
         // Nothing useful returned, forget it
         if (modules == null) return;
@@ -118,15 +117,8 @@ public class ModuleSearch extends MetaCPANSearch<Module[]> {
         new AuthorByDistributionSearch(getClientManager(), getContext(), moduleList.extractAuthorList()).execute();
         new FavoriteByDistributionSearch(getClientManager(), getContext(), distributionList, distributionMap).execute();
         new RatingByDistributionSearch(getClientManager(), getContext(), distributionList, distributionMap).execute();
-    }
-
-    @Override
-    protected void onCancelled() {
-        super.onCancelled();
-
-        // Since we start these actions in the post execute, which won't be running,
-        // mark them as completed
-        getClientManager().markActionCompleted(3);
+        
+        super.onPostExecute(modules);
     }
 
 }

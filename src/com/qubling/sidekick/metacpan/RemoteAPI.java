@@ -30,6 +30,7 @@ public abstract class RemoteAPI<Params, Progress, Result> extends AsyncTask<Para
 
     public RemoteAPI(HttpClientManager clientManager) {
         this.clientManager = clientManager;
+        this.clientManager.attachAction();
     }
 
     @Override

@@ -20,12 +20,16 @@ public class HttpClientManager {
 
     private HttpClient client;
     private int actionsRemaining;
+    
+    public HttpClientManager() {
+    	this.actionsRemaining = 0;
+    }
 
     public HttpClientManager(int actionsRemaining) {
-        super();
-
         this.actionsRemaining = actionsRemaining;
-
+    }
+    
+    private void setupClient() {
         try {
             this.client = (HttpClient) Class.forName("android.net.http.AndroidHttpClient")
                 .getMethod("newInstance", String.class).invoke(null, METACPAN_API_USER_AGENT);
@@ -45,11 +49,13 @@ public class HttpClientManager {
     public synchronized boolean isComplete() {
         return actionsRemaining <= 0;
     }
-
-    public synchronized void markActionCompleted(int count) {
-        actionsRemaining -= count;
-
-        if (isComplete()) {
+    
+    private boolean isClientAvailable() {
+    	return client != null;
+    }
+    
+    private void cleanupClient() {
+    	if (isClientAvailable() && isComplete()) {
             try {
                 Class.forName("android.net.http.AndroidHttpClient").getMethod("close").invoke(client);
             }
@@ -57,11 +63,32 @@ public class HttpClientManager {
                 // ignore
             }
             client = null;
-        }
+    	}
+    }
+    
+    public synchronized void attachAction(int count) {
+    	actionsRemaining += count;
+    	
+    	if (!isClientAvailable()) {
+    		setupClient();
+    	}
+    }
+    
+    public synchronized void attachAction() {
+    	actionsRemaining++;
+    	
+    	if (!isClientAvailable()) {
+    		setupClient();
+    	}
+    }
 
+    public synchronized void markActionCompleted(int count) {
+        actionsRemaining -= count;
+        cleanupClient();
     }
 
     public synchronized void markActionCompleted() {
-        markActionCompleted(1);
+    	actionsRemaining--;
+    	cleanupClient();
     }
 }
