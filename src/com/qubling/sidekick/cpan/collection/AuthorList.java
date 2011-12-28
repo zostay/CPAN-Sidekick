@@ -3,9 +3,9 @@
  *
  * This software may be distributed under the terms of the Artistic License 2.0.
  */
-package com.qubling.sidekick.metacpan.collection;
+package com.qubling.sidekick.cpan.collection;
 
-import com.qubling.sidekick.metacpan.result.Author;
+import com.qubling.sidekick.cpan.result.Author;
 
 /**
  * An ordered, unique collection of {@link Author} objects.

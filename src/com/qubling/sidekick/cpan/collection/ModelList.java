@@ -3,7 +3,7 @@
  *
  * This software may be distributed under the terms of the Artistic License 2.0.
  */
-package com.qubling.sidekick.metacpan.collection;
+package com.qubling.sidekick.cpan.collection;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.qubling.sidekick.metacpan.result.Model;
+import com.qubling.sidekick.cpan.result.Model;
 
 /**
  * Base class for building ordered, unique collections of {@link Model} objects.

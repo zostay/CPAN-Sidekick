@@ -3,7 +3,7 @@
  *
  * This software may be distributed under the terms of the Artistic License 2.0.
  */
-package com.qubling.sidekick.metacpan;
+package com.qubling.sidekick.api.cpan;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,8 +24,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import com.qubling.sidekick.metacpan.collection.AuthorList;
-import com.qubling.sidekick.metacpan.result.Author;
+import com.qubling.sidekick.api.HttpClientManager;
+import com.qubling.sidekick.api.RemoteAPI;
+import com.qubling.sidekick.cpan.collection.AuthorList;
+import com.qubling.sidekick.cpan.result.Author;
 
 /**
  * Used to fetch Gravatar bitmaps for a list of authors.

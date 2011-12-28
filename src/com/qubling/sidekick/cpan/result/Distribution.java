@@ -3,7 +3,7 @@
  *
  * This software may be distributed under the terms of the Artistic License 2.0.
  */
-package com.qubling.sidekick.metacpan.result;
+package com.qubling.sidekick.cpan.result;
 
 import android.os.Parcel;
 import android.os.Parcelable;

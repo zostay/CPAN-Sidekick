@@ -3,7 +3,7 @@
  *
  * This software may be distributed under the terms of the Artistic License 2.0.
  */
-package com.qubling.sidekick.metacpan;
+package com.qubling.sidekick.api.cpan;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,12 +15,13 @@ import org.json.JSONObject;
 
 import android.content.Context;
 
-import com.qubling.sidekick.metacpan.collection.AuthorList;
-import com.qubling.sidekick.metacpan.collection.DistributionList;
-import com.qubling.sidekick.metacpan.collection.ModuleList;
-import com.qubling.sidekick.metacpan.result.Author;
-import com.qubling.sidekick.metacpan.result.Distribution;
-import com.qubling.sidekick.metacpan.result.Module;
+import com.qubling.sidekick.api.HttpClientManager;
+import com.qubling.sidekick.cpan.collection.AuthorList;
+import com.qubling.sidekick.cpan.collection.DistributionList;
+import com.qubling.sidekick.cpan.collection.ModuleList;
+import com.qubling.sidekick.cpan.result.Author;
+import com.qubling.sidekick.cpan.result.Distribution;
+import com.qubling.sidekick.cpan.result.Module;
 
 /**
  * A module for performing a keyword search on modules.

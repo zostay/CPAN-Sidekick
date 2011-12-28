@@ -3,7 +3,7 @@
  *
  * This software may be distributed under the terms of the Artistic License 2.0.
  */
-package com.qubling.sidekick.metacpan;
+package com.qubling.sidekick.api.cpan;
 
 import java.io.IOException;
 import java.nio.charset.UnsupportedCharsetException;
@@ -16,6 +16,9 @@ import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+
+import com.qubling.sidekick.api.HttpClientManager;
+import com.qubling.sidekick.api.StringTemplate;
 
 import android.content.Context;
 import android.os.AsyncTask;

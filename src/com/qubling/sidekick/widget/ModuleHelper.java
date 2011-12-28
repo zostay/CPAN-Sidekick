@@ -15,7 +15,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.qubling.sidekick.R;
-import com.qubling.sidekick.metacpan.result.Module;
+import com.qubling.sidekick.cpan.result.Module;
 
 /**
  * Tools for filling in module data into views.

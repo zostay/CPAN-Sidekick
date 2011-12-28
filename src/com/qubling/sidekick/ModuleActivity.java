@@ -7,15 +7,15 @@ package com.qubling.sidekick;
 
 import android.app.Activity;
 
-import com.qubling.sidekick.metacpan.AuthorByDistributionSearch;
-import com.qubling.sidekick.metacpan.FavoriteByDistributionSearch;
-import com.qubling.sidekick.metacpan.HttpClientManager;
-import com.qubling.sidekick.metacpan.ModuleFetcher;
-import com.qubling.sidekick.metacpan.RatingByDistributionSearch;
-import com.qubling.sidekick.metacpan.collection.DistributionList;
-import com.qubling.sidekick.metacpan.collection.ModelList;
-import com.qubling.sidekick.metacpan.collection.ModuleList;
-import com.qubling.sidekick.metacpan.result.Module;
+import com.qubling.sidekick.api.HttpClientManager;
+import com.qubling.sidekick.api.cpan.AuthorByDistributionSearch;
+import com.qubling.sidekick.api.cpan.FavoriteByDistributionSearch;
+import com.qubling.sidekick.api.cpan.ModuleFetcher;
+import com.qubling.sidekick.api.cpan.RatingByDistributionSearch;
+import com.qubling.sidekick.cpan.collection.DistributionList;
+import com.qubling.sidekick.cpan.collection.ModelList;
+import com.qubling.sidekick.cpan.collection.ModuleList;
+import com.qubling.sidekick.cpan.result.Module;
 
 /**
  * This is an abstract activity for sharing functionality between the

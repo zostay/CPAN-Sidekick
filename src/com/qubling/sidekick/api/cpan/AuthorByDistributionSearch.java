@@ -3,7 +3,7 @@
  *
  * This software may be distributed under the terms of the Artistic License 2.0.
  */
-package com.qubling.sidekick.metacpan;
+package com.qubling.sidekick.api.cpan;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +15,11 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.os.Handler;
 
-import com.qubling.sidekick.metacpan.collection.AuthorList;
-import com.qubling.sidekick.metacpan.result.Author;
+import com.qubling.sidekick.api.HttpClientManager;
+import com.qubling.sidekick.api.JSONFragment;
+import com.qubling.sidekick.api.RemoteAPIReaper;
+import com.qubling.sidekick.cpan.collection.AuthorList;
+import com.qubling.sidekick.cpan.result.Author;
 
 /**
  * This fetches the details for a group of authors, given the PAUSE ID for each.

@@ -3,14 +3,14 @@
  *
  * This software may be distributed under the terms of the Artistic License 2.0.
  */
-package com.qubling.sidekick.metacpan.collection;
+package com.qubling.sidekick.cpan.collection;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import com.qubling.sidekick.metacpan.result.Module;
+import com.qubling.sidekick.cpan.result.Module;
 
 /**
  * An ordered, unique list of {@link Module} objects.

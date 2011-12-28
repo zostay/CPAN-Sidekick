@@ -13,9 +13,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.qubling.sidekick.R;
-import com.qubling.sidekick.metacpan.collection.ModelList;
-import com.qubling.sidekick.metacpan.collection.ModuleList;
-import com.qubling.sidekick.metacpan.result.Module;
+import com.qubling.sidekick.cpan.collection.ModelList;
+import com.qubling.sidekick.cpan.collection.ModuleList;
+import com.qubling.sidekick.cpan.result.Module;
 
 /**
  * This is a {@link BaseAdapter} for displaying module infomration in a list

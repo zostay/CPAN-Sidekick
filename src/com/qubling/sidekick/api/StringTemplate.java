@@ -3,7 +3,7 @@
  *
  * This software may be distributed under the terms of the Artistic License 2.0.
  */
-package com.qubling.sidekick.metacpan;
+package com.qubling.sidekick.api;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -3,7 +3,10 @@
  *
  * This software may be distributed under the terms of the Artistic License 2.0.
  */
-package com.qubling.sidekick.metacpan;
+package com.qubling.sidekick.api.cpan;
+
+import com.qubling.sidekick.api.HttpClientManager;
+import com.qubling.sidekick.api.RemoteAPI;
 
 import android.os.AsyncTask;
 

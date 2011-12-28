@@ -3,7 +3,7 @@
  *
  * This software may be distributed under the terms of the Artistic License 2.0.
  */
-package com.qubling.sidekick.metacpan;
+package com.qubling.sidekick.api.cpan;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,8 +14,10 @@ import org.json.JSONObject;
 
 import android.content.Context;
 
-import com.qubling.sidekick.metacpan.collection.DistributionList;
-import com.qubling.sidekick.metacpan.result.Distribution;
+import com.qubling.sidekick.api.HttpClientManager;
+import com.qubling.sidekick.api.JSONFragment;
+import com.qubling.sidekick.cpan.collection.DistributionList;
+import com.qubling.sidekick.cpan.result.Distribution;
 
 /**
  * This fetches the favorites for a list of distributions.

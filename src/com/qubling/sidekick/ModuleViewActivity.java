@@ -15,12 +15,12 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.qubling.sidekick.metacpan.HttpClientManager;
-import com.qubling.sidekick.metacpan.MetaCPANAPI;
-import com.qubling.sidekick.metacpan.ModulePODFetcher;
-import com.qubling.sidekick.metacpan.collection.ModelList;
-import com.qubling.sidekick.metacpan.collection.ModuleList;
-import com.qubling.sidekick.metacpan.result.Module;
+import com.qubling.sidekick.api.HttpClientManager;
+import com.qubling.sidekick.api.cpan.MetaCPANAPI;
+import com.qubling.sidekick.api.cpan.ModulePODFetcher;
+import com.qubling.sidekick.cpan.collection.ModelList;
+import com.qubling.sidekick.cpan.collection.ModuleList;
+import com.qubling.sidekick.cpan.result.Module;
 import com.qubling.sidekick.widget.ModuleHelper;
 
 /**

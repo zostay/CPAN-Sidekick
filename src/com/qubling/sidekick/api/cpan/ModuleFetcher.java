@@ -3,7 +3,7 @@
  *
  * This software may be distributed under the terms of the Artistic License 2.0.
  */
-package com.qubling.sidekick.metacpan;
+package com.qubling.sidekick.api.cpan;
 
 import java.io.IOException;
 
@@ -15,10 +15,11 @@ import org.json.JSONTokener;
 
 import android.util.Log;
 
-import com.qubling.sidekick.metacpan.collection.ModuleList;
-import com.qubling.sidekick.metacpan.result.Author;
-import com.qubling.sidekick.metacpan.result.Distribution;
-import com.qubling.sidekick.metacpan.result.Module;
+import com.qubling.sidekick.api.HttpClientManager;
+import com.qubling.sidekick.cpan.collection.ModuleList;
+import com.qubling.sidekick.cpan.result.Author;
+import com.qubling.sidekick.cpan.result.Distribution;
+import com.qubling.sidekick.cpan.result.Module;
 
 /**
  * A tool for fetching the details regarding a single module.

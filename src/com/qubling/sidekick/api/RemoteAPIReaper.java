@@ -1,4 +1,4 @@
-package com.qubling.sidekick.metacpan;
+package com.qubling.sidekick.api;
 
 import java.util.Collection;
 import java.util.HashSet;

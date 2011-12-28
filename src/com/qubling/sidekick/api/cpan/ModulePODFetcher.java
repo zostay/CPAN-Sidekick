@@ -3,7 +3,7 @@
  *
  * This software may be distributed under the terms of the Artistic License 2.0.
  */
-package com.qubling.sidekick.metacpan;
+package com.qubling.sidekick.api.cpan;
 
 import java.io.IOException;
 
@@ -13,7 +13,8 @@ import org.apache.http.client.methods.HttpGet;
 import android.util.Log;
 import android.webkit.WebView;
 
-import com.qubling.sidekick.metacpan.result.Module;
+import com.qubling.sidekick.api.HttpClientManager;
+import com.qubling.sidekick.cpan.result.Module;
 
 /**
  * A class for fetching a single module's POD.

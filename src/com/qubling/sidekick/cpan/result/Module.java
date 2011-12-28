@@ -3,7 +3,7 @@
  *
  * This software may be distributed under the terms of the Artistic License 2.0.
  */
-package com.qubling.sidekick.metacpan.result;
+package com.qubling.sidekick.cpan.result;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,9 +11,9 @@ import org.json.JSONObject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.qubling.sidekick.metacpan.collection.AuthorList;
-import com.qubling.sidekick.metacpan.collection.DistributionList;
-import com.qubling.sidekick.metacpan.collection.ModuleList;
+import com.qubling.sidekick.cpan.collection.AuthorList;
+import com.qubling.sidekick.cpan.collection.DistributionList;
+import com.qubling.sidekick.cpan.collection.ModuleList;
 
 /**
  * Information for a single Perl module loaded from CPAN.
