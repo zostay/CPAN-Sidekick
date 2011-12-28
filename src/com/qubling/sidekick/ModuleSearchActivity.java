@@ -11,7 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -22,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
+import com.qubling.sidekick.metacpan.HttpClientManager;
 import com.qubling.sidekick.metacpan.ModuleSearch;
 import com.qubling.sidekick.metacpan.collection.ModelList;
 import com.qubling.sidekick.metacpan.collection.ModuleList;
@@ -34,13 +34,24 @@ import com.qubling.sidekick.widget.ModuleListAdapter;
  * @author sterling
  *
  */
-public class ModuleSearchActivity extends ModuleActivity implements ModuleList.OnModuleListUpdated, ModuleList.OnMoreItemsRequested {
+public class ModuleSearchActivity extends ModuleActivity implements ModuleList.OnModuleListUpdated, ModuleList.OnMoreItemsRequested, HttpClientManager.OnHttpClientAction {
 
     private ModuleList moduleList;
     private ProgressDialog progressDialog;
     private String lastSearchText;
+    
+    private HttpClientManager clientManager;
 
     private ModuleSearch currentSearch;
+    
+    private HttpClientManager getClientManager() {
+    	if (clientManager == null) {
+    		clientManager = new HttpClientManager();
+    		clientManager.addOnHttpClientActionListener(this);
+    	}
+    	
+    	return clientManager;
+    }
 
     public void onSearchCompleted(ModuleListAdapter adapter) {
         progressDialog.cancel();
@@ -105,6 +116,7 @@ public class ModuleSearchActivity extends ModuleActivity implements ModuleList.O
 
                     // Start the search task
                     ModuleSearch search = new ModuleSearch(
+                    		getClientManager(),
                             ModuleSearchActivity.this,
                             moduleList,
                             lastSearchText = queryText.getText().toString());
@@ -198,7 +210,7 @@ public class ModuleSearchActivity extends ModuleActivity implements ModuleList.O
     public void onMoreItemsRequested(ModuleList list) {
 
         // Start the search task
-        ModuleSearch search = new ModuleSearch(ModuleSearchActivity.this, moduleList, lastSearchText);
+        ModuleSearch search = new ModuleSearch(getClientManager(), ModuleSearchActivity.this, moduleList, lastSearchText);
         search.setFrom(moduleList.size());
 
         startSearch(search, false);
@@ -232,11 +244,6 @@ public class ModuleSearchActivity extends ModuleActivity implements ModuleList.O
             });
         }
 
-        // Turn on the background activity progress bar instead
-        else {
-            setProgressBarIndeterminateVisibility(true);
-        }
-
         currentSearch = newSearch;
         currentSearch.execute();
     }
@@ -249,13 +256,20 @@ public class ModuleSearchActivity extends ModuleActivity implements ModuleList.O
             currentSearch = null;
         }
 
-        // Turn off the background progress meter in case it's set
-        setProgressBarIndeterminateVisibility(false);
-
         // Clear the modal progress dialog if it is going
         if (progressDialog != null) {
             progressDialog.dismiss();
             progressDialog = null;
         }
+    }
+
+	@Override
+    public void onActionsStart() {
+	    setProgressBarIndeterminateVisibility(true);
+    }
+
+	@Override
+    public void onActionsComplete() {
+	    setProgressBarIndeterminateVisibility(false);
     }
 }

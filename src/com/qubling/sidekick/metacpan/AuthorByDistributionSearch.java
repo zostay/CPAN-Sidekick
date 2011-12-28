@@ -13,7 +13,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.qubling.sidekick.metacpan.collection.AuthorList;
 import com.qubling.sidekick.metacpan.result.Author;

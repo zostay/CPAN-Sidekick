@@ -5,8 +5,13 @@
  */
 package com.qubling.sidekick.metacpan;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+
+import android.util.Log;
 
 /**
  * The HTTP client manager lets us reuse an {@link HttpClient} without risking
@@ -16,7 +21,16 @@ import org.apache.http.impl.client.DefaultHttpClient;
  *
  */
 public class HttpClientManager {
+	
+	// TODO Set this up from a resource string somehow
     private static final String METACPAN_API_USER_AGENT = "CPAN-Sidekick/0.1 (Android)";
+    
+    public static interface OnHttpClientAction {
+    	public void onActionsStart();
+    	public void onActionsComplete();
+    }
+    
+    private Collection<OnHttpClientAction> listeners = new HashSet<OnHttpClientAction>();
 
     private HttpClient client;
     private int actionsRemaining;
@@ -27,16 +41,59 @@ public class HttpClientManager {
 
     public HttpClientManager(int actionsRemaining) {
         this.actionsRemaining = actionsRemaining;
+        
+        if (actionsRemaining > 0) setupClient();
+    }
+    
+    public synchronized void addOnHttpClientActionListener(OnHttpClientAction listener) {
+    	listeners.add(listener);
+    }
+    
+    public synchronized void removeOnHttpClientActionListener(OnHttpClientAction listener) {
+    	listeners.remove(listener);
+    }
+    
+    public synchronized void notifyActionsStart() {
+    	for (OnHttpClientAction listener : listeners) {
+    		listener.onActionsStart();
+    	}
+    }
+    
+    public synchronized void notifyActionsComplete() {
+    	for (OnHttpClientAction listener : listeners) {
+    		listener.onActionsComplete();
+    	}
     }
     
     private void setupClient() {
-        try {
-            this.client = (HttpClient) Class.forName("android.net.http.AndroidHttpClient")
-                .getMethod("newInstance", String.class).invoke(null, METACPAN_API_USER_AGENT);
-        }
-        catch (Throwable t) {
-            this.client = new DefaultHttpClient();
-        }
+    	if (!isClientAvailable()) {
+	        try {
+	            client = (HttpClient) Class.forName("android.net.http.AndroidHttpClient")
+	                .getMethod("newInstance", String.class).invoke(null, METACPAN_API_USER_AGENT);
+	            Log.i("HttpClientManager", "Using AndroidHttpClient");
+	        }
+	        catch (Throwable t) {
+	        	Log.i("HttpClientManager", "Falling back to DefaultHttpClient");
+	            client = new DefaultHttpClient();
+	        }
+	        
+	        notifyActionsStart();
+    	}
+    }
+    
+    private void cleanupClient() {
+    	Log.d("HttpClientManager", "Actions Remaining: " + actionsRemaining);
+    	if (isClientAvailable() && isComplete()) {
+            try {
+                Class.forName("android.net.http.AndroidHttpClient").getMethod("close").invoke(client);
+            }
+            catch (Throwable t) {
+                // ignore
+            }
+            client = null;
+        	
+        	notifyActionsComplete();
+    	}
     }
 
     public synchronized HttpClient getClient() {
@@ -54,32 +111,16 @@ public class HttpClientManager {
     	return client != null;
     }
     
-    private void cleanupClient() {
-    	if (isClientAvailable() && isComplete()) {
-            try {
-                Class.forName("android.net.http.AndroidHttpClient").getMethod("close").invoke(client);
-            }
-            catch (Throwable t) {
-                // ignore
-            }
-            client = null;
-    	}
-    }
-    
     public synchronized void attachAction(int count) {
+    	Log.d("HttpClientManager", "attachAction(" + count + ")");
     	actionsRemaining += count;
-    	
-    	if (!isClientAvailable()) {
-    		setupClient();
-    	}
+    	setupClient();
     }
     
     public synchronized void attachAction() {
+    	Log.d("HttpClientManager", "attachAction()");
     	actionsRemaining++;
-    	
-    	if (!isClientAvailable()) {
-    		setupClient();
-    	}
+    	setupClient();
     }
 
     public synchronized void markActionCompleted(int count) {

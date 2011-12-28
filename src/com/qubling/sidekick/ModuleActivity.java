@@ -6,7 +6,6 @@
 package com.qubling.sidekick;
 
 import android.app.Activity;
-import android.util.Log;
 
 import com.qubling.sidekick.metacpan.AuthorByDistributionSearch;
 import com.qubling.sidekick.metacpan.FavoriteByDistributionSearch;

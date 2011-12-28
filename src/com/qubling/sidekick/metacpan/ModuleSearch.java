@@ -35,8 +35,8 @@ public class ModuleSearch extends MetaCPANSearch<Module[]> {
     private ModuleList moduleList;
     private int totalCount = 0;
 
-    public ModuleSearch(Context context, ModuleList list, String query) {
-        super(new HttpClientManager(), context, SearchSection.FILE, "module_search");
+    public ModuleSearch(HttpClientManager clientManager, Context context, ModuleList list, String query) {
+        super(clientManager, context, SearchSection.FILE, "module_search");
 
         this.query          = query.replace("\"", "\\\"");
         this.moduleList = list;

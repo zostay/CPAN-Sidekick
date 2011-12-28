@@ -10,12 +10,10 @@ import java.util.Stack;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 import com.qubling.sidekick.metacpan.HttpClientManager;
 import com.qubling.sidekick.metacpan.MetaCPANAPI;

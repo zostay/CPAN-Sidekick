@@ -15,6 +15,9 @@ import java.util.regex.Pattern;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -34,6 +37,9 @@ public class GravatarFetcher extends RemoteAPI<Author, Void, Void> {
 
     private static final float GRAVATAR_DP_SIZE = 35f;
     private static final Pattern RESIZE_GRAVATAR_PATTERN = Pattern.compile("([?&])s=[0-9]+\\b");
+    
+    private static final int TIMEOUT_CONNECTION = 2000;
+    private static final int TIMEOUT_SOCKET = 3000;
 
     private Context context;
     private AuthorList authorList;
@@ -56,10 +62,16 @@ public class GravatarFetcher extends RemoteAPI<Author, Void, Void> {
         String resizedGravatarURL = resizeGravatarMatcher.replaceFirst("$1s=" + gravatarPixelSize);
 
         try {
+        	
+        	// Make sure we don't get stuck waiting for a Gravatar
+            HttpParams httpParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_CONNECTION);
+            HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_SOCKET);
 
             // Do the request
 //            Log.d("AuthorByDistributionSearch", "Gravatar: " + resizedGravatarURL);
             HttpGet req = new HttpGet(resizedGravatarURL);
+            req.setParams(httpParams);
             HttpResponse res = getClient().execute(req);
 
             // Get the response content
