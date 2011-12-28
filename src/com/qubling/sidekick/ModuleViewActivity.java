@@ -8,6 +8,7 @@ package com.qubling.sidekick;
 import java.util.Stack;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -57,10 +58,17 @@ public class ModuleViewActivity extends ModuleActivity {
             public boolean shouldOverrideUrlLoading(WebView podView, String url) {
                 Log.d("ModuleViewActivity", "URL: " + url);
 
+                // Let the built-in handler get all the internal URLs
                 if (url.startsWith("file:///android_asset/web/")) {
                     return false;
                 }
+                
+                // Let the built-in handler get all the POD API URLs
+                else if (url.startsWith(MetaCPANAPI.METACPAN_API_POD_URL)) {
+                	return false;
+                }
 
+                // Rewrite MetaCPAN module URLs to fetch the POD
                 else if (url.startsWith(MetaCPANAPI.METACPAN_MODULE_URL)) {
                     moduleHistory.push(module);
 
@@ -72,9 +80,15 @@ public class ModuleViewActivity extends ModuleActivity {
                     return true;
                 }
 
-                Toast.makeText(ModuleViewActivity.this, R.string.not_yet_implemented, Toast.LENGTH_SHORT).show();
-
-                return true;
+                // For anything else, load the browser
+                else {
+                	Intent intent = new Intent();
+                	intent.setAction(Intent.ACTION_VIEW);
+                	intent.setData(Uri.parse(url));
+                	startActivity(intent);
+                	
+                	return true;
+                }
             }
         });
 
