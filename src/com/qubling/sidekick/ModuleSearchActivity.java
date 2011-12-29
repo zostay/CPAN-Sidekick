@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.qubling.sidekick.api.cpan.ModuleSearch;
 import com.qubling.sidekick.cpan.collection.ModelList;
 import com.qubling.sidekick.cpan.collection.ModuleList;
@@ -54,6 +55,9 @@ public class ModuleSearchActivity extends ModuleActivity implements ModuleList.O
 
         // Setup the view
         setContentView(R.layout.module_search);
+        
+        // Setup BugSense
+        BugSenseHandler.setup(this, Util.BUGSENSE_API_KEY);
 
         // Load from the state, if we can
         if (state != null && state.containsKey("moduleList")) {

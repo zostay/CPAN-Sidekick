@@ -15,6 +15,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.qubling.sidekick.api.HttpClientManager;
 import com.qubling.sidekick.api.cpan.MetaCPANAPI;
 import com.qubling.sidekick.api.cpan.ModulePODFetcher;
@@ -40,6 +41,9 @@ public class ModuleViewActivity extends ModuleActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.module_view);
+        
+        // Setup BugSense
+        BugSenseHandler.setup(this, Util.BUGSENSE_API_KEY);
 
         Intent intent = getIntent();
         module = (Module) intent.getParcelableExtra(EXTRA_MODULE);

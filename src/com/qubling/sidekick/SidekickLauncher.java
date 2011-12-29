@@ -5,6 +5,8 @@
  */
 package com.qubling.sidekick;
 
+import com.bugsense.trace.BugSenseHandler;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +25,9 @@ public class SidekickLauncher extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // Setup BugSense
+        BugSenseHandler.setup(this, Util.BUGSENSE_API_KEY);	
 
         Intent intent = new Intent(this, ModuleSearchActivity.class);
         startActivity(intent);
