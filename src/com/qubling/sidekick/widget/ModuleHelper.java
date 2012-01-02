@@ -15,6 +15,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.qubling.sidekick.R;
+import com.qubling.sidekick.cpan.result.Author;
+import com.qubling.sidekick.cpan.result.Distribution;
 import com.qubling.sidekick.cpan.result.Module;
 
 /**
@@ -42,26 +44,35 @@ public final class ModuleHelper {
                     0);
         }
         moduleName.setText(formattedString);
+        
+        Author author = item.getAuthor();
+        if (author == null) author = new Author("...");
+        
+        Distribution distribution = item.getDistribution();
+        if (distribution == null) distribution = new Distribution("...", "...");
 
         // Set the distribution author, name, and version
         TextView distributionName = (TextView) row.findViewById(R.id.module_author_distribution);
-        distributionName.setText(
-                item.getAuthor().getPauseId()
-                + "/" + item.getDistribution().getName()
-                + "-" + item.getDistribution().getVersion());
+        StringBuilder authorDist = new StringBuilder();
+        authorDist.append(author.getPauseId());
+        authorDist.append('/');
+        authorDist.append(distribution.getName());
+        authorDist.append('-');
+        authorDist.append(distribution.getVersion());
+        distributionName.setText(authorDist);
 
         // Set the rating bar
         RatingBar distRating = (RatingBar) row.findViewById(R.id.module_release_rating);
-        distRating.setRating((float) item.getDistribution().getRating());
-
+        distRating.setRating((float) distribution.getRating());
+        	
         // Set the rating count
         TextView distRatingCount = (TextView) row.findViewById(R.id.module_release_rating_count);
-        distRatingCount.setText(String.valueOf(item.getDistribution().getRatingCount()));
-
+    	distRatingCount.setText(String.valueOf(distribution.getRatingCount()));
+    	
         // Set the favorite count
         Button favoriteCount = (Button) row.findViewById(R.id.module_release_favorite);
-        if (item.getDistribution().getFavoriteCount() > 0) {
-            favoriteCount.setText(item.getDistribution().getFavoriteCount() + "++ ");
+        if (distribution.getFavoriteCount() > 0) {
+            favoriteCount.setText(distribution.getFavoriteCount() + "++ ");
             favoriteCount.setBackgroundResource(R.drawable.btn_favorite_others);
             favoriteCount.setShadowLayer(1.5f, 1f, 1f, R.color.favorite_text_shadow_color);
         }
@@ -74,14 +85,14 @@ public final class ModuleHelper {
         }
 
         // Mark this as our favorite
-        if (item.getDistribution().isMyFavorite()) {
+        if (distribution.isMyFavorite()) {
             favoriteCount.setBackgroundResource(R.drawable.btn_favorite_mine);
         }
 
         // Set the quick contact badge to the author's picture
         QuickContactBadge badge = (QuickContactBadge) row.findViewById(R.id.module_author_avatar);
-        if (item.getAuthor().getGravatarBitmap() != null) {
-            badge.setImageBitmap(item.getAuthor().getGravatarBitmap());
+        if (author.getGravatarBitmap() != null) {
+            badge.setImageBitmap(author.getGravatarBitmap());
         }
 
         // No user picture, set to default
