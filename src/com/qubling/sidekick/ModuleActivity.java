@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.Window;
 
 import com.qubling.sidekick.api.HttpClientManager;
+import com.qubling.sidekick.cpan.result.Module;
 
 /**
  * This is an abstract activity for sharing functionality between the
@@ -39,5 +40,6 @@ public abstract class ModuleActivity extends FragmentActivity implements HttpCli
 	
     public void startSearch(boolean modal) {}
     public void cancelSearch() {}
+    protected void onModuleClick(Module clickedModule) {}
     
 }

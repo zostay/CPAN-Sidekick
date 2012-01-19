@@ -7,9 +7,13 @@ package com.qubling.sidekick;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.view.KeyEvent;
 
 import com.bugsense.trace.BugSenseHandler;
+import com.qubling.sidekick.cpan.result.Module;
 
 /**
  * An activity for searching for CPAN modules.
@@ -22,14 +26,23 @@ public class ModuleSearchActivity extends ModuleActivity {
     private ProgressDialog progressDialog;
     
     public void onSearchCompleted() {
-        progressDialog.dismiss();
-        progressDialog = null;
+    	if (progressDialog != null) {
+    		progressDialog.dismiss();
+    		progressDialog = null;
+    	}
     }
 
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
+        
+        // Use Holo Light when available
+        try {
+        	int theme = android.R.style.class.getField("Theme_Holo_Light").getInt(null);
+        	setTheme(theme);
+        }
+        catch (Throwable t) { } // nevermind
 
         // Setup the view
         setContentView(R.layout.module_search);
@@ -65,5 +78,38 @@ public class ModuleSearchActivity extends ModuleActivity {
             progressDialog.dismiss();
             progressDialog = null;
         }
+    }
+    
+    @Override
+    protected void onModuleClick(Module currentModule) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        ModuleViewFragment fragment = (ModuleViewFragment) fragmentManager.findFragmentById(R.id.module_view_fragment);
+        
+        // Tablet
+        if (fragment != null) {
+        	fragment.setModule(currentModule);
+        	fragment.fetchModule();
+        }
+        
+        // Phone
+        else {
+	        Intent moduleViewIntent = new Intent(this, ModuleViewActivity.class);
+	        moduleViewIntent.putExtra(ModuleViewActivity.EXTRA_MODULE, currentModule);
+	        startActivity(moduleViewIntent);
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    	FragmentManager fragmentManager = getSupportFragmentManager();
+    	ModuleViewFragment fragment = (ModuleViewFragment) fragmentManager.findFragmentById(R.id.module_view_fragment);
+    	
+    	boolean result = fragment.onKeyDown(keyCode, event);
+    	if (result) {
+    		return result;
+    	}
+    	else {
+    		return super.onKeyDown(keyCode, event);
+    	}
     }
 }

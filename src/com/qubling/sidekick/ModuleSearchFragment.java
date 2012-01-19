@@ -69,9 +69,29 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
             moduleList.addModelListUpdatedListener(this);
             moduleList.addMoreItemsRequestedListener(this);
         }
+    }
+
+	@Override
+    public void onActivityCreated(Bundle state) {
+	    super.onActivityCreated(state);
 
         ModuleListAdapter adapter = new ModuleListAdapter(this.getActivity(), moduleList);
         ListView moduleListView = onSearchCompleted(adapter);
+        
+        moduleListView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View row, int position, long id) {
+                ListView moduleListView = (ListView) parent;
+                Module currentModule = (Module) moduleListView.getItemAtPosition(position);
+
+                // This happens when you click on the progress throbber item
+                if (currentModule == null)
+                    return;
+
+                getModuleActivity().onModuleClick(currentModule);
+            }
+
+        });
         
         final EditText queryText = (EditText) getView().findViewById(R.id.text_search);
 
@@ -119,23 +139,6 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
 
                 return false;
             }
-        });
-        
-        moduleListView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View row, int position, long id) {
-                ListView moduleListView = (ListView) parent;
-                Module currentModule = (Module) moduleListView.getItemAtPosition(position);
-
-                // This happens when you click on the progress throbber item
-                if (currentModule == null)
-                    return;
-
-                Intent moduleViewIntent = new Intent(getActivity(), ModuleViewActivity.class);
-                moduleViewIntent.putExtra(ModuleViewActivity.EXTRA_MODULE, currentModule);
-                startActivity(moduleViewIntent);
-            }
-
         });
     }
 

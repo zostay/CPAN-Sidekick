@@ -25,6 +25,12 @@ public class ModuleViewFragment extends ModuleFragment {
     private Module module;
     
     public void setModule(Module module) {
+    	
+    	// If we have a module in place, push it on to the history stack
+    	if (this.module != null) {
+    		moduleHistory.push(module);
+    	}
+    	
     	this.module = module;
     }
     
@@ -37,7 +43,7 @@ public class ModuleViewFragment extends ModuleFragment {
     	super.onActivityCreated(state);
 
         final View moduleHeader = getActivity().findViewById(R.id.module_view_header);
-        ModuleHelper.updateItem(moduleHeader, module);
+        if (module != null) ModuleHelper.updateItem(moduleHeader, module);
 
         WebView podView = (WebView) getActivity().findViewById(R.id.module_pod);
 
@@ -89,7 +95,11 @@ public class ModuleViewFragment extends ModuleFragment {
 		return inflater.inflate(R.layout.module_view_fragment, container, false);
 	}
     
-    private void fetchModule() {
+    public void fetchModule() {
+    	
+    	// No module loaded, skip it
+    	if (module == null) return;
+    	
         final View moduleHeader = getActivity().findViewById(R.id.module_view_header);
 
         fetchModule(module,
