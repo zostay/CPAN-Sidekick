@@ -3,13 +3,12 @@
     android:id="@+id/ModuleItem"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="horizontal"
-    android:padding="10dp" >
+    android:orientation="horizontal" >
 
     <QuickContactBadge
         android:id="@+id/module_author_avatar"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:focusable="false" />
 
     <LinearLayout
@@ -17,7 +16,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="8dp" >
+        android:padding="10dp" >
 
         <RelativeLayout
             android:id="@+id/ModuleTopDetails"

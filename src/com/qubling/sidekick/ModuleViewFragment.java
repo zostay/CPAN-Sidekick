@@ -8,11 +8,11 @@ import com.qubling.sidekick.api.cpan.ModulePODFetcher;
 import com.qubling.sidekick.cpan.collection.ModelList;
 import com.qubling.sidekick.cpan.collection.ModuleList;
 import com.qubling.sidekick.cpan.result.Module;
-import com.qubling.sidekick.widget.ModuleHelper;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +32,10 @@ public class ModuleViewFragment extends ModuleFragment {
     	}
     	
     	this.module = module;
+    	
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        ModuleInfoFragment fragment = (ModuleInfoFragment) fragmentManager.findFragmentById(R.id.module_info_fragment);
+        fragment.setModule(module);
     }
     
     public Module getModule() {
@@ -41,9 +45,6 @@ public class ModuleViewFragment extends ModuleFragment {
     @Override
     public void onActivityCreated(Bundle state) {
     	super.onActivityCreated(state);
-
-        final View moduleHeader = getActivity().findViewById(R.id.module_view_header);
-        if (module != null) ModuleHelper.updateItem(moduleHeader, module);
 
         WebView podView = (WebView) getActivity().findViewById(R.id.module_pod);
 
@@ -100,14 +101,15 @@ public class ModuleViewFragment extends ModuleFragment {
     	// No module loaded, skip it
     	if (module == null) return;
     	
-        final View moduleHeader = getActivity().findViewById(R.id.module_view_header);
-
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        final ModuleInfoFragment fragment = (ModuleInfoFragment) fragmentManager.findFragmentById(R.id.module_info_fragment);
+        
         fetchModule(module,
                 new ModuleList.OnModuleListUpdated() {
                     @Override
                     public void onModelListUpdated(ModelList<Module> modelList) {
 //                        Log.d("ModuleViewActivity", "onModelListUpdated updating header");
-                        ModuleHelper.updateItem(moduleHeader, module);
+                        fragment.updateView();
                     }
                 },
                 new ModuleFetchTask() {
@@ -123,9 +125,10 @@ public class ModuleViewFragment extends ModuleFragment {
         if (keyCode == KeyEvent.KEYCODE_BACK && !moduleHistory.empty()) {
 
             module = moduleHistory.pop();
-
-            View moduleHeader = getActivity().findViewById(R.id.module_view_header);
-            ModuleHelper.updateItem(moduleHeader, module);
+        	
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            ModuleInfoFragment fragment = (ModuleInfoFragment) fragmentManager.findFragmentById(R.id.module_info_fragment);
+            fragment.setModule(module);
 
             fetchModule();
 

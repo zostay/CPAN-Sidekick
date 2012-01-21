@@ -7,7 +7,6 @@ import com.qubling.sidekick.cpan.result.Module;
 import com.qubling.sidekick.widget.ModuleListAdapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.KeyEvent;
