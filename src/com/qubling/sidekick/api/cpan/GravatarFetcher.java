@@ -37,7 +37,7 @@ import com.qubling.sidekick.cpan.result.Author;
  */
 public class GravatarFetcher extends RemoteAPI<Author, Void, Void> {
 
-    private static final float GRAVATAR_DP_SIZE = 35f;
+    private static final float GRAVATAR_DP_SIZE = 61f;
     private static final Pattern RESIZE_GRAVATAR_PATTERN = Pattern.compile("([?&])s=[0-9]+\\b");
     
     private static final int TIMEOUT_CONNECTION = 2000;
