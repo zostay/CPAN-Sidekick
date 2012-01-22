@@ -6,7 +6,9 @@ import com.qubling.sidekick.cpan.collection.ModuleList;
 import com.qubling.sidekick.cpan.result.Module;
 import com.qubling.sidekick.widget.ModuleListAdapter;
 
+import android.R.anim;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.KeyEvent;
@@ -88,6 +90,13 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
                     return;
 
                 getModuleActivity().onModuleClick(currentModule);
+                
+                for (int i = 0; i < parent.getChildCount(); i++) {
+                	View otherRow = parent.getChildAt(i);
+                	otherRow.setBackgroundResource(android.R.color.transparent);
+                }
+                
+                row.setBackgroundResource(R.color.selected_item_background);
             }
 
         });

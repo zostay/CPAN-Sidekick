@@ -14,4 +14,6 @@
     <color name="favorite_others_border">#D39534</color>
     <color name="favorite_others_gradient_start">#FFC874</color>
     <color name="favorite_others_gradient_end">#FCA216</color>
+    
+    <color name="selected_item_background">#33B5E5</color>
 </resources>
