@@ -5,7 +5,9 @@
  */
 package com.qubling.sidekick.api.cpan;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -106,14 +108,21 @@ public class AuthorByDistributionSearch extends MetaCPANSearch<Void> {
     @Override
     protected void onPostExecute(Void result) {
     	RemoteAPIReaper<GravatarFetcher> reaper = new RemoteAPIReaper<GravatarFetcher>();
+    	
+    	List<Author> gravatarAuthorList = new ArrayList<Author>(authorList.size());
         for (Author author : authorList) {
             if (author.getGravatarURL() == null)
                 continue;
-
-            GravatarFetcher gravatarFetcher = new GravatarFetcher(getContext(), getClientManager(), authorList);
-            gravatarFetcher.execute(author);
-            reaper.addTaskToReap(gravatarFetcher);
+            
+            gravatarAuthorList.add(author);
         }
+        
+        Author[] gravatarAuthors = new Author[gravatarAuthorList.size()];
+        gravatarAuthorList.toArray(gravatarAuthors);
+
+        GravatarFetcher gravatarFetcher = new GravatarFetcher(getContext(), getClientManager(), authorList);
+        gravatarFetcher.execute(gravatarAuthors);
+        reaper.addTaskToReap(gravatarFetcher);
         
         Handler handler = new Handler();
         handler.postDelayed(reaper, GravatarFetcher.TIMEOUT_ABSOLUTE);
