@@ -82,7 +82,7 @@ public class HttpClientManager {
     }
     
     private void cleanupClient() {
-    	Log.d("HttpClientManager", "Actions Remaining: " + actionsRemaining);
+//    	Log.d("HttpClientManager", "Actions Remaining: " + actionsRemaining);
     	if (isClientAvailable() && isComplete()) {
             try {
                 Class.forName("android.net.http.AndroidHttpClient").getMethod("close").invoke(client);
@@ -112,13 +112,13 @@ public class HttpClientManager {
     }
     
     public synchronized void attachAction(int count) {
-    	Log.d("HttpClientManager", "attachAction(" + count + ")");
+//    	Log.d("HttpClientManager", "attachAction(" + count + ")");
     	actionsRemaining += count;
     	setupClient();
     }
     
     public synchronized void attachAction() {
-    	Log.d("HttpClientManager", "attachAction()");
+//    	Log.d("HttpClientManager", "attachAction()");
     	actionsRemaining++;
     	setupClient();
     }
