@@ -7,8 +7,8 @@
 
     <QuickContactBadge
         android:id="@+id/module_author_avatar"
-        android:layout_width="61dp"
-        android:layout_height="61dp"
+        android:layout_width="?android:attr/listPreferredItemHeight"
+        android:layout_height="?android:attr/listPreferredItemHeight"
         android:focusable="false" />
 
     <LinearLayout
