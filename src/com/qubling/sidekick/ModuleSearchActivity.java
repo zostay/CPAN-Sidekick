@@ -36,13 +36,6 @@ public class ModuleSearchActivity extends ModuleActivity {
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
-        
-        // Use Holo Light when available
-        try {
-        	int theme = android.R.style.class.getField("Theme_Holo_Light").getInt(null);
-        	setTheme(theme);
-        }
-        catch (Throwable t) { } // nevermind
 
         // Setup the view
         setContentView(R.layout.module_search);

@@ -21,4 +21,7 @@
         <item name="android:background">@drawable/btn_favorite_default</item>
         <item name="android:textColor">@color/favorite_default_text_color</item>
     </style>
+    
+    <style name="Theme.Sidekick" parent="@android:style/Theme.Light">
+    </style>
 </resources>
