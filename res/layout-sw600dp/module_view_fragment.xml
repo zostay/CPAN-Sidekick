@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ModuleItem"
+        android:background="#ffffff"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:id="@+id/frameLayout1"
+        android:background="@android:color/background_light"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp" >
+
+        <fragment
+            android:id="@+id/module_info_fragment"
+            android:name="com.qubling.sidekick.ModuleInfoFragment"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+            <!-- Preview: layout=@layout/module_list_item -->
+        </fragment>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/MainBody"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+            <WebView
+                android:id="@+id/module_pod"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" />
+
+    </FrameLayout>
+
+</LinearLayout>
