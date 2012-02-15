@@ -32,6 +32,7 @@ public class ModuleListAdapter extends BaseAdapter implements ModuleList.OnModul
 
     private ModuleList moduleList;
     private LayoutInflater inflater;
+    private int currentModule = -1;
 
     private View loadMoreItemsRow;
 
@@ -93,6 +94,13 @@ public class ModuleListAdapter extends BaseAdapter implements ModuleList.OnModul
         if (row == null) {
             row = inflater.inflate(R.layout.module_list_item, null);
         }
+        
+        if (position == currentModule) {
+        	row.setBackgroundResource(R.drawable.listitem_background_picked);
+        }
+        else {
+        	row.setBackgroundResource(android.R.color.transparent);
+        }
 
         // Get the module for this position
         Module item = getItem(position);
@@ -130,5 +138,14 @@ public class ModuleListAdapter extends BaseAdapter implements ModuleList.OnModul
     @Override
     public boolean hasStableIds() {
         return false;
+    }
+    
+    public void setCurrentModule(int currentModule) {
+    	this.currentModule = currentModule;
+    	notifyDataSetChanged();
+    }
+    
+    public int getCurrentModule() {
+    	return currentModule;
     }
 }

@@ -35,7 +35,10 @@
         <ListView
             android:id="@+id/list_search_results"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:cacheColorHint="@color/list_background"
+            android:choiceMode="singleChoice" >
+
             <!-- Preview: listitem=@layout/module_list_item -->
         </ListView>
 

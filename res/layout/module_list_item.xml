@@ -2,13 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ModuleItem"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="64dp"
     android:orientation="horizontal" >
 
     <QuickContactBadge
         android:id="@+id/module_author_avatar"
-        android:layout_width="?android:attr/listPreferredItemHeight"
-        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:focusable="false" />
 
     <LinearLayout
@@ -47,7 +47,6 @@
                 android:gravity="center_vertical|right"
                 android:text="@string/favorite_not_favorited"
                 android:textSize="8dp" />
-
         </RelativeLayout>
 
         <RelativeLayout
@@ -92,9 +91,9 @@
                     android:text="@string/default_ratings_0"
                     android:textColor="@android:color/darker_gray"
                     android:textSize="12dp" />
-
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>
 
 </LinearLayout>
+
