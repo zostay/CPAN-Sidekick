@@ -13,4 +13,5 @@
     <string name="not_yet_implemented">Not yet implemented.</string>
     <string name="default_ratings_0">0</string>
     <string name="app_version">0.3-pre-alpha</string>
+    <string name="menu_module_search">Search</string>
 </resources>

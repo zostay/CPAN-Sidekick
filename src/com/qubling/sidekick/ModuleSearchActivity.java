@@ -6,11 +6,13 @@
 package com.qubling.sidekick;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.KeyEvent;
+import android.view.Menu;
 
 import com.bugsense.trace.BugSenseHandler;
 import com.qubling.sidekick.cpan.result.Module;
@@ -22,6 +24,7 @@ import com.qubling.sidekick.cpan.result.Module;
  *
  */
 public class ModuleSearchActivity extends ModuleActivity {
+    final ModuleSearchHelper moduleSearchHelper = ModuleSearchHelper.createInstance(this);
 
     private ProgressDialog progressDialog;
     
@@ -30,6 +33,16 @@ public class ModuleSearchActivity extends ModuleActivity {
     		progressDialog.dismiss();
     		progressDialog = null;
     	}
+    }
+    
+    private ModuleSearchFragment getModuleSearchFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        return (ModuleSearchFragment) fragmentManager.findFragmentById(R.id.module_search_fragment);
+    }
+    
+    private ModuleViewFragment getModuleViewFragment() {
+    	FragmentManager fragmentManager = getSupportFragmentManager();
+    	return (ModuleViewFragment) fragmentManager.findFragmentById(R.id.module_view_fragment);
     }
 
     /** Called when the activity is first created. */
@@ -42,9 +55,31 @@ public class ModuleSearchActivity extends ModuleActivity {
         
         // Setup BugSense
         BugSenseHandler.setup(this, Util.BUGSENSE_API_KEY);
+        
+        // Check to see if we got a search
+        Intent intent = getIntent();
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+        	String query = intent.getStringExtra(SearchManager.QUERY);
+            getModuleSearchFragment().doNewSearch(query);
+        }
+        
+        moduleSearchHelper.onCreate(state);
+    }
+
+    /**
+     * Called when your activity's options menu needs to be created.
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+    	return moduleSearchHelper.onCreateOptionsMenu(menu);
     }
     
     @Override
+    public boolean onSearchRequested() {
+    	return moduleSearchHelper.onSearchRequested();
+    }
+
+	@Override
     public synchronized void startSearch(boolean modal) {
     	
     	// If modal, show the progress bar dialog
@@ -62,6 +97,10 @@ public class ModuleSearchActivity extends ModuleActivity {
         }
     	
     }
+	
+	public void doNewSearch(String searchText) {
+		getModuleSearchFragment().doNewSearch(searchText);
+	}
 
     @Override
     public synchronized void cancelSearch() {
@@ -75,8 +114,7 @@ public class ModuleSearchActivity extends ModuleActivity {
     
     @Override
     protected void onModuleClick(Module currentModule) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        ModuleViewFragment fragment = (ModuleViewFragment) fragmentManager.findFragmentById(R.id.module_view_fragment);
+    	ModuleViewFragment fragment = getModuleViewFragment();
         
         // Tablet
         if (fragment != null) {
@@ -94,8 +132,10 @@ public class ModuleSearchActivity extends ModuleActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-    	FragmentManager fragmentManager = getSupportFragmentManager();
-    	ModuleViewFragment fragment = (ModuleViewFragment) fragmentManager.findFragmentById(R.id.module_view_fragment);
+    	ModuleViewFragment fragment = getModuleViewFragment();
+    	
+    	if (fragment == null)
+    		return super.onKeyDown(keyCode, event);
     	
     	boolean result = fragment.onKeyDown(keyCode, event);
     	if (result) {

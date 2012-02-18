@@ -6,17 +6,12 @@ import com.qubling.sidekick.cpan.collection.ModuleList;
 import com.qubling.sidekick.cpan.result.Module;
 import com.qubling.sidekick.widget.ModuleListAdapter;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -26,8 +21,6 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
     private String lastSearchText;    
     
     private ModuleSearch currentSearch;
-    
-    private boolean searchRunning = false;
     
     public ListView onSearchCompleted(ModuleListAdapter adapter) {
     	((ModuleSearchActivity) getActivity()).onSearchCompleted();
@@ -94,55 +87,20 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
             }
 
         });
-        
-        final EditText queryText = (EditText) getView().findViewById(R.id.text_search);
-
-        final ImageButton searchButton = (ImageButton) getView().findViewById(R.id.button_search);
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View searchButton) {
-
-                    // Hide the screen keyboard
-                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(searchButton.getWindowToken(), 0);
-
-                    // Clear the module list
-                    moduleList.clear();
-
-                    // Start the search task
-                    ModuleSearch search = new ModuleSearch(
-                    		getClientManager(),
-                            ModuleSearchFragment.this.getActivity(),
-                            moduleList,
-                            lastSearchText = queryText.getText().toString());
-                    startSearch(search, true);
-            }
-        });
-
-        queryText.setOnKeyListener(new View.OnKeyListener() {
-
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-
-                // Support KEYCODE_NUMPAD_ENTER added in API 11
-                int KEYCODE_NUMPAD_ENTER = KeyEvent.KEYCODE_UNKNOWN;
-                try {
-                    KEYCODE_NUMPAD_ENTER = KeyEvent.class.getField("KEYCODE_NUMPAD_ENTER").getInt(null);
-                }
-                catch (Throwable t) {
-                    // ignore
-                }
-
-                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KEYCODE_NUMPAD_ENTER) {
-                    if (!searchRunning)
-                        searchButton.performClick();
-                    return true;
-                }
-
-                return false;
-            }
-        });
     }
+	
+	public void doNewSearch(String searchText) {
+        // Clear the module list
+        moduleList.clear();
+
+        // Start the search task
+        ModuleSearch search = new ModuleSearch(
+        		getClientManager(),
+                ModuleSearchFragment.this.getActivity(),
+                moduleList,
+                lastSearchText = searchText);
+        startSearch(search, true);
+	}
 
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

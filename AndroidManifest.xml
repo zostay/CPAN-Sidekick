@@ -15,7 +15,9 @@
             android:name=".ModuleSearchActivity" android:configChanges="keyboardHidden|orientation">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.SEARCH"/>
             </intent-filter>
+            <meta-data android:resource="@xml/module_searchable" android:name="android.app.searchable"/>
         </activity>
         <activity android:name=".ModuleViewActivity" android:label="@string/activity_module_view">
         </activity>
