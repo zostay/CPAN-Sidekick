@@ -59,7 +59,7 @@ public class ModuleSearchHelperEclair extends ModuleSearchHelper {
 	}
 	
 	@Override
-	public boolean onSearchRequested() {
+	public Boolean onSearchRequested() {
 		EditText queryText = (EditText) getActivity().findViewById(R.id.text_search);
 		queryText.requestFocus();
 		return true;

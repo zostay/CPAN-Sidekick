@@ -30,8 +30,12 @@ public abstract class ModuleSearchHelper {
     	return activity;
     }
     
-    public void onCreate(Bundle state) { }
-    public abstract boolean onSearchRequested();
+    public void onCreate(Bundle state) {
+    }
+    
+    public Boolean onSearchRequested() {
+    	return null;
+    }
     
     public boolean onCreateOptionsMenu(Menu menu) {
     	MenuInflater inflater = getActivity().getMenuInflater();

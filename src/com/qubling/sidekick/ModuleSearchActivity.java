@@ -76,7 +76,13 @@ public class ModuleSearchActivity extends ModuleActivity {
     
     @Override
     public boolean onSearchRequested() {
-    	return moduleSearchHelper.onSearchRequested();
+    	Boolean result = moduleSearchHelper.onSearchRequested();
+    	if (result == null) {
+    		return super.onSearchRequested();
+    	}
+    	else {
+    		return result;
+    	}
     }
 
 	@Override
