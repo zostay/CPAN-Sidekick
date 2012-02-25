@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.Menu;
 
@@ -40,9 +41,33 @@ public class ModuleSearchActivity extends ModuleActivity {
         return (ModuleSearchFragment) fragmentManager.findFragmentById(R.id.module_search_fragment);
     }
     
-    private ModuleViewFragment getModuleViewFragment() {
+    private boolean isModuleViewFragmentAPlaceholder() {
     	FragmentManager fragmentManager = getSupportFragmentManager();
-    	return (ModuleViewFragment) fragmentManager.findFragmentById(R.id.module_view_fragment);
+    	ModuleViewThingyFragment fragment = (ModuleViewThingyFragment) fragmentManager.findFragmentById(R.id.module_view_fragment);
+    	return fragment != null && fragment.isPlaceholder();
+    }
+    
+    private ModuleViewFragment getModuleViewFragment() {
+    	if (isModuleViewFragmentAPlaceholder()) {
+    		return null;
+    	}
+    	else {
+    		FragmentManager fragmentManager = getSupportFragmentManager();
+    		return (ModuleViewFragment) fragmentManager.findFragmentById(R.id.module_view_fragment);
+    	}
+    }
+    
+    private void convertToRealViewFragment() {
+    	FragmentManager fragmentManager = getSupportFragmentManager();
+    	ModuleViewThingyFragment fragment = (ModuleViewThingyFragment) fragmentManager.findFragmentById(R.id.module_view_fragment);
+    	
+    	// We do in fact have a placeholder to convert?
+    	if (fragment != null && fragment.isPlaceholder()) {
+    		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+    		fragmentTransaction.replace(R.id.module_view_fragment, new ModuleViewFragment());
+    		// Do not add to back stack. We don't want to go back to the placeholder
+    		fragmentTransaction.commit();
+    	}
     }
 
     /** Called when the activity is first created. */
@@ -120,6 +145,7 @@ public class ModuleSearchActivity extends ModuleActivity {
     
     @Override
     protected void onModuleClick(Module currentModule) {
+    	convertToRealViewFragment();
     	ModuleViewFragment fragment = getModuleViewFragment();
         
         // Tablet

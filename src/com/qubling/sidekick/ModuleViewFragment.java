@@ -20,9 +20,14 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-public class ModuleViewFragment extends ModuleFragment {
+public class ModuleViewFragment extends ModuleFragment implements ModuleViewThingyFragment {
     private Stack<Module> moduleHistory = new Stack<Module>();
     private Module module;
+    
+    @Override
+    public boolean isPlaceholder() {
+    	return false;
+    }
     
     public void setModule(Module module) {
     	

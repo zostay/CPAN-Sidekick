@@ -14,4 +14,5 @@
     <string name="default_ratings_0">0</string>
     <string name="app_version">0.3-pre-alpha</string>
     <string name="menu_module_search">Search</string>
+    <string name="module_view_placholder_help">Use the search box to search for a CPAN module.</string>
 </resources>

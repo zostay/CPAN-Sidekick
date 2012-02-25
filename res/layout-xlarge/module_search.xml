@@ -14,10 +14,10 @@
 
     <fragment
         android:id="@+id/module_view_fragment"
-        android:name="com.qubling.sidekick.ModuleViewFragment"
+        android:name="com.qubling.sidekick.ModuleViewPlaceholderFragment"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
-        <!-- Preview: layout=@layout/module_view_fragment -->
+        <!-- Preview: layout=@layout/module_view_placeholder_fragment -->
     </fragment>
 
 </LinearLayout>
