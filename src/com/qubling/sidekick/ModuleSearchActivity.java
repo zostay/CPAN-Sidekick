@@ -44,7 +44,7 @@ public class ModuleSearchActivity extends ModuleActivity {
     private boolean isModuleViewFragmentAPlaceholder() {
     	FragmentManager fragmentManager = getSupportFragmentManager();
     	ModuleViewThingyFragment fragment = (ModuleViewThingyFragment) fragmentManager.findFragmentById(R.id.module_view_fragment);
-    	return fragment != null && fragment.isPlaceholder();
+    	return fragment != null && fragment instanceof ModuleViewPlaceholderFragment;
     }
     
     private ModuleViewFragment getModuleViewFragment() {
@@ -57,17 +57,26 @@ public class ModuleSearchActivity extends ModuleActivity {
     	}
     }
     
-    private void convertToRealViewFragment() {
+    private boolean convertToRealViewFragment() {
     	FragmentManager fragmentManager = getSupportFragmentManager();
     	ModuleViewThingyFragment fragment = (ModuleViewThingyFragment) fragmentManager.findFragmentById(R.id.module_view_fragment);
     	
+    	if (fragment == null) return false;
+    	
     	// We do in fact have a placeholder to convert?
-    	if (fragment != null && fragment.isPlaceholder()) {
+    	if (fragment instanceof ModuleViewPlaceholderFragment) {
     		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
     		fragmentTransaction.replace(R.id.module_view_fragment, new ModuleViewFragment());
+    		
     		// Do not add to back stack. We don't want to go back to the placeholder
     		fragmentTransaction.commit();
+    		
+    		// Go ahead and execute because we do this only immediately before showing the POD
+    		// TODO There's probably a better, concurrent way of doing this
+    		fragmentManager.executePendingTransactions();
     	}
+    	
+    	return true;
     }
 
     /** Called when the activity is first created. */
@@ -145,11 +154,11 @@ public class ModuleSearchActivity extends ModuleActivity {
     
     @Override
     protected void onModuleClick(Module currentModule) {
-    	convertToRealViewFragment();
+    	boolean convertable = convertToRealViewFragment();
     	ModuleViewFragment fragment = getModuleViewFragment();
         
         // Tablet
-        if (fragment != null) {
+        if (convertable) {
         	fragment.setModule(currentModule);
         	fragment.fetchModule();
         }

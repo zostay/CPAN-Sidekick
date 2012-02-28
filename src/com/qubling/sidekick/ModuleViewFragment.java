@@ -24,11 +24,6 @@ public class ModuleViewFragment extends ModuleFragment implements ModuleViewThin
     private Stack<Module> moduleHistory = new Stack<Module>();
     private Module module;
     
-    @Override
-    public boolean isPlaceholder() {
-    	return false;
-    }
-    
     public void setModule(Module module) {
     	
     	// If we have a module in place, push it on to the history stack

@@ -8,11 +8,6 @@ import android.view.ViewGroup;
 
 public class ModuleViewPlaceholderFragment extends Fragment implements ModuleViewThingyFragment {
     
-    @Override
-    public boolean isPlaceholder() {
-    	return false;
-    }
-    
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
