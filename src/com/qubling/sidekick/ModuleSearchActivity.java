@@ -12,11 +12,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.View;
+import android.widget.TextView;
 
 import com.bugsense.trace.BugSenseHandler;
+import com.qubling.sidekick.api.cpan.ModuleSearch;
 import com.qubling.sidekick.cpan.result.Module;
+import com.qubling.sidekick.widget.ModuleListAdapter;
 
 /**
  * An activity for searching for CPAN modules.
@@ -29,16 +34,35 @@ public class ModuleSearchActivity extends ModuleActivity {
 
     private ProgressDialog progressDialog;
     
-    public void onSearchCompleted() {
+    public void onSearchCompleted(ModuleListAdapter adapter) {
     	if (progressDialog != null) {
     		progressDialog.dismiss();
     		progressDialog = null;
+    	}
+    	
+    	// Show more help when we have results
+    	ModuleViewPlaceholderFragment placeholderFragment = getModuleViewPlacholderFragment();
+    	if (placeholderFragment != null && adapter.getCount() > 0) {
+			TextView view = (TextView) findViewById(R.id.results_help_bubble);
+			view.setVisibility(View.VISIBLE);
     	}
     }
     
     private ModuleSearchFragment getModuleSearchFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         return (ModuleSearchFragment) fragmentManager.findFragmentById(R.id.module_search_fragment);
+    }
+    
+    private ModuleViewPlaceholderFragment getModuleViewPlacholderFragment() {
+    	FragmentManager fragmentManager = getSupportFragmentManager();
+    	ModuleViewThingyFragment fragment = (ModuleViewThingyFragment) fragmentManager.findFragmentById(R.id.module_view_fragment);
+    	
+    	if (fragment instanceof ModuleViewPlaceholderFragment) {
+    		return (ModuleViewPlaceholderFragment) fragment;
+    	}
+    	else {
+    		return null;
+    	}
     }
     
     private boolean isModuleViewFragmentAPlaceholder() {

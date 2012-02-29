@@ -17,4 +17,5 @@
     
     <color name="list_background">#FFF3F3F3</color>
     <color name="transparent">#00000000</color>
+    <color name="webview_background">#fff</color>
 </resources>

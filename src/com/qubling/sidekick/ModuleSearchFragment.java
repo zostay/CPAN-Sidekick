@@ -22,8 +22,12 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
     
     private ModuleSearch currentSearch;
     
+    public ModuleSearch getCurrentSearch() {
+    	return currentSearch;
+    }
+    
     public ListView onSearchCompleted(ModuleListAdapter adapter) {
-    	((ModuleSearchActivity) getActivity()).onSearchCompleted();
+    	((ModuleSearchActivity) getActivity()).onSearchCompleted(adapter);
 
         ListView resultsView = (ListView) getActivity().findViewById(R.id.list_search_results);
         resultsView.setAdapter(adapter);
@@ -127,6 +131,7 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
 //        Log.d("ModuleSearchActivity", "onModelListUpdated");
 
         // Load the module list if this is a change in the underlying model
+        ModuleListAdapter adapter;
         if (moduleList != list) {
             moduleList = list;
             moduleList.addModelListUpdatedListener(this);
@@ -134,10 +139,16 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
 //            Log.d("ModuleSearchActivity", "moduleList.size(): " + moduleList.size());
 
             // Show search results
-            ModuleListAdapter adapter = new ModuleListAdapter(getActivity(), list);
-            onSearchCompleted(adapter);
+            adapter = new ModuleListAdapter(getActivity(), list);
         }
-
+        
+        else {
+        	ListView moduleSearchResults = (ListView) getActivity().findViewById(R.id.list_search_results);
+        	adapter = (ModuleListAdapter) moduleSearchResults.getAdapter();
+        }
+        
+        onSearchCompleted(adapter);
+        
         cancelSearch();
     }
 

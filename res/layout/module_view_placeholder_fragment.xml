@@ -2,17 +2,30 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="right" >
+    android:layout_gravity="right"
+    android:background="@color/webview_background" >
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/search_help_bubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|right"
         android:layout_marginRight="60dp"
         android:background="@drawable/callout_arrow_up"
         android:padding="20dp"
-        android:text="@string/module_view_placholder_help"
+        android:text="@string/module_view_placeholder_search_help"
         android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/results_help_bubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|left"
+        android:background="@drawable/callout_arrow_left"
+        android:padding="20dp"
+        android:text="@string/module_view_placeholder_results_help"
+        android:textSize="20dp"
+        android:visibility="gone"
+        android:width="220dp" />
 
 </FrameLayout>
