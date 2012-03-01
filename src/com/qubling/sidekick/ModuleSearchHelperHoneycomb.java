@@ -3,9 +3,7 @@ package com.qubling.sidekick;
 import android.app.SearchManager;
 import android.content.Context;
 import android.view.Menu;
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.SearchView;
 
 public class ModuleSearchHelperHoneycomb extends ModuleSearchHelper {

@@ -12,14 +12,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 
 import com.bugsense.trace.BugSenseHandler;
-import com.qubling.sidekick.api.cpan.ModuleSearch;
 import com.qubling.sidekick.cpan.result.Module;
 import com.qubling.sidekick.widget.ModuleListAdapter;
 
