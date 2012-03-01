@@ -26,13 +26,13 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
     	return currentSearch;
     }
     
-    public ListView onSearchCompleted(ModuleListAdapter adapter) {
-    	((ModuleSearchActivity) getActivity()).onSearchCompleted(adapter);
-
+    private ListView getSearchResultsListView() {
         ListView resultsView = (ListView) getActivity().findViewById(R.id.list_search_results);
-        resultsView.setAdapter(adapter);
-        
         return resultsView;
+    }
+    
+    public void onSearchCompleted(ModuleListAdapter adapter) {
+    	((ModuleSearchActivity) getActivity()).onSearchCompleted(adapter);
     }
     
 	@Override
@@ -72,7 +72,8 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
 	    super.onActivityCreated(state);
 
         ModuleListAdapter adapter = new ModuleListAdapter(this.getActivity(), moduleList);
-        ListView moduleListView = onSearchCompleted(adapter);
+        ListView moduleListView = getSearchResultsListView();
+        moduleListView.setAdapter(adapter);
         
         moduleListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -140,6 +141,9 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
 
             // Show search results
             adapter = new ModuleListAdapter(getActivity(), list);
+            
+            ListView moduleListView = getSearchResultsListView();
+            moduleListView.setAdapter(adapter);
         }
         
         else {
