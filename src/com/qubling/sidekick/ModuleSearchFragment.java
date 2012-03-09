@@ -53,9 +53,6 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
 
             moduleList.addModelListUpdatedListener(this);
             moduleList.addMoreItemsRequestedListener(this);
-
-            onModelListUpdated(moduleList);
-            freshenModuleList();
         }
 
         // Or load from scratch
@@ -92,6 +89,9 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
             }
 
         });
+
+        onModelListUpdated(moduleList);
+        freshenModuleList();
     }
 	
 	public void doNewSearch(String searchText) {
@@ -124,10 +124,19 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
         state.putParcelableArray("moduleList", moduleList.toArray(modules));
         state.putInt("moduleListTotalCount", moduleList.getTotalCount());
         state.putString("lastSearchText", lastSearchText);
+        
+        // Remember which one has been tapped
+        ModuleListAdapter adapter = (ModuleListAdapter) getSearchResultsListView().getAdapter();
+        int position = adapter.getCurrentModule();
+        
+        state.putInt("moduleListCurrentSelection", position);
     }
 
     @Override
     public void onModelListUpdated(ModelList<Module> modelList) {
+    	// Might happen if the results are still loading when the screen is rotated or something
+    	if (getActivity() == null) return;
+    	
         ModuleList list = (ModuleList) modelList;
 //        Log.d("ModuleSearchActivity", "onModelListUpdated");
 

@@ -5,13 +5,11 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <fragment
-        android:id="@+id/module_info_fragment"
-        android:name="com.qubling.sidekick.ModuleInfoFragment"
+    <include
+        android:id="@+id/module_info"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-        <!-- Preview: layout=@layout/module_list_item -->
-    </fragment>
+        android:layout_height="wrap_content"
+        layout="@layout/module_list_item" />
 
     <FrameLayout
         android:id="@+id/MainBody"

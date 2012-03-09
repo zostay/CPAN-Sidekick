@@ -10,8 +10,10 @@ import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -40,9 +42,8 @@ public class ModuleSearchActivity extends ModuleActivity {
     	
     	// Show more help when we have results
     	ModuleViewPlaceholderFragment placeholderFragment = getModuleViewPlacholderFragment();
-    	if (placeholderFragment != null && adapter.getCount() > 0) {
-			TextView view = (TextView) findViewById(R.id.results_help_bubble);
-			view.setVisibility(View.VISIBLE);
+    	if (placeholderFragment != null) {
+    		placeholderFragment.onSearchCompleted(adapter);
     	}
     }
     
@@ -51,9 +52,14 @@ public class ModuleSearchActivity extends ModuleActivity {
         return (ModuleSearchFragment) fragmentManager.findFragmentById(R.id.module_search_fragment);
     }
     
+    private boolean isTwoPanelView() {
+    	View view = findViewById(R.id.module_view_fragment_container);
+    	return view != null;
+    }
+    
     private ModuleViewPlaceholderFragment getModuleViewPlacholderFragment() {
     	FragmentManager fragmentManager = getSupportFragmentManager();
-    	ModuleViewThingyFragment fragment = (ModuleViewThingyFragment) fragmentManager.findFragmentById(R.id.module_view_fragment);
+    	ModuleViewThingyFragment fragment = (ModuleViewThingyFragment) fragmentManager.findFragmentById(R.id.module_view_fragment_container);
     	
     	if (fragment instanceof ModuleViewPlaceholderFragment) {
     		return (ModuleViewPlaceholderFragment) fragment;
@@ -65,7 +71,7 @@ public class ModuleSearchActivity extends ModuleActivity {
     
     private boolean isModuleViewFragmentAPlaceholder() {
     	FragmentManager fragmentManager = getSupportFragmentManager();
-    	ModuleViewThingyFragment fragment = (ModuleViewThingyFragment) fragmentManager.findFragmentById(R.id.module_view_fragment);
+    	ModuleViewThingyFragment fragment = (ModuleViewThingyFragment) fragmentManager.findFragmentById(R.id.module_view_fragment_container);
     	return fragment != null && fragment instanceof ModuleViewPlaceholderFragment;
     }
     
@@ -75,20 +81,20 @@ public class ModuleSearchActivity extends ModuleActivity {
     	}
     	else {
     		FragmentManager fragmentManager = getSupportFragmentManager();
-    		return (ModuleViewFragment) fragmentManager.findFragmentById(R.id.module_view_fragment);
+    		return (ModuleViewFragment) fragmentManager.findFragmentById(R.id.module_view_fragment_container);
     	}
     }
     
     private boolean convertToRealViewFragment() {
     	FragmentManager fragmentManager = getSupportFragmentManager();
-    	ModuleViewThingyFragment fragment = (ModuleViewThingyFragment) fragmentManager.findFragmentById(R.id.module_view_fragment);
+    	ModuleViewThingyFragment fragment = (ModuleViewThingyFragment) fragmentManager.findFragmentById(R.id.module_view_fragment_container);
     	
     	if (fragment == null) return false;
     	
     	// We do in fact have a placeholder to convert?
     	if (fragment instanceof ModuleViewPlaceholderFragment) {
     		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-    		fragmentTransaction.replace(R.id.module_view_fragment, new ModuleViewFragment());
+    		fragmentTransaction.replace(R.id.module_view_fragment_container, new ModuleViewFragment());
     		
     		// Do not add to back stack. We don't want to go back to the placeholder
     		fragmentTransaction.commit();
@@ -112,6 +118,26 @@ public class ModuleSearchActivity extends ModuleActivity {
         // Setup BugSense
         BugSenseHandler.setup(this, Util.BUGSENSE_API_KEY);
         
+        // Initialize the fragment, if on a tablet
+        if (isTwoPanelView()) {
+        	boolean showingModuleViewer = state != null
+        			                   && state.getBoolean("showingModuleViewer");
+        	
+        	Fragment viewFragment;
+        	if (showingModuleViewer) {
+        		viewFragment = new ModuleViewFragment();
+        	}
+        	else {
+        		viewFragment = new ModuleViewPlaceholderFragment();
+        	}
+        	
+        	if(state == null)
+	        	getSupportFragmentManager()
+	        		.beginTransaction()
+	        		.add(R.id.module_view_fragment_container, viewFragment)
+	    			.commit();
+        }
+        
         // Check to see if we got a search
         Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
@@ -122,7 +148,14 @@ public class ModuleSearchActivity extends ModuleActivity {
         moduleSearchHelper.onCreate(state);
     }
 
-    /**
+    @Override
+    protected void onSaveInstanceState(Bundle state) {
+	    super.onSaveInstanceState(state);
+	    
+	    state.putBoolean("showingModuleViewer", !isModuleViewFragmentAPlaceholder());
+    }
+
+	/**
      * Called when your activity's options menu needs to be created.
      */
     @Override
@@ -187,7 +220,7 @@ public class ModuleSearchActivity extends ModuleActivity {
         
         // Phone
         else {
-	        Intent moduleViewIntent = new Intent(this, ModuleViewActivity.class);
+        	Intent moduleViewIntent = new Intent(this, ModuleViewActivity.class);
 	        moduleViewIntent.putExtra(ModuleViewActivity.EXTRA_MODULE, currentModule);
 	        startActivity(moduleViewIntent);
         }

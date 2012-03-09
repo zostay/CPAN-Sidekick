@@ -13,13 +13,11 @@
         android:layout_height="wrap_content"
         android:layout_margin="15dp" >
 
-        <fragment
-            android:id="@+id/module_info_fragment"
-            android:name="com.qubling.sidekick.ModuleInfoFragment"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
-            <!-- Preview: layout=@layout/module_list_item -->
-        </fragment>
+        <include
+	        android:id="@+id/module_info"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        layout="@layout/module_list_item" />
 
     </FrameLayout>
 
