@@ -12,7 +12,7 @@
     <string name="app_launcher_name">CPAN</string>
     <string name="not_yet_implemented">Not yet implemented.</string>
     <string name="default_ratings_0">0</string>
-    <string name="app_version">0.3-beta</string>
+    <string name="app_version">0.3</string>
     <string name="menu_module_search">Search</string>
     <string name="module_view_placeholder_search_help">Use the search box to find CPAN modules.</string>
     <string name="module_view_placeholder_results_help">Click on one of the modules in the results to see its documentation.</string>
