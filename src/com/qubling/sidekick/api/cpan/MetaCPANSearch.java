@@ -17,17 +17,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import com.qubling.sidekick.api.HttpClientManager;
-import com.qubling.sidekick.api.StringTemplate;
-
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.qubling.sidekick.api.HttpClientManager;
+import com.qubling.sidekick.api.StringTemplate;
+
 /**
- * A special subclass of {@link MetaCPANAPI} that provides tools useful 
+ * A special subclass of {@link MetaCPANAPI} that provides tools useful
  * especially for the search API of MetaCPAN.
- * 
+ *
  * @author sterling
  *
  * @param <ResultType> See {@link AsyncTask}
@@ -36,7 +36,7 @@ public abstract class MetaCPANSearch<ResultType> extends MetaCPANAPI<Void, Void,
 
 	/**
 	 * An enumeration of search types on MetaCPAN.
-	 * 
+	 *
 	 * @author sterling
 	 *
 	 */

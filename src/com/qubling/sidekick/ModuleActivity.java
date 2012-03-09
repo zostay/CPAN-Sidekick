@@ -24,7 +24,7 @@ public abstract class ModuleActivity extends FragmentActivity implements HttpCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-	    
+
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
     }
 
@@ -37,9 +37,9 @@ public abstract class ModuleActivity extends FragmentActivity implements HttpCli
     public void onActionsComplete() {
         setProgressBarIndeterminateVisibility(false);
     }
-	
+
     public void startSearch(boolean modal) {}
     public void cancelSearch() {}
     protected void onModuleClick(Module clickedModule) {}
-    
+
 }

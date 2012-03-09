@@ -15,32 +15,32 @@ public abstract class ModuleSearchHelper {
             throw new RuntimeException("CPAN Sidekick does not support versions of Android before 2.1.");
         }
     }
-    
+
     private ModuleSearchActivity activity;
-    
+
     public ModuleSearchHelper(ModuleSearchActivity activity) {
     	this.activity = activity;
     }
-    
+
     public void setActivity(ModuleSearchActivity activity) {
     	this.activity = activity;
     }
-    
+
     public ModuleSearchActivity getActivity() {
     	return activity;
     }
-    
+
     public void onCreate(Bundle state) {
     }
-    
+
     public Boolean onSearchRequested() {
     	return null;
     }
-    
+
     public boolean onCreateOptionsMenu(Menu menu) {
     	MenuInflater inflater = getActivity().getMenuInflater();
     	inflater.inflate(R.menu.module_search, menu);
-    	
+
     	return true;
     }
 }

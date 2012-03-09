@@ -19,7 +19,7 @@ import android.util.Log;
 /**
  * A very simple tool for building JSON from a template and set of input
  * variables.
- * 
+ *
  * @author sterling
  *
  */

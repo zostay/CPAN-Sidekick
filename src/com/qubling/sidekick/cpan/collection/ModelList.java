@@ -17,7 +17,7 @@ import com.qubling.sidekick.cpan.result.Model;
 
 /**
  * Base class for building ordered, unique collections of {@link Model} objects.
- * 
+ *
  * @author sterling
  *
  * @param <SomeModel> The type of {@link Model} being collected.

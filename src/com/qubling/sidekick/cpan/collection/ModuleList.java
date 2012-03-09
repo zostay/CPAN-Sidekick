@@ -14,7 +14,7 @@ import com.qubling.sidekick.cpan.result.Module;
 
 /**
  * An ordered, unique list of {@link Module} objects.
- * 
+ *
  * @author sterling
  *
  */

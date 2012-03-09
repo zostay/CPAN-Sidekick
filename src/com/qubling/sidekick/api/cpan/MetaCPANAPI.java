@@ -5,14 +5,14 @@
  */
 package com.qubling.sidekick.api.cpan;
 
+import android.os.AsyncTask;
+
 import com.qubling.sidekick.api.HttpClientManager;
 import com.qubling.sidekick.api.RemoteAPI;
 
-import android.os.AsyncTask;
-
 /**
  * A subclass of {@link RemoteAPI} with some tools for accessing MetaCPAN.
- * 
+ *
  * @author sterling
  *
  * @param <Params> See {@link AsyncTask}

@@ -9,7 +9,7 @@ import com.qubling.sidekick.cpan.result.Author;
 
 /**
  * An ordered, unique collection of {@link Author} objects.
- * 
+ *
  * @author sterling
  *
  */

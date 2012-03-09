@@ -23,7 +23,7 @@ import com.qubling.sidekick.cpan.result.Module;
 
 /**
  * A tool for fetching the details regarding a single module.
- * 
+ *
  * @author sterling
  *
  */
@@ -60,7 +60,7 @@ public class ModuleFetcher extends MetaCPANAPI<Void, Void, Void> {
                 // Basic Distribution Info
                 module.setDistribution(
                 		new Distribution(
-                				json.getString("distribution"), 
+                				json.getString("distribution"),
                 				json.getString("version")));
             }
             else {
@@ -86,7 +86,7 @@ public class ModuleFetcher extends MetaCPANAPI<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void result) {
         moduleList.notifyModelListUpdated();
-        
+
         super.onPostExecute(result);
     }
 

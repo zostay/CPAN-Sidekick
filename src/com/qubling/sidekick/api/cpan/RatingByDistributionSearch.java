@@ -21,7 +21,7 @@ import com.qubling.sidekick.cpan.result.Distribution;
 
 /**
  * Fetches the ratings for a list of distributions.
- * 
+ *
  * @author sterling
  *
  */
@@ -111,7 +111,7 @@ public class RatingByDistributionSearch extends MetaCPANSearch<Void> {
     @Override
     protected void onPostExecute(Void result) {
         distributionList.notifyModelListUpdated();
-        
+
         super.onPostExecute(result);
     }
 }

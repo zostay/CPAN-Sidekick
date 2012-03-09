@@ -20,7 +20,7 @@ import com.qubling.sidekick.cpan.result.Module;
 /**
  * This is a {@link BaseAdapter} for displaying module infomration in a list
  * view.
- * 
+ *
  * @author sterling
  *
  */
@@ -94,7 +94,7 @@ public class ModuleListAdapter extends BaseAdapter implements ModuleList.OnModul
         if (row == null) {
             row = inflater.inflate(R.layout.module_list_item, null);
         }
-        
+
         if (position == currentModule) {
         	row.setBackgroundResource(R.drawable.listitem_background_picked);
         }
@@ -139,12 +139,12 @@ public class ModuleListAdapter extends BaseAdapter implements ModuleList.OnModul
     public boolean hasStableIds() {
         return false;
     }
-    
+
     public void setCurrentModule(int currentModule) {
     	this.currentModule = currentModule;
     	notifyDataSetChanged();
     }
-    
+
     public int getCurrentModule() {
     	return currentModule;
     }

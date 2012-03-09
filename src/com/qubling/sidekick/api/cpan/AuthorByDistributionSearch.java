@@ -25,7 +25,7 @@ import com.qubling.sidekick.cpan.result.Author;
 
 /**
  * This fetches the details for a group of authors, given the PAUSE ID for each.
- * 
+ *
  * @author sterling
  *
  */
@@ -108,25 +108,25 @@ public class AuthorByDistributionSearch extends MetaCPANSearch<Void> {
     @Override
     protected void onPostExecute(Void result) {
     	RemoteAPIReaper<GravatarFetcher> reaper = new RemoteAPIReaper<GravatarFetcher>();
-    	
+
     	List<Author> gravatarAuthorList = new ArrayList<Author>(authorList.size());
         for (Author author : authorList) {
             if (author.getGravatarURL() == null)
                 continue;
-            
+
             gravatarAuthorList.add(author);
         }
-        
+
         Author[] gravatarAuthors = new Author[gravatarAuthorList.size()];
         gravatarAuthorList.toArray(gravatarAuthors);
 
         GravatarFetcher gravatarFetcher = new GravatarFetcher(getContext(), getClientManager(), authorList);
         gravatarFetcher.execute(gravatarAuthors);
         reaper.addTaskToReap(gravatarFetcher);
-        
+
         Handler handler = new Handler();
         handler.postDelayed(reaper, GravatarFetcher.TIMEOUT_ABSOLUTE);
-        
+
         super.onPostExecute(result);
     }
 }

@@ -21,7 +21,7 @@ import com.qubling.sidekick.cpan.result.Module;
 
 /**
  * Tools for filling in module data into views.
- * 
+ *
  * @author sterling
  *
  */
@@ -44,10 +44,10 @@ public final class ModuleHelper {
                     0);
         }
         moduleName.setText(formattedString);
-        
+
         Author author = item.getAuthor();
         if (author == null) author = new Author("...");
-        
+
         Distribution distribution = item.getDistribution();
         if (distribution == null) distribution = new Distribution("...", "...");
 
@@ -64,11 +64,11 @@ public final class ModuleHelper {
         // Set the rating bar
         RatingBar distRating = (RatingBar) row.findViewById(R.id.module_release_rating);
         distRating.setRating((float) distribution.getRating());
-        	
+
         // Set the rating count
         TextView distRatingCount = (TextView) row.findViewById(R.id.module_release_rating_count);
     	distRatingCount.setText(String.valueOf(distribution.getRatingCount()));
-    	
+
         // Set the favorite count
         Button favoriteCount = (Button) row.findViewById(R.id.module_release_favorite);
         if (distribution.getFavoriteCount() > 0) {

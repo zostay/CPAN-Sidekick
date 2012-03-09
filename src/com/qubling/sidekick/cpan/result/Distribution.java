@@ -10,7 +10,7 @@ import android.os.Parcelable;
 
 /**
  * Details regarding a single CPAN distribution (a.k.a. release).
- * 
+ *
  * @author sterling
  *
  */

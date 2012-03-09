@@ -8,7 +8,7 @@ package com.qubling.sidekick.api;
 /**
  * Used with {@link StringTemplate} to allow for a complete JSON object or
  * array to be filled into a template.
- * 
+ *
  * @author sterling
  *
  */

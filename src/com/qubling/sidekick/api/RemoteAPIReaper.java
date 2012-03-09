@@ -7,21 +7,21 @@ import android.os.AsyncTask;
 import android.os.Handler;
 
 /**
- * This provides a simple {@link Runnable} that will reap the given remote API 
- * objects if they are running. This should be run via 
+ * This provides a simple {@link Runnable} that will reap the given remote API
+ * objects if they are running. This should be run via
  * {@link Handler#postDelayed(Runnable, long)}.
- * 
+ *
  * @author sterling
  *
  * @param <Task> The {@link RemoteAPI} type that this will reap.
  */
 public class RemoteAPIReaper<Task extends RemoteAPI<?, ?, ?>> implements Runnable {
 	private Collection<Task> tasksToReap;
-	
+
 	public RemoteAPIReaper() {
 		tasksToReap = new HashSet<Task>();
 	}
-	
+
 	public void addTaskToReap(Task taskToReap) {
 		this.tasksToReap.add(taskToReap);
 	}

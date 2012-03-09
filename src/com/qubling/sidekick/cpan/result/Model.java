@@ -10,7 +10,7 @@ import android.os.Parcelable;
 
 /**
  * Base class for data models.
- * 
+ *
  * @author sterling
  *
  */

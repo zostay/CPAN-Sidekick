@@ -17,7 +17,7 @@ import android.os.AsyncTask;
 /**
  * General purpose remote API class that provides tools for initiating HTTP
  * requests through {@link HttpClientManager}.
- * 
+ *
  * @author sterling
  *
  * @param <Params> See {@link AsyncTask}

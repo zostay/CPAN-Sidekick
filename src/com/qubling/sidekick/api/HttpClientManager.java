@@ -16,55 +16,55 @@ import android.util.Log;
 /**
  * The HTTP client manager lets us reuse an {@link HttpClient} without risking
  * a memory leak (or that's the hope).
- * 
+ *
  * @author sterling
  *
  */
 public class HttpClientManager {
-	
+
 	// TODO Set this up from a resource string somehow
     private static final String METACPAN_API_USER_AGENT = "CPAN-Sidekick/0.1 (Android)";
-    
+
     public static interface OnHttpClientAction {
     	public void onActionsStart();
     	public void onActionsComplete();
     }
-    
+
     private Collection<OnHttpClientAction> listeners = new HashSet<OnHttpClientAction>();
 
     private HttpClient client;
     private int actionsRemaining;
-    
+
     public HttpClientManager() {
     	this.actionsRemaining = 0;
     }
 
     public HttpClientManager(int actionsRemaining) {
         this.actionsRemaining = actionsRemaining;
-        
+
         if (actionsRemaining > 0) setupClient();
     }
-    
+
     public synchronized void addOnHttpClientActionListener(OnHttpClientAction listener) {
     	listeners.add(listener);
     }
-    
+
     public synchronized void removeOnHttpClientActionListener(OnHttpClientAction listener) {
     	listeners.remove(listener);
     }
-    
+
     public synchronized void notifyActionsStart() {
     	for (OnHttpClientAction listener : listeners) {
     		listener.onActionsStart();
     	}
     }
-    
+
     public synchronized void notifyActionsComplete() {
     	for (OnHttpClientAction listener : listeners) {
     		listener.onActionsComplete();
     	}
     }
-    
+
     private void setupClient() {
     	if (!isClientAvailable()) {
 	        try {
@@ -76,11 +76,11 @@ public class HttpClientManager {
 	        	Log.i("HttpClientManager", "Falling back to DefaultHttpClient");
 	            client = new DefaultHttpClient();
 	        }
-	        
+
 	        notifyActionsStart();
     	}
     }
-    
+
     private void cleanupClient() {
 //    	Log.d("HttpClientManager", "Actions Remaining: " + actionsRemaining);
     	if (isClientAvailable() && isComplete()) {
@@ -91,7 +91,7 @@ public class HttpClientManager {
                 // ignore
             }
             client = null;
-        	
+
         	notifyActionsComplete();
     	}
     }
@@ -106,17 +106,17 @@ public class HttpClientManager {
     public synchronized boolean isComplete() {
         return actionsRemaining <= 0;
     }
-    
+
     private boolean isClientAvailable() {
     	return client != null;
     }
-    
+
     public synchronized void attachAction(int count) {
 //    	Log.d("HttpClientManager", "attachAction(" + count + ")");
     	actionsRemaining += count;
     	setupClient();
     }
-    
+
     public synchronized void attachAction() {
 //    	Log.d("HttpClientManager", "attachAction()");
     	actionsRemaining++;

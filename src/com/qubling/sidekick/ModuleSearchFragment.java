@@ -1,40 +1,40 @@
 package com.qubling.sidekick;
 
-import com.qubling.sidekick.api.cpan.ModuleSearch;
-import com.qubling.sidekick.cpan.collection.ModelList;
-import com.qubling.sidekick.cpan.collection.ModuleList;
-import com.qubling.sidekick.cpan.result.Module;
-import com.qubling.sidekick.widget.ModuleListAdapter;
-
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+
+import com.qubling.sidekick.api.cpan.ModuleSearch;
+import com.qubling.sidekick.cpan.collection.ModelList;
+import com.qubling.sidekick.cpan.collection.ModuleList;
+import com.qubling.sidekick.cpan.result.Module;
+import com.qubling.sidekick.widget.ModuleListAdapter;
 
 public class ModuleSearchFragment extends ModuleFragment implements ModuleList.OnModuleListUpdated, ModuleList.OnMoreItemsRequested {
 
     private ModuleList moduleList;
-    private String lastSearchText;    
-    
+    private String lastSearchText;
+
     private ModuleSearch currentSearch;
-    
+
     public ModuleSearch getCurrentSearch() {
     	return currentSearch;
     }
-    
+
     private ListView getSearchResultsListView() {
         ListView resultsView = (ListView) getActivity().findViewById(R.id.list_search_results);
         return resultsView;
     }
-    
+
     public void onSearchCompleted(ModuleListAdapter adapter) {
     	((ModuleSearchActivity) getActivity()).onSearchCompleted(adapter);
     }
-    
+
 	@Override
     public void onCreate(Bundle state) {
 	    super.onCreate(state);
@@ -71,7 +71,7 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
         ModuleListAdapter adapter = new ModuleListAdapter(this.getActivity(), moduleList);
         ListView moduleListView = getSearchResultsListView();
         moduleListView.setAdapter(adapter);
-        
+
         moduleListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View row, int position, long id) {
@@ -83,7 +83,7 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
                     return;
 
                 getModuleActivity().onModuleClick(currentModule);
-                
+
                 ModuleListAdapter adapter = (ModuleListAdapter) parent.getAdapter();
                 adapter.setCurrentModule(position);
             }
@@ -93,7 +93,7 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
         onModelListUpdated(moduleList);
         freshenModuleList();
     }
-	
+
 	public void doNewSearch(String searchText) {
         // Clear the module list
         moduleList.clear();
@@ -116,7 +116,7 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
 	@Override
     public void onSaveInstanceState(Bundle state) {
 	    super.onSaveInstanceState(state);
-	    
+
 	    // If running, it should stop now...
 	    cancelSearch();
 
@@ -124,11 +124,11 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
         state.putParcelableArray("moduleList", moduleList.toArray(modules));
         state.putInt("moduleListTotalCount", moduleList.getTotalCount());
         state.putString("lastSearchText", lastSearchText);
-        
+
         // Remember which one has been tapped
         ModuleListAdapter adapter = (ModuleListAdapter) getSearchResultsListView().getAdapter();
         int position = adapter.getCurrentModule();
-        
+
         state.putInt("moduleListCurrentSelection", position);
     }
 
@@ -136,7 +136,7 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
     public void onModelListUpdated(ModelList<Module> modelList) {
     	// Might happen if the results are still loading when the screen is rotated or something
     	if (getActivity() == null) return;
-    	
+
         ModuleList list = (ModuleList) modelList;
 //        Log.d("ModuleSearchActivity", "onModelListUpdated");
 
@@ -150,18 +150,18 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
 
             // Show search results
             adapter = new ModuleListAdapter(getActivity(), list);
-            
+
             ListView moduleListView = getSearchResultsListView();
             moduleListView.setAdapter(adapter);
         }
-        
+
         else {
         	ListView moduleSearchResults = (ListView) getActivity().findViewById(R.id.list_search_results);
         	adapter = (ModuleListAdapter) moduleSearchResults.getAdapter();
         }
-        
+
         onSearchCompleted(adapter);
-        
+
         cancelSearch();
     }
 
@@ -189,7 +189,7 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
 
     private synchronized void startSearch(ModuleSearch newSearch, boolean modal) {
         getModuleActivity().startSearch(modal);
-    	
+
     	currentSearch = newSearch;
         currentSearch.execute();
     }
@@ -201,7 +201,7 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
             currentSearch.cancel(false);
             currentSearch = null;
         }
-        
+
         getModuleActivity().cancelSearch();
     }
 }

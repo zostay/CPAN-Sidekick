@@ -31,7 +31,7 @@ import com.qubling.sidekick.cpan.result.Author;
 
 /**
  * Used to fetch Gravatar bitmaps for a list of authors.
- * 
+ *
  * @author sterling
  *
  */
@@ -39,7 +39,7 @@ public class GravatarFetcher extends RemoteAPI<Author, Void, Void> {
 
     private static final float GRAVATAR_DP_SIZE = 61f;
     private static final Pattern RESIZE_GRAVATAR_PATTERN = Pattern.compile("([?&])s=[0-9]+\\b");
-    
+
     private static final int TIMEOUT_CONNECTION = 2000;
     private static final int TIMEOUT_SOCKET = 3000;
     public static final int TIMEOUT_ABSOLUTE = 10000;
@@ -65,7 +65,7 @@ public class GravatarFetcher extends RemoteAPI<Author, Void, Void> {
         String resizedGravatarURL = resizeGravatarMatcher.replaceFirst("$1s=" + gravatarPixelSize);
 
         try {
-        	
+
         	// Make sure we don't get stuck waiting for a Gravatar
             HttpParams httpParams = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_CONNECTION);
@@ -88,7 +88,7 @@ public class GravatarFetcher extends RemoteAPI<Author, Void, Void> {
             Log.e("GravatarFetcher", "Error loading Gravatar: " + e);
             return null;
         }
-        
+
         // During testing, I sometimes get an IllegalStateException: Connection is not open.
         // This is a stupid exception and nearly any illegal state exception we can ignore by
         // just not loading the Gravatar. The bitmap is not *that* important.
@@ -120,7 +120,7 @@ public class GravatarFetcher extends RemoteAPI<Author, Void, Void> {
     @Override
     protected void onPostExecute(Void result) {
         authorList.notifyModelListUpdated();
-        
+
         super.onPostExecute(result);
     }
 }

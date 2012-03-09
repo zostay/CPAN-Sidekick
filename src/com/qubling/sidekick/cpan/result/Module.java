@@ -17,7 +17,7 @@ import com.qubling.sidekick.cpan.collection.ModuleList;
 
 /**
  * Information for a single Perl module loaded from CPAN.
- * 
+ *
  * @author sterling
  *
  */

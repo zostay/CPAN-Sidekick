@@ -10,14 +10,14 @@ import android.widget.ImageButton;
 
 public class ModuleSearchHelperEclair extends ModuleSearchHelper {
     private boolean searchRunning = false;
-    
+
 	public ModuleSearchHelperEclair(ModuleSearchActivity activity) {
 		super(activity);
 	}
-	
+
 	@Override
 	public void onCreate(Bundle state) {
-        
+
         final EditText queryText = (EditText) getActivity().findViewById(R.id.text_search);
 
         final ImageButton searchButton = (ImageButton) getActivity().findViewById(R.id.button_search);
@@ -28,7 +28,7 @@ public class ModuleSearchHelperEclair extends ModuleSearchHelper {
                     // Hide the screen keyboard
                     InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(searchButton.getWindowToken(), 0);
-                    
+
                     getActivity().doNewSearch(queryText.getText().toString());
             }
         });
@@ -57,7 +57,7 @@ public class ModuleSearchHelperEclair extends ModuleSearchHelper {
             }
         });
 	}
-	
+
 	@Override
 	public Boolean onSearchRequested() {
 		EditText queryText = (EditText) getActivity().findViewById(R.id.text_search);

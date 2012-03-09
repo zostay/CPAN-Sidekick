@@ -15,7 +15,7 @@ import com.qubling.sidekick.cpan.result.Module;
 
 /**
  * An activity for viewing a single CPAN module.
- * 
+ *
  * @author sterling
  *
  */
@@ -27,7 +27,7 @@ public class ModuleViewActivity extends ModuleActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.module_view);
-        
+
         // Setup BugSense
         BugSenseHandler.setup(this, Util.BUGSENSE_API_KEY);
 
@@ -35,7 +35,7 @@ public class ModuleViewActivity extends ModuleActivity {
         Module 	module = (Module) intent.getParcelableExtra(EXTRA_MODULE);
 
         setTitle(module.getName());
-        
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         ModuleViewFragment fragment = (ModuleViewFragment) fragmentManager.findFragmentById(R.id.module_view_fragment);
         fragment.setModule(module);
@@ -45,7 +45,7 @@ public class ModuleViewActivity extends ModuleActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
     	FragmentManager fragmentManager = getSupportFragmentManager();
     	ModuleViewFragment fragment = (ModuleViewFragment) fragmentManager.findFragmentById(R.id.module_view_fragment);
-    	
+
     	boolean result = fragment.onKeyDown(keyCode, event);
     	if (result) {
     		return result;

@@ -21,7 +21,7 @@ import com.qubling.sidekick.cpan.result.Distribution;
 
 /**
  * This fetches the favorites for a list of distributions.
- * 
+ *
  * @author sterling
  *
  */
@@ -123,7 +123,7 @@ public class FavoriteByDistributionSearch extends MetaCPANSearch<Void> {
     @Override
     protected void onPostExecute(Void result) {
         distributionList.notifyModelListUpdated();
-        
+
         super.onPostExecute(result);
     }
 }

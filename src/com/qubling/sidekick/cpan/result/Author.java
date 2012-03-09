@@ -11,7 +11,7 @@ import android.os.Parcelable;
 
 /**
  * Details about a single CPAN author.
- * 
+ *
  * @author sterling
  *
  */

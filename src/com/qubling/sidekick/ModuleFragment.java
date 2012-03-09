@@ -1,5 +1,7 @@
 package com.qubling.sidekick;
 
+import android.support.v4.app.Fragment;
+
 import com.qubling.sidekick.api.HttpClientManager;
 import com.qubling.sidekick.api.cpan.AuthorByDistributionSearch;
 import com.qubling.sidekick.api.cpan.FavoriteByDistributionSearch;
@@ -10,12 +12,10 @@ import com.qubling.sidekick.cpan.collection.ModelList;
 import com.qubling.sidekick.cpan.collection.ModuleList;
 import com.qubling.sidekick.cpan.result.Module;
 
-import android.support.v4.app.Fragment;
-
 /**
  * Base class for all module search/view fragments. These fragments must always
  * be used within a {@link ModuleActivity}.
- * 
+ *
  * @author sterling
  */
 public class ModuleFragment extends Fragment {
@@ -86,10 +86,10 @@ public class ModuleFragment extends Fragment {
     		clientManager = new HttpClientManager();
     		clientManager.addOnHttpClientActionListener(getModuleActivity());
     	}
-    	
+
     	return clientManager;
     }
-    
+
     protected ModuleActivity getModuleActivity() {
     	return (ModuleActivity) getActivity();
     }

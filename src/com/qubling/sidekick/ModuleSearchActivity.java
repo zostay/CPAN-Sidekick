@@ -13,11 +13,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
-import android.widget.TextView;
 
 import com.bugsense.trace.BugSenseHandler;
 import com.qubling.sidekick.cpan.result.Module;
@@ -25,7 +23,7 @@ import com.qubling.sidekick.widget.ModuleListAdapter;
 
 /**
  * An activity for searching for CPAN modules.
- * 
+ *
  * @author sterling
  *
  */
@@ -33,34 +31,34 @@ public class ModuleSearchActivity extends ModuleActivity {
     final ModuleSearchHelper moduleSearchHelper = ModuleSearchHelper.createInstance(this);
 
     private ProgressDialog progressDialog;
-    
+
     public void onSearchCompleted(ModuleListAdapter adapter) {
     	if (progressDialog != null) {
     		progressDialog.dismiss();
     		progressDialog = null;
     	}
-    	
+
     	// Show more help when we have results
     	ModuleViewPlaceholderFragment placeholderFragment = getModuleViewPlacholderFragment();
     	if (placeholderFragment != null) {
     		placeholderFragment.onSearchCompleted(adapter);
     	}
     }
-    
+
     private ModuleSearchFragment getModuleSearchFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         return (ModuleSearchFragment) fragmentManager.findFragmentById(R.id.module_search_fragment);
     }
-    
+
     private boolean isTwoPanelView() {
     	View view = findViewById(R.id.module_view_fragment_container);
     	return view != null;
     }
-    
+
     private ModuleViewPlaceholderFragment getModuleViewPlacholderFragment() {
     	FragmentManager fragmentManager = getSupportFragmentManager();
     	ModuleViewThingyFragment fragment = (ModuleViewThingyFragment) fragmentManager.findFragmentById(R.id.module_view_fragment_container);
-    	
+
     	if (fragment instanceof ModuleViewPlaceholderFragment) {
     		return (ModuleViewPlaceholderFragment) fragment;
     	}
@@ -68,13 +66,13 @@ public class ModuleSearchActivity extends ModuleActivity {
     		return null;
     	}
     }
-    
+
     private boolean isModuleViewFragmentAPlaceholder() {
     	FragmentManager fragmentManager = getSupportFragmentManager();
     	ModuleViewThingyFragment fragment = (ModuleViewThingyFragment) fragmentManager.findFragmentById(R.id.module_view_fragment_container);
     	return fragment != null && fragment instanceof ModuleViewPlaceholderFragment;
     }
-    
+
     private ModuleViewFragment getModuleViewFragment() {
     	if (isModuleViewFragmentAPlaceholder()) {
     		return null;
@@ -84,26 +82,26 @@ public class ModuleSearchActivity extends ModuleActivity {
     		return (ModuleViewFragment) fragmentManager.findFragmentById(R.id.module_view_fragment_container);
     	}
     }
-    
+
     private boolean convertToRealViewFragment() {
     	FragmentManager fragmentManager = getSupportFragmentManager();
     	ModuleViewThingyFragment fragment = (ModuleViewThingyFragment) fragmentManager.findFragmentById(R.id.module_view_fragment_container);
-    	
+
     	if (fragment == null) return false;
-    	
+
     	// We do in fact have a placeholder to convert?
     	if (fragment instanceof ModuleViewPlaceholderFragment) {
     		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
     		fragmentTransaction.replace(R.id.module_view_fragment_container, new ModuleViewFragment());
-    		
+
     		// Do not add to back stack. We don't want to go back to the placeholder
     		fragmentTransaction.commit();
-    		
+
     		// Go ahead and execute because we do this only immediately before showing the POD
     		// TODO There's probably a better, concurrent way of doing this
     		fragmentManager.executePendingTransactions();
     	}
-    	
+
     	return true;
     }
 
@@ -114,15 +112,15 @@ public class ModuleSearchActivity extends ModuleActivity {
 
         // Setup the view
         setContentView(R.layout.module_search);
-        
+
         // Setup BugSense
         BugSenseHandler.setup(this, Util.BUGSENSE_API_KEY);
-        
+
         // Initialize the fragment, if on a tablet
         if (isTwoPanelView()) {
         	boolean showingModuleViewer = state != null
         			                   && state.getBoolean("showingModuleViewer");
-        	
+
         	Fragment viewFragment;
         	if (showingModuleViewer) {
         		viewFragment = new ModuleViewFragment();
@@ -130,28 +128,28 @@ public class ModuleSearchActivity extends ModuleActivity {
         	else {
         		viewFragment = new ModuleViewPlaceholderFragment();
         	}
-        	
+
         	if(state == null)
 	        	getSupportFragmentManager()
 	        		.beginTransaction()
 	        		.add(R.id.module_view_fragment_container, viewFragment)
 	    			.commit();
         }
-        
+
         // Check to see if we got a search
         Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
         	String query = intent.getStringExtra(SearchManager.QUERY);
             getModuleSearchFragment().doNewSearch(query);
         }
-        
+
         moduleSearchHelper.onCreate(state);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle state) {
 	    super.onSaveInstanceState(state);
-	    
+
 	    state.putBoolean("showingModuleViewer", !isModuleViewFragmentAPlaceholder());
     }
 
@@ -162,7 +160,7 @@ public class ModuleSearchActivity extends ModuleActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
     	return moduleSearchHelper.onCreateOptionsMenu(menu);
     }
-    
+
     @Override
     public boolean onSearchRequested() {
     	Boolean result = moduleSearchHelper.onSearchRequested();
@@ -176,7 +174,7 @@ public class ModuleSearchActivity extends ModuleActivity {
 
 	@Override
     public synchronized void startSearch(boolean modal) {
-    	
+
     	// If modal, show the progress bar dialog
         if (modal) {
             String searchingCPAN = getResources().getString(R.string.dialog_searching_cpan);
@@ -190,9 +188,9 @@ public class ModuleSearchActivity extends ModuleActivity {
                 }
             });
         }
-    	
+
     }
-	
+
 	public void doNewSearch(String searchText) {
 		getModuleSearchFragment().doNewSearch(searchText);
 	}
@@ -206,18 +204,18 @@ public class ModuleSearchActivity extends ModuleActivity {
             progressDialog = null;
         }
     }
-    
+
     @Override
     protected void onModuleClick(Module currentModule) {
     	boolean convertable = convertToRealViewFragment();
     	ModuleViewFragment fragment = getModuleViewFragment();
-        
+
         // Tablet
         if (convertable) {
         	fragment.setModule(currentModule);
         	fragment.fetchModule();
         }
-        
+
         // Phone
         else {
         	Intent moduleViewIntent = new Intent(this, ModuleViewActivity.class);
@@ -229,10 +227,10 @@ public class ModuleSearchActivity extends ModuleActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
     	ModuleViewFragment fragment = getModuleViewFragment();
-    	
+
     	if (fragment == null)
     		return super.onKeyDown(keyCode, event);
-    	
+
     	boolean result = fragment.onKeyDown(keyCode, event);
     	if (result) {
     		return result;

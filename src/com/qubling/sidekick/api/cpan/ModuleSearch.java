@@ -25,7 +25,7 @@ import com.qubling.sidekick.cpan.result.Module;
 
 /**
  * A module for performing a keyword search on modules.
- * 
+ *
  * @author sterling
  *
  */
@@ -118,7 +118,7 @@ public class ModuleSearch extends MetaCPANSearch<Module[]> {
         new AuthorByDistributionSearch(getClientManager(), getContext(), moduleList.extractAuthorList()).execute();
         new FavoriteByDistributionSearch(getClientManager(), getContext(), distributionList, distributionMap).execute();
         new RatingByDistributionSearch(getClientManager(), getContext(), distributionList, distributionMap).execute();
-        
+
         super.onPostExecute(modules);
     }
 

@@ -18,7 +18,7 @@ import com.qubling.sidekick.cpan.result.Module;
 
 /**
  * A class for fetching a single module's POD.
- * 
+ *
  * @author sterling
  *
  */

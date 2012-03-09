@@ -5,18 +5,18 @@
  */
 package com.qubling.sidekick;
 
-import com.bugsense.trace.BugSenseHandler;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.bugsense.trace.BugSenseHandler;
 
 /**
  * An activity for starting up the application. This is mostly used to give the
  * application a name of "CPAN", but jump into the module search activity. This
  * may do some other initial application setup or switch activities based upon
  * the type of device, etc.
- * 
+ *
  * @author sterling
  *
  */
@@ -25,9 +25,9 @@ public class SidekickLauncher extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
         // Setup BugSense
-        BugSenseHandler.setup(this, Util.BUGSENSE_API_KEY);	
+        BugSenseHandler.setup(this, Util.BUGSENSE_API_KEY);
 
         Intent intent = new Intent(this, ModuleSearchActivity.class);
         startActivity(intent);
