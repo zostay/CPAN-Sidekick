@@ -1,4 +1,4 @@
-package com.qubling.sidekick;
+package com.qubling.sidekick.module;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.qubling.sidekick.R;
+import com.qubling.sidekick.R.id;
+import com.qubling.sidekick.R.layout;
 import com.qubling.sidekick.widget.ModuleListAdapter;
 
 public class ModuleViewPlaceholderFragment extends Fragment implements ModuleViewThingyFragment {

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.bugsense.trace.BugSenseHandler;
+import com.qubling.sidekick.module.ModuleSearchActivity;
 
 /**
  * An activity for starting up the application. This is mostly used to give the

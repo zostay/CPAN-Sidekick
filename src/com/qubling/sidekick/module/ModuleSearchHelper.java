@@ -1,4 +1,7 @@
-package com.qubling.sidekick;
+package com.qubling.sidekick.module;
+
+import com.qubling.sidekick.R;
+import com.qubling.sidekick.R.menu;
 
 import android.os.Build;
 import android.os.Bundle;

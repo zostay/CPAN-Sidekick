@@ -1,4 +1,4 @@
-package com.qubling.sidekick;
+package com.qubling.sidekick.module;
 
 import java.util.Collections;
 import java.util.Stack;
@@ -14,6 +14,9 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.qubling.sidekick.R;
+import com.qubling.sidekick.R.id;
+import com.qubling.sidekick.R.layout;
 import com.qubling.sidekick.api.HttpClientManager;
 import com.qubling.sidekick.api.cpan.MetaCPANAPI;
 import com.qubling.sidekick.api.cpan.ModulePODFetcher;

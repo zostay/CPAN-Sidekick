@@ -1,4 +1,4 @@
-package com.qubling.sidekick;
+package com.qubling.sidekick.module;
 
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -9,6 +9,9 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.qubling.sidekick.R;
+import com.qubling.sidekick.R.id;
+import com.qubling.sidekick.R.layout;
 import com.qubling.sidekick.api.cpan.ModuleSearch;
 import com.qubling.sidekick.cpan.collection.ModelList;
 import com.qubling.sidekick.cpan.collection.ModuleList;

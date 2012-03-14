@@ -3,7 +3,7 @@
  *
  * This software may be distributed under the terms of the Artistic License 2.0.
  */
-package com.qubling.sidekick;
+package com.qubling.sidekick.module;
 
 import android.app.ProgressDialog;
 import android.app.SearchManager;
@@ -18,6 +18,11 @@ import android.view.Menu;
 import android.view.View;
 
 import com.bugsense.trace.BugSenseHandler;
+import com.qubling.sidekick.R;
+import com.qubling.sidekick.Util;
+import com.qubling.sidekick.R.id;
+import com.qubling.sidekick.R.layout;
+import com.qubling.sidekick.R.string;
 import com.qubling.sidekick.cpan.result.Module;
 import com.qubling.sidekick.widget.ModuleListAdapter;
 

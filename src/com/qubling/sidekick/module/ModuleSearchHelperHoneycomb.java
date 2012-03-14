@@ -1,4 +1,7 @@
-package com.qubling.sidekick;
+package com.qubling.sidekick.module;
+
+import com.qubling.sidekick.R;
+import com.qubling.sidekick.R.id;
 
 import android.app.SearchManager;
 import android.content.Context;
