@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/release_information_screen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <fragment
+        android:id="@+id/fragment1"
+        android:name="com.qubling.sidekick.release.ReleaseInfoFragment"
+        android:layout_width="300dp"
+        android:layout_height="match_parent" >
+        <!-- Preview: layout=@layout/release_view_fragment -->
+    </fragment>
+
+    <fragment
+        android:id="@+id/module_view_fragment"
+        android:name="com.qubling.sidekick.module.ModuleViewFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+        <!-- Preview: layout=@layout/module_view_fragment -->
+    </fragment>
+
+</LinearLayout>
