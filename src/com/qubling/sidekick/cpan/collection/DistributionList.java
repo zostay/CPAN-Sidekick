@@ -5,6 +5,7 @@
  */
 package com.qubling.sidekick.cpan.collection;
 
+import com.qubling.sidekick.cpan.result.Author;
 import com.qubling.sidekick.cpan.result.Distribution;
 
 /**
@@ -14,11 +15,11 @@ import com.qubling.sidekick.cpan.result.Distribution;
  *
  */
 public class DistributionList extends ModelList<Distribution> {
-    public synchronized Distribution load(String name, String version) {
+    public synchronized Distribution load(String name, String version, Author author) {
         Distribution distribution = find(Distribution.makePrimaryID(name, version));
 
         if (distribution == null) {
-            distribution = new Distribution(name, version);
+            distribution = new Distribution(name, version, author);
             add(distribution);
         }
 

@@ -26,7 +26,6 @@ public class Module extends Model {
     private String name;
     private String moduleAbstract;
 
-    private Author author;
     private Distribution distribution;
 
     public static Module fromModuleSearch(JSONObject json, AuthorList authors, DistributionList distributions) {
@@ -55,36 +54,32 @@ public class Module extends Model {
         try { distributionVersion = json.getString("version");      } catch (JSONException e) {}
 
         Author author = authors.load(authorPauseId);
-        Distribution distribution = distributions.load(distributionName, distributionVersion);
+        Distribution distribution = distributions.load(distributionName, distributionVersion, author);
 
-        return new Module(name, moduleAbstract, author, distribution);
+        return new Module(name, moduleAbstract, distribution);
     }
 
     public Module(String name) {
         this.name = name;
         this.moduleAbstract = "...";
-        this.author = null;
         this.distribution = null;
     }
 
-    public Module(String name, String moduleAbstract, Author author, Distribution distribution) {
+    public Module(String name, String moduleAbstract, Distribution distribution) {
         this.name           = name;
         this.moduleAbstract = moduleAbstract;
-        this.author         = author;
         this.distribution   = distribution;
     }
 
-    public Module(String name, Author author, Distribution distribution) {
+    public Module(String name, Distribution distribution) {
         this.name           = name;
         this.moduleAbstract = "...";
-        this.author         = author;
         this.distribution   = distribution;
     }
 
     public Module(Parcel in) {
         name           = in.readString();
         moduleAbstract = in.readString();
-        author         = in.readParcelable(Module.class.getClassLoader());
         distribution   = in.readParcelable(Module.class.getClassLoader());
     }
 
@@ -120,11 +115,7 @@ public class Module extends Model {
     }
 
     public Author getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Author author) {
-        this.author = author;
+        return distribution.getAuthor();
     }
 
     public Distribution getDistribution() {
@@ -133,7 +124,7 @@ public class Module extends Model {
 
     public boolean isModuleFetchNeeded() {
         return "...".equals(this.moduleAbstract)
-            || author == null
+            || distribution.getAuthor() == null
             || distribution == null;
     }
 
@@ -163,7 +154,6 @@ public class Module extends Model {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(moduleAbstract);
-        dest.writeParcelable(author, flags);
         dest.writeParcelable(distribution, flags);
     }
 

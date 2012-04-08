@@ -19,6 +19,12 @@ case $1 in
     favorites)
         file="distribution_favorites_template.json"
         path="/favorite/_search"
+        ;;
+
+    *)
+        echo "Say what!?"
+        exit
+        ;;
 esac
 
 curl -d@$file 'http://api.metacpan.org'$path > /tmp/try-metacpan-api.log

@@ -5,6 +5,8 @@
  */
 package com.qubling.sidekick.cpan.result;
 
+import java.util.Date;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -36,6 +38,24 @@ public abstract class Model implements Parcelable {
 
     protected static void writeParcelBoolean(Parcel dest, boolean value) {
         dest.writeByte((byte) (value ? 1 : 0));
+    }
+    
+    protected static Date readParcelDate(Parcel in) {
+    	Date result = null;
+    	
+    	long updatedMilliseconds = in.readLong();
+        if (updatedMilliseconds >= 0) result =new Date(updatedMilliseconds);
+    	
+        return result;
+    }
+    
+    protected static void writeParcelDate(Parcel dest, Date value) {
+    	if (value == null) {
+    		dest.writeLong(-1L);
+    	}
+    	else {
+    		dest.writeLong(value.getTime());
+    	}
     }
 
     public abstract Object getPrimaryID();

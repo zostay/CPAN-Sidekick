@@ -106,7 +106,7 @@ public class ModuleSearch extends MetaCPANSearch<Module[]> {
             // map authors and eliminate dupes
             Author author = module.getAuthor();
             if (authorMap.containsKey(author.getPauseId())) {
-                module.setAuthor(authorMap.get(author.getPauseId()));
+                module.getDistribution().setAuthor(authorMap.get(author.getPauseId()));
             }
             else {
                 authorMap.put(author.getPauseId(), author);

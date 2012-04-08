@@ -55,13 +55,15 @@ public class ModuleFetcher extends MetaCPANAPI<Void, Void, Void> {
                 module.setAbstract(json.getString("abstract"));
 
                 // Basic Author Info
-                module.setAuthor(new Author(json.getString("author")));
+                Author author = new Author(json.getString("author"));
 
                 // Basic Distribution Info
                 module.setDistribution(
                 		new Distribution(
                 				json.getString("distribution"),
-                				json.getString("version")));
+                				json.getString("version"),
+                				author));
+                
             }
             else {
                 // TODO Show an alert dialog or toast when this happens

@@ -5,6 +5,8 @@
  */
 package com.qubling.sidekick.cpan.result;
 
+import java.util.Date;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -18,6 +20,15 @@ public class Distribution extends Model {
 
     private String name;
     private String version;
+    
+    private Author author;
+    
+    // Other metadata
+    private Date updated;
+    private String status;
+    private String maturity;
+    private boolean authorized;
+    private String license;
 
     private boolean ratingLoaded = false;
     private int ratingCount;
@@ -28,14 +39,24 @@ public class Distribution extends Model {
     private boolean myFavorite;
 
 
-    public Distribution(String name, String version) {
+    public Distribution(String name, String version, Author author) {
         this.name    = name;
         this.version = version;
+        this.author  = author;
     }
 
     public Distribution(Parcel in) {
         name           = in.readString();
         version        = in.readString();
+        
+        author         = in.readParcelable(Distribution.class.getClassLoader());
+        
+        updated        = readParcelDate(in);
+        status         = in.readString();
+        maturity       = in.readString();
+        authorized     = readParcelBoolean(in);
+        license        = in.readString();
+        
         ratingLoaded   = readParcelBoolean(in);
         ratingCount    = in.readInt();
         rating         = in.readDouble();
@@ -80,7 +101,55 @@ public class Distribution extends Model {
         this.version = distributionVersion;
     }
 
-    public int getRatingCount() {
+    public Author getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
+    }
+
+    public Date getUpdated() {
+    	return updated;
+    }
+
+	public void setUpdated(Date updated) {
+    	this.updated = updated;
+    }
+
+	public String getStatus() {
+    	return status;
+    }
+
+	public void setStatus(String status) {
+    	this.status = status;
+    }
+
+	public String getMaturity() {
+    	return maturity;
+    }
+
+	public void setMaturity(String maturity) {
+    	this.maturity = maturity;
+    }
+
+	public boolean isAuthorized() {
+    	return authorized;
+    }
+
+	public void setAuthorized(boolean authorized) {
+    	this.authorized = authorized;
+    }
+
+	public String getLicense() {
+    	return license;
+    }
+
+	public void setLicense(String license) {
+    	this.license = license;
+    }
+
+	public int getRatingCount() {
         return ratingCount;
     }
 
@@ -133,6 +202,12 @@ public class Distribution extends Model {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(version);
+        dest.writeParcelable(author, flags);
+        writeParcelDate(dest, updated);
+        dest.writeString(status);
+        dest.writeString(maturity);
+        writeParcelBoolean(dest, authorized);
+        dest.writeString(license);
         writeParcelBoolean(dest, ratingLoaded);
         dest.writeInt(ratingCount);
         dest.writeDouble(rating);

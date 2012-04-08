@@ -49,7 +49,7 @@ public final class ModuleHelper {
         if (author == null) author = new Author("...");
 
         Distribution distribution = item.getDistribution();
-        if (distribution == null) distribution = new Distribution("...", "...");
+        if (distribution == null) distribution = new Distribution("...", "...", null);
 
         // Set the distribution author, name, and version
         TextView distributionName = (TextView) row.findViewById(R.id.module_author_distribution);
