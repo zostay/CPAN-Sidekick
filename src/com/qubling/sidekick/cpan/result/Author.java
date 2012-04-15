@@ -9,6 +9,8 @@ import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.qubling.sidekick.api.Model;
+
 /**
  * Details about a single CPAN author.
  *

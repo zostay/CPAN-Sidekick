@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.qubling.sidekick.R;
-import com.qubling.sidekick.cpan.collection.ModelList;
+import com.qubling.sidekick.api.ModelList;
 import com.qubling.sidekick.cpan.collection.ModuleList;
 import com.qubling.sidekick.cpan.result.Module;
 

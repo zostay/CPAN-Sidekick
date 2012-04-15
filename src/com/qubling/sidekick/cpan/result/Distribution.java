@@ -10,6 +10,8 @@ import java.util.Date;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.qubling.sidekick.api.Model;
+
 /**
  * Details regarding a single CPAN distribution (a.k.a. release).
  *

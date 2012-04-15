@@ -5,6 +5,7 @@
  */
 package com.qubling.sidekick.cpan.collection;
 
+import com.qubling.sidekick.api.ModelList;
 import com.qubling.sidekick.cpan.result.Author;
 import com.qubling.sidekick.cpan.result.Distribution;
 

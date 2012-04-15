@@ -1,13 +1,12 @@
 package com.qubling.sidekick.module;
 
-import com.qubling.sidekick.R;
-import com.qubling.sidekick.R.id;
-
 import android.app.SearchManager;
 import android.content.Context;
 import android.view.Menu;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
+
+import com.qubling.sidekick.R;
 
 public class ModuleSearchHelperHoneycomb extends ModuleSearchHelper {
 	public ModuleSearchHelperHoneycomb(ModuleSearchActivity activity) {

@@ -13,8 +13,6 @@ import android.view.KeyEvent;
 import com.bugsense.trace.BugSenseHandler;
 import com.qubling.sidekick.R;
 import com.qubling.sidekick.Util;
-import com.qubling.sidekick.R.id;
-import com.qubling.sidekick.R.layout;
 import com.qubling.sidekick.cpan.result.Module;
 
 /**

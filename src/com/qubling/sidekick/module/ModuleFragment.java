@@ -3,12 +3,12 @@ package com.qubling.sidekick.module;
 import android.support.v4.app.Fragment;
 
 import com.qubling.sidekick.api.HttpClientManager;
+import com.qubling.sidekick.api.ModelList;
 import com.qubling.sidekick.api.cpan.AuthorByDistributionSearch;
 import com.qubling.sidekick.api.cpan.FavoriteByDistributionSearch;
 import com.qubling.sidekick.api.cpan.ModuleFetcher;
 import com.qubling.sidekick.api.cpan.RatingByDistributionSearch;
 import com.qubling.sidekick.cpan.collection.DistributionList;
-import com.qubling.sidekick.cpan.collection.ModelList;
 import com.qubling.sidekick.cpan.collection.ModuleList;
 import com.qubling.sidekick.cpan.result.Module;
 

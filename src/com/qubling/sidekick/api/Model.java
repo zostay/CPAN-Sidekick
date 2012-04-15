@@ -3,7 +3,7 @@
  *
  * This software may be distributed under the terms of the Artistic License 2.0.
  */
-package com.qubling.sidekick.cpan.result;
+package com.qubling.sidekick.api;
 
 import java.util.Date;
 
@@ -17,6 +17,7 @@ import android.os.Parcelable;
  *
  */
 public abstract class Model implements Parcelable {
+	
     public interface OnModelChanged {
         public void onModelChange(Model changedModel);
     }

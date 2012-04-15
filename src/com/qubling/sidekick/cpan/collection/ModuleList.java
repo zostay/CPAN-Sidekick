@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.qubling.sidekick.api.ModelList;
 import com.qubling.sidekick.cpan.result.Module;
 
 /**

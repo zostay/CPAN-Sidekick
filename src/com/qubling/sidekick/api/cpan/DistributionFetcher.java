@@ -16,7 +16,6 @@ import android.util.Log;
 
 import com.qubling.sidekick.api.HttpClientManager;
 import com.qubling.sidekick.cpan.collection.DistributionList;
-import com.qubling.sidekick.cpan.result.Author;
 import com.qubling.sidekick.cpan.result.Distribution;
 
 public class DistributionFetcher extends MetaCPANAPI<Void, Void, Void> {

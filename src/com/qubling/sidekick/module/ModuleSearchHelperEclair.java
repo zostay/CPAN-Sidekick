@@ -1,8 +1,5 @@
 package com.qubling.sidekick.module;
 
-import com.qubling.sidekick.R;
-import com.qubling.sidekick.R.id;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -10,6 +7,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+
+import com.qubling.sidekick.R;
 
 public class ModuleSearchHelperEclair extends ModuleSearchHelper {
     private boolean searchRunning = false;

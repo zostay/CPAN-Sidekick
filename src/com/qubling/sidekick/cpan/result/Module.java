@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.qubling.sidekick.api.Model;
 import com.qubling.sidekick.cpan.collection.AuthorList;
 import com.qubling.sidekick.cpan.collection.DistributionList;
 import com.qubling.sidekick.cpan.collection.ModuleList;
@@ -162,5 +163,4 @@ public class Module extends Model {
         moduleList.add(this);
         return moduleList;
     }
-
 }

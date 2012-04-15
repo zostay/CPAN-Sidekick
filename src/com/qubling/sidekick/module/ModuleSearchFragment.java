@@ -10,10 +10,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.qubling.sidekick.R;
-import com.qubling.sidekick.R.id;
-import com.qubling.sidekick.R.layout;
+import com.qubling.sidekick.api.ModelList;
 import com.qubling.sidekick.api.cpan.ModuleSearch;
-import com.qubling.sidekick.cpan.collection.ModelList;
 import com.qubling.sidekick.cpan.collection.ModuleList;
 import com.qubling.sidekick.cpan.result.Module;
 import com.qubling.sidekick.widget.ModuleListAdapter;

@@ -1,12 +1,11 @@
 package com.qubling.sidekick.module;
 
-import com.qubling.sidekick.R;
-import com.qubling.sidekick.R.menu;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+
+import com.qubling.sidekick.R;
 
 public abstract class ModuleSearchHelper {
     public static ModuleSearchHelper createInstance(ModuleSearchActivity activity) {
