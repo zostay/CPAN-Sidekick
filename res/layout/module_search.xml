@@ -34,7 +34,7 @@
     
 	    <fragment
 	        android:id="@+id/module_search_fragment"
-	        android:name="com.qubling.sidekick.ModuleSearchFragment"
+	        android:name="com.qubling.sidekick.module.ModuleSearchFragment"
 	        android:layout_width="fill_parent"
 	        android:layout_height="fill_parent" >
 	        <!-- Preview: layout=@layout/module_search_fragment -->
