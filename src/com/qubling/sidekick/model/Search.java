@@ -120,13 +120,13 @@ public class Search<SomeInstance extends Instance> {
 			@Override
 			public void run() {
 				while (!jobQueue.isEmpty()) {
-					Job<ResultSet<SomeInstance>> nextFetcherSequence = jobQueue.poll();
+					Job<ResultSet<SomeInstance>> nextJob = jobQueue.poll();
 					
-					if (nextFetcherSequence.getActivity() != null) {
-						nextFetcherSequence.getActivity().runOnUiThread(nextFetcherSequence);
+					if (nextJob.getActivity() != null) {
+						nextJob.getActivity().runOnUiThread(nextJob);
 					}
 					else {
-						jobExecutor.submit(nextFetcherSequence);
+						nextJob.run();
 					}
 				}
 			}
