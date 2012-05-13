@@ -169,4 +169,23 @@ public class ModuleModel extends Model<Module> {
 		Fetcher<Release> fetcher = getSchema().getReleaseModel().fetchRatings(releases);
 		return new SubqueryFetcher<Module, Release>(fetcher, null);
 	}
+	
+	public Fetcher<Module> fetchGravatars(final ResultSet<Module> modules, float gravatarDpSize) {
+		ResultSet<Author> authors = new ResultSet<Author>();
+		authors.addRemap(modules, new ResultSet.Remap<Module, Author>() {
+			@Override
+			public Collection<Author> map(Module module) {
+				Author author = module.getAuthor();
+				if (author == null) {
+					return Collections.emptyList();
+				}
+				else {
+					return Collections.singleton(author);
+				}
+			}
+		});
+		
+		Fetcher<Author> fetcher = getSchema().getAuthorModel().fetchGravatars(authors, gravatarDpSize);
+		return new SubqueryFetcher<Module, Author>(fetcher, null);
+	}
 }
