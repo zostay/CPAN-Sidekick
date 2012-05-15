@@ -74,7 +74,7 @@ public class ModuleModel extends Model<Module> {
 			        results.add(module);
 		        }
 
-		        // totalCount = searchResult.getJSONObject("hits").getInt("total");
+		        results.setTotalSize(response.getJSONObject("hits").getInt("total"));
             }
 		};
 		
@@ -168,6 +168,25 @@ public class ModuleModel extends Model<Module> {
 		
 		Fetcher<Release> fetcher = getSchema().getReleaseModel().fetchRatings(releases);
 		return new SubqueryFetcher<Module, Release>(fetcher, null);
+	}
+	
+	public Fetcher<Module> fetchAuthors(final ResultSet<Module> modules) {
+		ResultSet<Author> authors = new ResultSet<Author>();
+		authors.addRemap(modules, new ResultSet.Remap<Module, Author>() {
+			@Override
+			public Collection<Author> map(Module module) {
+				Author author = module.getAuthor();
+				if (author == null) {
+					return Collections.emptyList();
+				}
+				else {
+					return Collections.singleton(author);
+				}
+			}
+		});
+		
+		Fetcher<Author> fetcher = getSchema().getAuthorModel().fetch(authors);
+		return new SubqueryFetcher<Module, Author>(fetcher, null);
 	}
 	
 	public Fetcher<Module> fetchGravatars(final ResultSet<Module> modules, float gravatarDpSize) {

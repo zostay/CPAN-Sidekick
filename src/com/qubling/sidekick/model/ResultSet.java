@@ -1,37 +1,40 @@
 package com.qubling.sidekick.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class ResultSet<SomeInstance extends Instance> implements Collection<SomeInstance>, Iterable<SomeInstance> {
-	public interface Remap<FromInstance extends Instance, ToInstance extends Instance> {
+public class ResultSet<SomeInstance extends Instance<SomeInstance>> implements Collection<SomeInstance>, Iterable<SomeInstance> {
+	public interface Remap<FromInstance extends Instance<FromInstance>, ToInstance extends Instance<ToInstance>> {
 		public Collection<ToInstance> map(FromInstance instance);
 	}
 	
-	public interface OnInstanceUpdated<SomeInstance extends Instance> {
-		public void notifyInstanceUpdated(ResultSet<SomeInstance> results, SomeInstance instance);
-	}
-	
-	public interface OnChanged<SomeInstance extends Instance> {
-		public void notifyChanged(ResultSet<SomeInstance> results);
-	}
-	
 	private Map<String, SomeInstance> results;
-	
-	private Collection<OnChanged<SomeInstance>> onChangedListeners = new HashSet<OnChanged<SomeInstance>>();
-	private Collection<OnInstanceUpdated<SomeInstance>> onInstanceUpdatedListeners = new HashSet<OnInstanceUpdated<SomeInstance>>();
+	private Map<Integer, String> resultIndex;
+	private int totalSize = -1;
 	
 	public ResultSet() {
 		results = new LinkedHashMap<String, SomeInstance>();
+		resultIndex = new HashMap<Integer, String>();
+	}
+	
+	public ResultSet(ArrayList<SomeInstance> loadedResults) {
+		this();
+		addAll(loadedResults);
 	}
 	
 	@Override
-	public boolean add(SomeInstance instance) {
-		results.put(instance.getKey(), instance);
-		return true;
+	public boolean add(SomeInstance instance) {		
+		if (results.put(instance.getKey(), instance) == null) {
+			resultIndex.put(results.size(), instance.getKey());
+			return true;
+		}
+		
+		return false;
 	}
 	
 	@Override
@@ -39,14 +42,16 @@ public class ResultSet<SomeInstance extends Instance> implements Collection<Some
 		boolean modified = false;
 		
 		for (SomeInstance instance : instances) {
-			modified = true;
-			results.put(instance.getKey(), instance);
+			modified = results.put(instance.getKey(), instance) == null;
+			if (modified) {
+				resultIndex.put(results.size(), instance.getKey());
+			}
 		}
 		
 		return modified;
 	}
 	
-	public <OtherInstance extends Instance> void addRemap(ResultSet<OtherInstance> others, Remap<OtherInstance, SomeInstance> map) {
+	public <OtherInstance extends Instance<OtherInstance>> void addRemap(ResultSet<OtherInstance> others, Remap<OtherInstance, SomeInstance> map) {
 		for (OtherInstance otherInstance : others) {
 			addAll(map.map(otherInstance));
 		}
@@ -54,7 +59,17 @@ public class ResultSet<SomeInstance extends Instance> implements Collection<Some
 	
 	@Override
 	public void clear() {
+		resultIndex.clear();
 		results.clear();
+	}
+	
+	protected void reindex() {
+		resultIndex.clear();
+		
+		int i = 0;
+		for (SomeInstance instance : results.values()) {
+			resultIndex.put(i++, instance.getKey());
+		}
 	}
 	
 	@Override
@@ -64,7 +79,7 @@ public class ResultSet<SomeInstance extends Instance> implements Collection<Some
 		HashSet<String> keepKeys = new HashSet<String>();
 		for (Object o : collection) {
 			if (o instanceof Instance) {
-				Instance instance = (Instance) o;
+				Instance<?> instance = (Instance<?>) o;
 				if (instance.equals(results.get(instance.getKey()))) {
 					keepKeys.add(instance.getKey());
 				}
@@ -78,6 +93,10 @@ public class ResultSet<SomeInstance extends Instance> implements Collection<Some
 			}
 		}
 		
+		if (modified) {
+			reindex();
+		}
+		
 		return modified;
 	}
 	
@@ -87,11 +106,15 @@ public class ResultSet<SomeInstance extends Instance> implements Collection<Some
 		
 		for (Object o : collection) {
 			if (o instanceof Instance) {
-				Instance instance = (Instance) o;
+				Instance<?> instance = (Instance<?>) o;
 				if (instance.equals(results.get(instance.getKey()))) {
 					modified |= results.remove(instance.getKey()) != null;
 				}
 			}
+		}
+		
+		if (modified) {
+			reindex();
 		}
 		
 		return modified;
@@ -100,9 +123,15 @@ public class ResultSet<SomeInstance extends Instance> implements Collection<Some
 	@Override
 	public boolean remove(Object o) {
 		if (o instanceof Instance) {
-			Instance instance = (Instance) o;
-			if (!instance.equals(results.get(instance.getKey()))) return false;
-			return results.remove(instance.getKey()) != null;
+			Instance<?> instance = (Instance<?>) o;
+			if (!instance.equals(results.get(instance.getKey()))) 
+				return false;
+			
+			Instance<SomeInstance> removed = results.remove(instance.getKey());
+			if (removed != null) {
+				reindex();
+				return true;
+			}
 		}
 		
 		return false;
@@ -112,10 +141,16 @@ public class ResultSet<SomeInstance extends Instance> implements Collection<Some
 		return results.get(key);
 	}
 	
+	public SomeInstance get(int index) {
+		if (index >= results.size()) return null;
+		String key = resultIndex.get(index);
+		return results.get(key);
+	}
+	
 	@Override
 	public boolean contains(Object o) {
 		if (o instanceof Instance) {
-			Instance instance = (Instance) o;
+			Instance<?> instance = (Instance<?>) o;
 			String key = instance.getKey();
 			
 			if (!results.containsKey(key) || !instance.equals(results.get(key))) {
@@ -133,7 +168,7 @@ public class ResultSet<SomeInstance extends Instance> implements Collection<Some
 	public boolean containsAll(Collection<?> collection) {
 		for (Object o : collection) {
 			if (o instanceof Instance) {
-				Instance instance = (Instance) o;
+				Instance<?> instance = (Instance<?>) o;
 				String key = instance.getKey();
 				
 				if (!results.containsKey(key) || !instance.equals(results.get(key))) {
@@ -153,6 +188,14 @@ public class ResultSet<SomeInstance extends Instance> implements Collection<Some
 		return results.size();
 	}
 	
+	public int getTotalSize() {
+    	return totalSize > -1 ? totalSize : results.size();
+    }
+
+	public void setTotalSize(int totalSize) {
+    	this.totalSize = totalSize;
+    }
+
 	@Override
 	public boolean isEmpty() {
 		return results.isEmpty();

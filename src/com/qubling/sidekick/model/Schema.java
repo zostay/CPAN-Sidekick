@@ -78,12 +78,12 @@ public class Schema {
 		return controlExecutor;
 	}
 
-	public <SomeInstance extends Instance> Fetcher<SomeInstance> setupFetcher(Fetcher<SomeInstance> fetcher) {
+	public <SomeInstance extends Instance<SomeInstance>> Fetcher<SomeInstance> setupFetcher(Fetcher<SomeInstance> fetcher) {
 		fetcher.setSchema(this);
 		return fetcher;
 	}
 	
-	public <SomeInstance extends Instance> Search<SomeInstance> doSearch(Fetcher<SomeInstance>... fetchers) {
+	public <SomeInstance extends Instance<SomeInstance>> Search<SomeInstance> doFetch(Fetcher<SomeInstance>... fetchers) {
 		return new Search<SomeInstance>(controlExecutor, jobExecutor, fetchers);
 	}
 }
