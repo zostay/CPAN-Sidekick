@@ -40,8 +40,8 @@ public class SubqueryFetcher<SomeInstance extends Instance<SomeInstance>, Foreig
 	}
 
 	@Override
-    public void onComplete(Fetcher<ForeignInstance> fetcher, ResultSet<ForeignInstance> results) {
-		fetcher.removeOnCompleteListener(this);
+    public void onFinishedFetch(Fetcher<ForeignInstance> fetcher, ResultSet<ForeignInstance> results) {
+		fetcher.removeOnFinishedListener(this);
 		if (returnMap != null)
 			returnMap.applyMap(results, getResultSet());
     }

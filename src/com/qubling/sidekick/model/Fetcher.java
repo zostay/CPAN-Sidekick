@@ -13,19 +13,41 @@ import org.apache.http.client.HttpClient;
 
 import com.qubling.sidekick.api.HttpClientManager;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
-public abstract class Fetcher<SomeInstance extends Instance> implements Callable<ResultSet<SomeInstance>>{
-	public interface OnComplete<SomeInstance extends Instance> {
-		public abstract void onComplete(Fetcher<SomeInstance> fetcher, ResultSet<SomeInstance> results);
+public abstract class Fetcher<SomeInstance extends Instance<SomeInstance>> implements Callable<ResultSet<SomeInstance>>{
+	public interface OnFinished<SomeInstance extends Instance<SomeInstance>> {
+		public abstract void onFinishedFetch(Fetcher<SomeInstance> fetcher, ResultSet<SomeInstance> results);
 	}
 	
-	private Set<OnComplete<SomeInstance>> onCompleteListeners;
+	public static class OnFinishedUi<SomeInstance extends Instance<SomeInstance>> implements OnFinished<SomeInstance> {
+		private final Activity activity;
+		private final OnFinished<SomeInstance> listener;
+		
+		public OnFinishedUi(Activity activity, OnFinished<SomeInstance> listener) {
+			this.activity = activity;
+			this.listener = listener;
+		}
+		
+		public void onFinishedFetch(final Fetcher<SomeInstance> fetcher, final ResultSet<SomeInstance> results) {
+			activity.runOnUiThread(new Runnable() {
+				
+				@Override
+				public void run() {
+					listener.onFinishedFetch(fetcher, results);
+				}
+			});
+		}
+	}
+	
+	private Set<OnFinished<SomeInstance>> onFinishedListeners;
 	private ResultSet<SomeInstance> results;
 	private Schema schema;
 	
 	public Fetcher() {
-		this.onCompleteListeners = new HashSet<OnComplete<SomeInstance>>();
+		this.onFinishedListeners = new HashSet<OnFinished<SomeInstance>>();
 		this.results = new ResultSet<SomeInstance>();
 	}
 	
@@ -53,24 +75,28 @@ public abstract class Fetcher<SomeInstance extends Instance> implements Callable
 		return getSchema().getJobExecutor();
 	}
 	
-	public void addOnCompleteListener(OnComplete<SomeInstance> onCompleteListener) {
-    	onCompleteListeners.add(onCompleteListener);
-    }
-
-	public void removeOnCompleteListener(OnComplete<SomeInstance> onCompleteListener) {
-    	onCompleteListeners.remove(onCompleteListener);
+	public void addOnFinishedListener(OnFinished<SomeInstance> onCompleteListener) {
+    	onFinishedListeners.add(onCompleteListener);
     }
 	
-	public void notifyOnComplete() {
+	public void addOnFinishedListenerUi(Activity activity, OnFinished<SomeInstance> listener) {
+		onFinishedListeners.add(new OnFinishedUi<SomeInstance>(activity, listener));
+	}
+
+	public void removeOnFinishedListener(OnFinished<SomeInstance> onCompleteListener) {
+    	onFinishedListeners.remove(onCompleteListener);
+    }
+	
+	public void notifyOnFinished() {
 		ResultSet<SomeInstance> results = getResultSet();
-		for (OnComplete<SomeInstance> listener : onCompleteListeners) {
-			listener.onComplete(this, results);
+		for (OnFinished<SomeInstance> listener : onFinishedListeners) {
+			listener.onFinishedFetch(this, results);
 		}
 	}
 	
 	public final ResultSet<SomeInstance> call() throws Exception {
 		ResultSet<SomeInstance> results = execute();
-		notifyOnComplete();
+		notifyOnFinished();
 		return results;
 	}
 	
@@ -115,5 +141,32 @@ public abstract class Fetcher<SomeInstance extends Instance> implements Callable
         }
 
         return contentStr.toString();
+    }
+    
+    public Fetcher<SomeInstance> whenFinishedNotify(OnFinished<SomeInstance> listener) {
+    	addOnFinishedListener(listener);
+    	return this;
+    }
+    
+    public Fetcher<SomeInstance> whenFinishedNotifyUi(Activity activity, OnFinished<SomeInstance> listener) {
+    	addOnFinishedListenerUi(activity, listener);
+    	return this;
+    }
+    
+    public Fetcher<SomeInstance> thenDoFetch(Fetcher<SomeInstance> fetcher) {
+    	addOnFinishedListener(new OnFinished<SomeInstance>() {
+			
+			@Override
+			public void onFinishedFetch(Fetcher<SomeInstance> fetcher, ResultSet<SomeInstance> results) {
+				try {
+					fetcher.call();
+				}
+				catch (Exception e) {
+					Log.e("Fetcher", "Error while executing followup fetcher.", e);
+				}
+			}
+		});
+    	
+    	return this;
     }
 }

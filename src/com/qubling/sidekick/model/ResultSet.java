@@ -173,33 +173,9 @@ public class ResultSet<SomeInstance extends Instance> implements Collection<Some
 		return results.values().iterator();
     }
 	
-	public void addOnChangedListener(OnChanged<SomeInstance> listener) {
-		onChangedListeners.add(listener);
-	}
-	
-	public void removeOnChangedListener(OnChanged<SomeInstance> listener) {
-		onChangedListeners.remove(listener);
-	}
-	
-	public void notifyChanged() {
-		for (OnChanged<SomeInstance> changeListener : onChangedListeners) {
-			changeListener.notifyChanged(this);
-		}
-	}
-	
-	public void addOnInstanceUpdatedListener(OnInstanceUpdated<SomeInstance> listener) {
-		onInstanceUpdatedListeners.add(listener);
-	}
-	
-	public void removeOnInstanceUpdatedListener(OnInstanceUpdated<SomeInstance> listener) {
-		onInstanceUpdatedListeners.remove(listener);
-	}
-	
-	public void notifyInstanceUpdated(SomeInstance instance) {
-		for (OnInstanceUpdated<SomeInstance> updateListener : onInstanceUpdatedListeners) {
-			updateListener.notifyInstanceUpdated(this, instance);
-		}
-		
-		notifyChanged();
+	public ArrayList<SomeInstance> toArrayList() {
+		ArrayList<SomeInstance> arrayList = new ArrayList<SomeInstance>(results.size());
+		arrayList.addAll(this);
+		return arrayList;
 	}
 }

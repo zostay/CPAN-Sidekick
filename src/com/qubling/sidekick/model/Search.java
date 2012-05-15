@@ -5,17 +5,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import android.app.Activity;
 import android.util.Log;
 
-public class Search<SomeInstance extends Instance> {
-	public interface OnComplete<SomeInstance extends Instance> {
-		public abstract void onComplete(Search<SomeInstance> search, ResultSet<SomeInstance> results);
+public class Search<SomeInstance extends Instance<SomeInstance>> {
+	public interface OnFinishedFetch<SomeInstance extends Instance<SomeInstance>> {
+		public abstract void onFinishedFetch(List<ResultSet<SomeInstance>> results);
 	}
 	
 	private static class Job<Thing> implements Runnable {
@@ -23,6 +26,7 @@ public class Search<SomeInstance extends Instance> {
 		private ExecutorService jobExecutor;
 		private Collection<Callable<Thing>> callables;
 		private Activity activity;
+		private List<Future<Thing>> results;
 		
 		public Job(int runCount, ExecutorService jobExecutor, Callable<Thing>... callables) {
 			this.runCount = runCount;
@@ -52,12 +56,13 @@ public class Search<SomeInstance extends Instance> {
 				CountDownLatch latch = new CountDownLatch(runCount);
 				Search.countDownCallables(latch, callables);
 				for (Callable<Thing> callable : callables) {
+					results = new ArrayList<Future<Thing>>();
 					if (callable instanceof Fetcher<?>) {
 						Fetcher<?> fetcher = (Fetcher<?>) callable;
-						fetcher.getPreferredExecutor().submit(callable);
+						results.add(fetcher.getPreferredExecutor().submit(callable));
 					}
 					else {
-						jobExecutor.submit(callable);
+						results.add(jobExecutor.submit(callable));
 					}
 				}
 				latch.await();
@@ -69,6 +74,26 @@ public class Search<SomeInstance extends Instance> {
 
 		public Activity getActivity() {
 			return activity;
+		}
+		
+		public List<Thing> getResults() {
+			if (results == null) return null;
+			
+			try {
+				List<Thing> things = new ArrayList<Thing>();
+				for (Future<Thing> futureThing : results) {
+					things.add(futureThing.get());
+				}
+				return things;
+			}
+			catch (ExecutionException e) {
+				Log.e("Search", "Execution failed getting results.", e);
+				return null;
+			}
+			catch (InterruptedException e) {
+				Log.e("Search", "Execution interrupted getting results.", e);
+				return null;
+			}
 		}
 	}
 	
@@ -89,6 +114,7 @@ public class Search<SomeInstance extends Instance> {
 	}
 	
 	private final Deque<Job<ResultSet<SomeInstance>>> jobQueue;
+	private final Deque<List<ResultSet<SomeInstance>>> results;
 	private final ExecutorService controlExecutor;
 	private final ExecutorService jobExecutor;
 	
@@ -98,20 +124,48 @@ public class Search<SomeInstance extends Instance> {
 		
 		jobQueue = new ArrayDeque<Job<ResultSet<SomeInstance>>>();
 		jobQueue.offer(new Job<ResultSet<SomeInstance>>(fetchers.length, jobExecutor, fetchers));
+		
+		results = new ArrayDeque<List<ResultSet<SomeInstance>>>();
 	}
 	
-	public Search<SomeInstance> thenDoSearch(Fetcher<SomeInstance>... fetchers) {
+	public Search<SomeInstance> thenDoFetch(Fetcher<SomeInstance>... fetchers) {
 		jobQueue.offer(new Job<ResultSet<SomeInstance>>(fetchers.length, jobExecutor, fetchers));
 		return this;
 	}
 	
-	public Search<SomeInstance> whenComplete(Runnable... runnables) {
+	public Search<SomeInstance> whenFinishedRun(Runnable... runnables) {
 		jobQueue.offer(new Job<ResultSet<SomeInstance>>(runnables.length, jobExecutor, runnables));
 		return this;
 	}
 	
-	public Search<SomeInstance> whenCompleteRunInUiThread(Activity activity, Runnable runnable) {
+	public Search<SomeInstance> whenFinishedRunInUiThread(Activity activity, Runnable runnable) {
 		jobQueue.offer(new Job<ResultSet<SomeInstance>>(1, jobExecutor, runnable, activity));
+		return this;
+	}
+	
+	public Search<SomeInstance> whenFinishedNotify(final OnFinishedFetch<SomeInstance> listener) {
+		Runnable notifier = new Runnable() {
+			
+			@Override
+			public void run() {
+				listener.onFinishedFetch(results.peek());
+			}
+		};
+		
+		jobQueue.offer(new Job<ResultSet<SomeInstance>>(1, jobExecutor, notifier));
+		return this;
+	}
+	
+	public Search<SomeInstance> whenFinishedNotifyUi(Activity activity, final OnFinishedFetch<SomeInstance> listener) {
+		Runnable notifier = new Runnable() {
+			
+			@Override
+			public void run() {
+				listener.onFinishedFetch(results.peek());
+			}
+		};
+		
+		jobQueue.offer(new Job<ResultSet<SomeInstance>>(1, jobExecutor, notifier, activity));
 		return this;
 	}
 	
@@ -120,13 +174,23 @@ public class Search<SomeInstance extends Instance> {
 			@Override
 			public void run() {
 				while (!jobQueue.isEmpty()) {
-					Job<ResultSet<SomeInstance>> nextJob = jobQueue.poll();
+					final Job<ResultSet<SomeInstance>> nextJob = jobQueue.poll();
 					
 					if (nextJob.getActivity() != null) {
-						nextJob.getActivity().runOnUiThread(nextJob);
+						final CountDownLatch uiLatch = new CountDownLatch(1);
+						nextJob.getActivity().runOnUiThread(new Runnable() {
+							
+							@Override
+							public void run() {
+								nextJob.run();
+								uiLatch.countDown();
+							}
+						});
+						results.push(nextJob.getResults());
 					}
 					else {
 						nextJob.run();
+						results.push(nextJob.getResults());
 					}
 				}
 			}
