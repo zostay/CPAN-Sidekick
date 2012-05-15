@@ -1,5 +1,8 @@
 package com.qubling.sidekick.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 public class Release extends Instance<Release> {
 	private String name;
 	private String version;
@@ -13,6 +16,16 @@ public class Release extends Instance<Release> {
 		super(model);
 		
 		this.name = name;
+	}
+	
+	public Release(Parcel in) {
+		name          = in.readString();
+		version       = in.readString();
+		author        = in.readParcelable(Release.class.getClassLoader());
+		favoriteCount = in.readInt();
+		myFavorite    = readParcelBoolean(in);
+		ratingCount   = in.readLong();
+		ratingMean    = in.readDouble();
 	}
 	
 	@Override
@@ -75,4 +88,33 @@ public class Release extends Instance<Release> {
 	public void setRatingMean(double ratingMean) {
     	this.ratingMean = ratingMean;
     }
+	
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+    	out.writeString(name);
+    	out.writeString(version);
+    	out.writeParcelable(author, flags);
+    	out.writeInt(favoriteCount);
+    	writeParcelBoolean(out, myFavorite);
+    	out.writeLong(ratingCount);
+    	out.writeDouble(ratingMean);
+    }
+
+    public static final Parcelable.Creator<Release> CREATOR
+            = new Parcelable.Creator<Release>() {
+        @Override
+        public Release createFromParcel(Parcel in) {
+            return new Release(in);
+        }
+
+        @Override
+        public Release[] newArray(int size) {
+            return new Release[size];
+        }
+    };
 }
