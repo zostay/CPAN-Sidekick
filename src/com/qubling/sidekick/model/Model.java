@@ -1,6 +1,7 @@
 package com.qubling.sidekick.model;
 
-public abstract class Model<SomeInstance extends Instance> {
+
+public abstract class Model<SomeInstance extends Instance<SomeInstance>> {
 	private final Schema schema;
 	private ResultSet<SomeInstance> objectCache;
 

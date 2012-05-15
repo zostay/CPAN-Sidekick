@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
-public class SubqueryFetcher<SomeInstance extends Instance, ForeignInstance extends Instance> extends Fetcher<SomeInstance> implements Fetcher.OnComplete<ForeignInstance> {
+public class SubqueryFetcher<SomeInstance extends Instance<SomeInstance>, ForeignInstance extends Instance<ForeignInstance>> extends Fetcher<SomeInstance> implements Fetcher.OnFinished<ForeignInstance> {
 	
-	public interface ReturnMap<ForeignInstance extends Instance, SomeInstance extends Instance> {
+	public interface ReturnMap<ForeignInstance extends Instance<ForeignInstance>, SomeInstance extends Instance<SomeInstance>> {
 		public void applyMap(ResultSet<ForeignInstance> fromResults, ResultSet<SomeInstance> toResults);
 	}
 

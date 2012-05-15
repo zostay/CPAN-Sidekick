@@ -7,7 +7,7 @@ import org.apache.http.client.methods.HttpGet;
 
 import android.util.Log;
 
-public class CPANDirectFetcher<SomeInstance extends Instance> extends CPANFetcher<SomeInstance> {
+public class CPANDirectFetcher<SomeInstance extends Instance<SomeInstance>> extends CPANFetcher<SomeInstance> {
 	
 	/**
 	 * An enumeration of direct retrieval URLs on MetaCPAN.
@@ -30,7 +30,7 @@ public class CPANDirectFetcher<SomeInstance extends Instance> extends CPANFetche
         }
     }
     
-    public interface FetchCallback<SomeInstance extends Instance> {
+    public interface FetchCallback<SomeInstance extends Instance<SomeInstance>> {
     	public void consumeResponse(String content, ResultSet<SomeInstance> results);
     }
     

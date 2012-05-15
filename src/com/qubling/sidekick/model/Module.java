@@ -1,6 +1,6 @@
 package com.qubling.sidekick.model;
 
-public class Module extends Instance {
+public class Module extends Instance<Module> {
 	private String name;
 	private String moduleAbstract; // keywords clashing with variable names? tsk, tsk... #NeedPerlSigils
 	private String rawPod;

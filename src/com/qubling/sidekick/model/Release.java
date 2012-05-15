@@ -1,6 +1,6 @@
 package com.qubling.sidekick.model;
 
-public class Release extends Instance {
+public class Release extends Instance<Release> {
 	private String name;
 	private String version;
 	private Author author;

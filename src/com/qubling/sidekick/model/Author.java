@@ -1,6 +1,6 @@
 package com.qubling.sidekick.model;
 
-public class Author extends Instance {
+public class Author extends Instance<Author> {
 	private String pauseId;
 	private Gravatar gravatar;
 	

@@ -2,7 +2,7 @@ package com.qubling.sidekick.model;
 
 import android.graphics.Bitmap;
 
-public class Gravatar extends Instance {
+public class Gravatar extends Instance<Gravatar> {
 	private String url;
 	private Bitmap bitmap;
 	

@@ -16,7 +16,7 @@ import android.util.Log;
 
 import com.qubling.sidekick.api.StringTemplate;
 
-public class CPANQueryFetcher<SomeInstance extends Instance> extends CPANFetcher<SomeInstance> {
+public class CPANQueryFetcher<SomeInstance extends Instance<SomeInstance>> extends CPANFetcher<SomeInstance> {
 
 	/**
 	 * An enumeration of search types on MetaCPAN.
@@ -42,7 +42,7 @@ public class CPANQueryFetcher<SomeInstance extends Instance> extends CPANFetcher
         }
     }
     
-    public interface SearchCallback<SomeInstance extends Instance> {
+    public interface SearchCallback<SomeInstance extends Instance<SomeInstance>> {
     	public void prepareRequest(Map<String, Object> variables);
     	public void consumeResponse(JSONObject response, ResultSet<SomeInstance> results) throws JSONException;
     }
