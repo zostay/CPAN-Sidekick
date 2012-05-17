@@ -2,7 +2,6 @@ package com.qubling.sidekick.model;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,11 +17,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-public class GravatarFetcher extends Fetcher<Gravatar> {
+public class GravatarFetcher extends AbstractFetcher<Gravatar> implements UpdateFetcher<Gravatar> {
+	
 	private float gravatarDpSize;
 	private int timeoutAbsolute;
-	
-	private List<String> gravatarUrls;
     
     private static final Pattern RESIZE_GRAVATAR_PATTERN = Pattern.compile("([?&])s=[0-9]+\\b");
     private static final int TIMEOUT_CONNECTION = 2000;
@@ -30,14 +28,15 @@ public class GravatarFetcher extends Fetcher<Gravatar> {
     
     public static final int DEFAULT_TIMEOUT_ABSOLUTE = 10000;
     
-    public GravatarFetcher(List<String> gravatarUrls, float gravatarDpSize, int timeoutAbsolute) {
-    	this.gravatarUrls = gravatarUrls;
+    public GravatarFetcher(Model<Gravatar> model, float gravatarDpSize, int timeoutAbsolute) {
+    	super(model);
+    	
     	this.gravatarDpSize = gravatarDpSize;
     	this.timeoutAbsolute = timeoutAbsolute;
     }
     
-    public GravatarFetcher(List<String> gravatarUrls, float gravatarDpSize) {
-    	this(gravatarUrls, gravatarDpSize, DEFAULT_TIMEOUT_ABSOLUTE);
+    public GravatarFetcher(Model<Gravatar> model, float gravatarDpSize) {
+    	this(model, gravatarDpSize, DEFAULT_TIMEOUT_ABSOLUTE);
     }
     
 	public float getGravatarDpSize() {
@@ -50,17 +49,20 @@ public class GravatarFetcher extends Fetcher<Gravatar> {
 
 	@Override
     protected ResultSet<Gravatar> execute() {
-		ResultSet<Gravatar> results = getResultSet();
+		ResultSet<Gravatar> inputResults = getResultSet();
 		
-		for (String url : gravatarUrls) {
-            Bitmap bitmap = fetchBitmap(url);
-            Gravatar gravatar = getSchema().getGravatarModel().acquireInstance(url);
+		for (Gravatar gravatar : inputResults) {
+            Bitmap bitmap = fetchBitmap(gravatar.getUrl());
             gravatar.setBitmap(bitmap);
-            results.add(gravatar);
 		}
 		
-		return results;
+		return inputResults;
     }
+	
+	@Override
+	public void setIncomingResultSet(ResultSet<Gravatar> inputResults) {
+		setResultSet(inputResults);
+	}
 
     private Bitmap fetchBitmap(String gravatarURL) {
     	Context context = getContext();

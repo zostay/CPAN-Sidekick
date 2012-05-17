@@ -16,7 +16,8 @@ import android.util.Log;
 
 import com.qubling.sidekick.api.StringTemplate;
 
-public class CPANQueryFetcher<SomeInstance extends Instance<SomeInstance>> extends CPANFetcher<SomeInstance> {
+public abstract class CPANQueryFetcher<SomeInstance extends Instance<SomeInstance>> 
+	extends CPANFetcher<SomeInstance> implements LimitedFetcher<SomeInstance> {
 
 	/**
 	 * An enumeration of search types on MetaCPAN.
@@ -41,26 +42,21 @@ public class CPANQueryFetcher<SomeInstance extends Instance<SomeInstance>> exten
             return path;
         }
     }
-    
-    public interface SearchCallback<SomeInstance extends Instance<SomeInstance>> {
-    	public void prepareRequest(Map<String, Object> variables);
-    	public void consumeResponse(JSONObject response, ResultSet<SomeInstance> results) throws JSONException;
-    }
 
     public static final int DEFAULT_SIZE = 10;
     public static final int DEFAULT_FROM = 0;
     
     private final SearchSection searchSection;
     private final String searchTemplate;
-    private final SearchCallback<SomeInstance> searchCallback;
     
     private int size = DEFAULT_SIZE;
     private int from = DEFAULT_FROM;
     
-    public CPANQueryFetcher(SearchSection searchSection, String searchTemplate, SearchCallback<SomeInstance> searchCallback) {
+    public CPANQueryFetcher(Model<SomeInstance> model, SearchSection searchSection, String searchTemplate) {
+    	super(model);
+    	
     	this.searchSection   = searchSection;
     	this.searchTemplate  = searchTemplate;
-    	this.searchCallback = searchCallback;
     }
     
     protected ResultSet<SomeInstance> execute() {
@@ -68,11 +64,11 @@ public class CPANQueryFetcher<SomeInstance extends Instance<SomeInstance>> exten
     	variables.put("from", from);
     	variables.put("size", size);
     	
-    	getSearchCallback().prepareRequest(variables);
+    	prepareRequest(variables);
     	JSONObject searchResponse = makeMetaCPANRequest(variables);
     	
     	try {
-    		searchCallback.consumeResponse(searchResponse, getResultSet());
+    		consumeResponse(searchResponse);
     	}
     	
     	// TODO Notify BugSense if this happens...
@@ -82,6 +78,9 @@ public class CPANQueryFetcher<SomeInstance extends Instance<SomeInstance>> exten
     	
     	return getResultSet();
     }
+    
+    protected abstract void prepareRequest(Map<String, Object> variables);
+    protected abstract void consumeResponse(JSONObject searchResponse) throws JSONException;
 
     private JSONObject makeMetaCPANRequest(Map<String, Object> variables) {
         StringTemplate templater = new StringTemplate(getContext());
@@ -152,9 +151,5 @@ public class CPANQueryFetcher<SomeInstance extends Instance<SomeInstance>> exten
 
 	public String getSearchTemplate() {
     	return searchTemplate;
-    }
-
-	public SearchCallback<SomeInstance> getSearchCallback() {
-    	return searchCallback;
     }
 }

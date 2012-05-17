@@ -1,27 +1,24 @@
 package com.qubling.sidekick.model;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
-public class SubqueryFetcher<SomeInstance extends Instance<SomeInstance>, ForeignInstance extends Instance<ForeignInstance>> extends Fetcher<SomeInstance> implements Fetcher.OnFinished<ForeignInstance> {
+public class SubqueryFetcher<SomeInstance extends Instance<SomeInstance>, ForeignInstance extends Instance<ForeignInstance>> 
+	extends AbstractFetcher<SomeInstance> implements UpdateFetcher<SomeInstance> {
 	
-	public interface ReturnMap<ForeignInstance extends Instance<ForeignInstance>, SomeInstance extends Instance<SomeInstance>> {
-		public void applyMap(ResultSet<ForeignInstance> fromResults, ResultSet<SomeInstance> toResults);
+	private ResultSet.Remap<SomeInstance, ForeignInstance> remapper;
+	private UpdateFetcher<ForeignInstance> fetcher;
+	
+	public SubqueryFetcher(Model<SomeInstance> model, UpdateFetcher<ForeignInstance> fetcher, ResultSet.Remap<SomeInstance, ForeignInstance> remapper) {
+		super(model);
+		
+		this.fetcher = fetcher;
+		this.remapper = remapper;
 	}
-
-	private Collection<Fetcher<ForeignInstance>> fetchers;
-	private ReturnMap<ForeignInstance, SomeInstance> returnMap;
 	
-	public SubqueryFetcher(Fetcher<ForeignInstance> fetcher, ReturnMap<ForeignInstance, SomeInstance> returnMap) {
-		this.fetchers = Collections.singleton(fetcher);
-		this.returnMap = returnMap;
-	}
-	
-	public SubqueryFetcher(Collection<Fetcher<ForeignInstance>> fetchers, ReturnMap<ForeignInstance, SomeInstance> returnMap) {
-		this.fetchers = fetchers;
-		this.returnMap = returnMap;
+	@Override
+	public void setIncomingResultSet(ResultSet<SomeInstance> inputResults) {
+		setResultSet(inputResults);
 	}
 	
 	@Override
@@ -31,18 +28,16 @@ public class SubqueryFetcher<SomeInstance extends Instance<SomeInstance>, Foreig
 	
 	@Override
 	protected ResultSet<SomeInstance> execute() throws Exception {
-		CountDownLatch latch = new CountDownLatch(fetchers.size());
+		CountDownLatch latch = new CountDownLatch(1);
 		ExecutorService service = getSchema().getJobExecutor();
-		service.invokeAll(Search.countDownCallables(latch, fetchers));
+		
+		ResultSet<ForeignInstance> inputResults = new ResultSet<ForeignInstance>();
+		inputResults.addRemap(getResultSet(), remapper);
+		fetcher.setIncomingResultSet(inputResults);
+		
+		service.submit(Search.countDownCallable(latch, fetcher));
 		latch.await();
 		
 		return getResultSet();
 	}
-
-	@Override
-    public void onFinishedFetch(Fetcher<ForeignInstance> fetcher, ResultSet<ForeignInstance> results) {
-		fetcher.removeOnFinishedListener(this);
-		if (returnMap != null)
-			returnMap.applyMap(results, getResultSet());
-    }
 }

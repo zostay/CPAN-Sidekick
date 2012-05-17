@@ -7,7 +7,8 @@ import org.apache.http.client.methods.HttpGet;
 
 import android.util.Log;
 
-public class CPANDirectFetcher<SomeInstance extends Instance<SomeInstance>> extends CPANFetcher<SomeInstance> {
+public class CPANDirectFetcher<SomeInstance extends Instance<SomeInstance>> 
+	extends CPANFetcher<SomeInstance> {
 	
 	/**
 	 * An enumeration of direct retrieval URLs on MetaCPAN.
@@ -38,7 +39,9 @@ public class CPANDirectFetcher<SomeInstance extends Instance<SomeInstance>> exte
     private String urlSuffix;
     private FetchCallback<SomeInstance> fetchCallback;
     
-    public CPANDirectFetcher(FetchSection fetchSection, String urlSuffix, FetchCallback<SomeInstance> fetchCallback) {
+    public CPANDirectFetcher(Model<SomeInstance> model, FetchSection fetchSection, String urlSuffix, FetchCallback<SomeInstance> fetchCallback) {
+    	super(model);
+    	
     	this.fetchSection  = fetchSection;
     	this.urlSuffix     = urlSuffix;
     	this.fetchCallback = fetchCallback;

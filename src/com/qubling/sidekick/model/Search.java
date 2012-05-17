@@ -28,15 +28,29 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 		private Activity activity;
 		private List<Future<Thing>> results;
 		
-		public Job(int runCount, ExecutorService jobExecutor, Callable<Thing>... callables) {
-			this.runCount = runCount;
+		public Job(ExecutorService jobExecutor, Callable<Thing> callable) {
+			this.runCount = 1;
+			this.jobExecutor = jobExecutor;
+			this.callables = new ArrayList<Callable<Thing>>();
+			this.callables.add(callable);
+		}
+		
+		public Job(ExecutorService jobExecutor, Callable<Thing>... callables) {
+			this.runCount = callables.length;
 			this.jobExecutor = jobExecutor;
 			this.callables = new ArrayList<Callable<Thing>>();
 			Collections.addAll(this.callables, callables);
 		}
 		
-		public Job(int runCount, ExecutorService jobExecutor, Runnable... runnables) {
-			this.runCount = runCount;
+		public Job(ExecutorService jobExecutor, Runnable runnable) {
+			this.runCount = 1;
+			this.jobExecutor = jobExecutor;
+			this.callables = new ArrayList<Callable<Thing>>();
+			this.callables.add(Executors.callable(runnable, (Thing) null));
+		}
+		
+		public Job(ExecutorService jobExecutor, Runnable... runnables) {
+			this.runCount = runnables.length;
 			this.jobExecutor = jobExecutor;
 			this.callables = new ArrayList<Callable<Thing>>();
 			
@@ -45,8 +59,8 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 			}
 		}
 		
-		public Job(int runCount, ExecutorService jobExecutor, Runnable runnable, Activity activity) {
-			this(runCount, jobExecutor, runnable);
+		public Job(ExecutorService jobExecutor, Runnable runnable, Activity activity) {
+			this(jobExecutor, runnable);
 			this.activity = activity;
 		}
 		
@@ -97,20 +111,24 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 		}
 	}
 	
-	public static <Thing> Collection<Callable<Thing>> countDownCallables(final CountDownLatch latch, final Collection<? extends Callable<Thing>> plainCallables) {
+	public static <Thing> Collection<Callable<Thing>> countDownCallables(CountDownLatch latch, Collection<? extends Callable<Thing>> plainCallables) {
 		ArrayList<Callable<Thing>> latchedCallables = new ArrayList<Callable<Thing>>();
 		for (final Callable<Thing> callable : plainCallables) {
-			latchedCallables.add(new Callable<Thing>() {
-				@Override
-				public Thing call() throws Exception {
-					Thing results = callable.call();
-					latch.countDown();
-					return results;
-				}
-			});
+			latchedCallables.add(countDownCallable(latch, callable));
 		}
 		
 		return latchedCallables;
+	}
+	
+	public static <Thing> Callable<Thing> countDownCallable(final CountDownLatch latch, final Callable<Thing> plainCallable) {
+		return new Callable<Thing>() {
+			@Override
+			public Thing call() throws Exception {
+				Thing results = plainCallable.call();
+				latch.countDown();
+				return results;
+			}
+		};
 	}
 	
 	private final Deque<Job<ResultSet<SomeInstance>>> jobQueue;
@@ -118,28 +136,28 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 	private final ExecutorService controlExecutor;
 	private final ExecutorService jobExecutor;
 	
-	public Search(ExecutorService controlExecutor, ExecutorService jobExecutor, Fetcher<SomeInstance>... fetchers) {
+	public Search(ExecutorService controlExecutor, ExecutorService jobExecutor, Fetcher<SomeInstance> fetcher) {
 		this.controlExecutor = controlExecutor;
 		this.jobExecutor = jobExecutor;
 		
 		jobQueue = new ArrayDeque<Job<ResultSet<SomeInstance>>>();
-		jobQueue.offer(new Job<ResultSet<SomeInstance>>(fetchers.length, jobExecutor, fetchers));
+		jobQueue.offer(new Job<ResultSet<SomeInstance>>(jobExecutor, fetcher));
 		
 		results = new ArrayDeque<List<ResultSet<SomeInstance>>>();
 	}
 	
-	public Search<SomeInstance> thenDoFetch(Fetcher<SomeInstance>... fetchers) {
-		jobQueue.offer(new Job<ResultSet<SomeInstance>>(fetchers.length, jobExecutor, fetchers));
+	public Search<SomeInstance> thenDoFetch(UpdateFetcher<SomeInstance>... fetchers) {
+		jobQueue.offer(new Job<ResultSet<SomeInstance>>(jobExecutor, fetchers));
 		return this;
 	}
 	
 	public Search<SomeInstance> whenFinishedRun(Runnable... runnables) {
-		jobQueue.offer(new Job<ResultSet<SomeInstance>>(runnables.length, jobExecutor, runnables));
+		jobQueue.offer(new Job<ResultSet<SomeInstance>>(jobExecutor, runnables));
 		return this;
 	}
 	
 	public Search<SomeInstance> whenFinishedRunInUiThread(Activity activity, Runnable runnable) {
-		jobQueue.offer(new Job<ResultSet<SomeInstance>>(1, jobExecutor, runnable, activity));
+		jobQueue.offer(new Job<ResultSet<SomeInstance>>(jobExecutor, runnable, activity));
 		return this;
 	}
 	
@@ -152,7 +170,7 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 			}
 		};
 		
-		jobQueue.offer(new Job<ResultSet<SomeInstance>>(1, jobExecutor, notifier));
+		jobQueue.offer(new Job<ResultSet<SomeInstance>>(jobExecutor, notifier));
 		return this;
 	}
 	
@@ -165,7 +183,7 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 			}
 		};
 		
-		jobQueue.offer(new Job<ResultSet<SomeInstance>>(1, jobExecutor, notifier, activity));
+		jobQueue.offer(new Job<ResultSet<SomeInstance>>(jobExecutor, notifier, activity));
 		return this;
 	}
 	
@@ -173,6 +191,11 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 		controlExecutor.submit(new Runnable() {
 			@Override
 			public void run() {
+				
+				// Clone the job queue
+				Deque<Job<ResultSet<SomeInstance>>> jobQueue = new ArrayDeque<Search.Job<ResultSet<SomeInstance>>>();
+				jobQueue.addAll(Search.this.jobQueue);
+				
 				while (!jobQueue.isEmpty()) {
 					final Job<ResultSet<SomeInstance>> nextJob = jobQueue.poll();
 					
