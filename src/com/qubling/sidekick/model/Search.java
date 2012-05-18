@@ -131,6 +131,7 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 		};
 	}
 	
+	private final Fetcher<SomeInstance> originalFetcher;
 	private final Deque<Job<ResultSet<SomeInstance>>> jobQueue;
 	private final Deque<List<ResultSet<SomeInstance>>> results;
 	private final ExecutorService controlExecutor;
@@ -139,6 +140,7 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 	public Search(ExecutorService controlExecutor, ExecutorService jobExecutor, Fetcher<SomeInstance> fetcher) {
 		this.controlExecutor = controlExecutor;
 		this.jobExecutor = jobExecutor;
+		this.originalFetcher = fetcher;
 		
 		jobQueue = new ArrayDeque<Job<ResultSet<SomeInstance>>>();
 		jobQueue.offer(new Job<ResultSet<SomeInstance>>(jobExecutor, fetcher));
@@ -220,5 +222,21 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 		});
 		
 		return this;
+	}
+	
+	public Search<SomeInstance> fetchMore() {
+		if (originalFetcher instanceof LimitedFetcher<?>) {
+			LimitedFetcher<?> limitFetcher = (LimitedFetcher<?>) originalFetcher;
+			ResultSet<SomeInstance> results = originalFetcher.getResultSet();
+			if (results.getTotalSize() > limitFetcher.getSize()) {
+				limitFetcher.setFrom(limitFetcher.getSize());
+			}
+		}
+		
+		return start();
+	}
+	
+	public ResultSet<SomeInstance> getResultSet() {
+		return originalFetcher.getResultSet();
 	}
 }

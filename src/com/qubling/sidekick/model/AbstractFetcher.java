@@ -64,7 +64,7 @@ public abstract class AbstractFetcher<SomeInstance extends Instance<SomeInstance
 	
 	public ResultSet<SomeInstance> getResultSet() {
 		if (results == null)
-			results = new ResultSet<SomeInstance>();
+			results = new Results<SomeInstance>();
 		return results;
 	}
 	

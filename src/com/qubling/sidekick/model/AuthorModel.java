@@ -18,7 +18,7 @@ public class AuthorModel extends Model<Author> {
 	}
 	
 	public UpdateFetcher<Author> fetchGravatars(float gravatarDpSize) {
-		ResultSet.Remap<Author, Gravatar> remapper = new ResultSet.Remap<Author, Gravatar>() {
+		Results.Remap<Author, Gravatar> remapper = new Results.Remap<Author, Gravatar>() {
 			@Override
 			public Collection<Gravatar> map(Author author) {
 				if (author.getGravatar() == null) {

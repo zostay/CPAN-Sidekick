@@ -18,6 +18,11 @@ public class ReleaseFavoritesUpdateFetcher extends ReleaseUpdateFetcher {
 	}
 	
 	@Override
+	public boolean needsUpdate(Release release) {
+		return !release.hasFavoriteCount();
+	}
+	
+	@Override
 	protected void prepareRequest(Map<String, Object> variables) {
 		JSONFragment releasesTerms = makeReleasesTerms("favorite");
 		

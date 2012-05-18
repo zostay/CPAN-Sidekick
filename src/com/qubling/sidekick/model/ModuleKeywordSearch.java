@@ -64,6 +64,7 @@ public class ModuleKeywordSearch extends CPANQueryFetcher<Module> {
 	        results.add(module);
         }
 
-        results.setTotalSize(response.getJSONObject("hits").getInt("total"));
+        if (results instanceof Results<?>)
+        	((Results<?>) results).setTotalSize(response.getJSONObject("hits").getInt("total"));
     }
 }

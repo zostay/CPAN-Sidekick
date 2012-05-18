@@ -14,6 +14,11 @@ public class ReleaseRatingsUpdateFetcher extends ReleaseUpdateFetcher implements
 	public ReleaseRatingsUpdateFetcher(Model<Release> model) {
 		super(model, SearchSection.RATING, "rating_by_distribution");
 	}
+	
+	@Override
+	public boolean needsUpdate(Release release) {
+		return !release.hasRatingCount();
+	}
 
 	@Override
 	protected void prepareRequest(Map<String, Object> variables) {

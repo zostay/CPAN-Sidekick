@@ -39,6 +39,11 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
     	this(model, gravatarDpSize, DEFAULT_TIMEOUT_ABSOLUTE);
     }
     
+    @Override
+    public boolean needsUpdate(Gravatar gravatar) {
+    	return gravatar.getBitmap() == null;
+    }
+    
 	public float getGravatarDpSize() {
     	return gravatarDpSize;
     }

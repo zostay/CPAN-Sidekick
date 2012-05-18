@@ -74,8 +74,8 @@ public class ModuleModel extends Model<Module> {
 		return detailsFetcher;
 	}
 	
-	public Fetcher<Module> fetchReleaseFavorites(final ResultSet<Module> modules, String myPrivateToken) {
-		ResultSet.Remap<Module, Release> remapper = new ResultSet.Remap<Module, Release>() {
+	public UpdateFetcher<Module> fetchReleaseFavorites(String myPrivateToken) {
+		Results.Remap<Module, Release> remapper = new Results.Remap<Module, Release>() {
 			@Override
 			public Collection<Release> map(Module module) {
 				Release release = module.getRelease();
@@ -93,7 +93,7 @@ public class ModuleModel extends Model<Module> {
 	}
 	
 	public UpdateFetcher<Module> fetchReleaseRatings() {
-		ResultSet.Remap<Module, Release> remapper = new ResultSet.Remap<Module, Release>() {
+		Results.Remap<Module, Release> remapper = new Results.Remap<Module, Release>() {
 			@Override
 			public Collection<Release> map(Module module) {
 				Release release = module.getRelease();
@@ -111,7 +111,7 @@ public class ModuleModel extends Model<Module> {
 	}
 	
 	public UpdateFetcher<Module> fetchAuthors() {
-		ResultSet.Remap<Module, Author> remapper = new ResultSet.Remap<Module, Author>() {
+		Results.Remap<Module, Author> remapper = new Results.Remap<Module, Author>() {
 			@Override
 			public Collection<Author> map(Module module) {
 				Author author = module.getAuthor();
@@ -129,7 +129,7 @@ public class ModuleModel extends Model<Module> {
 	}
 	
 	public UpdateFetcher<Module> fetchGravatars(float gravatarDpSize) {
-		ResultSet.Remap<Module, Author> remapper = new ResultSet.Remap<Module, Author>() {
+		Results.Remap<Module, Author> remapper = new Results.Remap<Module, Author>() {
 			@Override
 			public Collection<Author> map(Module module) {
 				Author author = module.getAuthor();

@@ -13,6 +13,11 @@ public class AuthorDetailsFetcher extends CPANQueryUpdateFetcher<Author> {
 	public AuthorDetailsFetcher(Model<Author> model) {
 	    super(model, SearchSection.AUTHOR, "author_by_pauseid");
     }
+	
+	@Override
+	public boolean needsUpdate(Author author) {
+		return author.getGravatarUrl() == null;
+	}
 
 	private JSONFragment makeAuthorsTerms() {
 		final ResultSet<Author> authors = getResultSet();
@@ -67,7 +72,7 @@ public class AuthorDetailsFetcher extends CPANQueryUpdateFetcher<Author> {
 
             Author author = authors.get(pauseId);
             if (author != null) {
-                author.setGravatarUrl(gravatarUrl);
+            	author.setGravatarUrl(gravatarUrl);
             }
         }
 	}

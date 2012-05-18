@@ -7,9 +7,9 @@ public class Release extends Instance<Release> {
 	private String name;
 	private String version;
 	private Author author;
-	private int favoriteCount;
+	private int favoriteCount = -1;
 	private boolean myFavorite;
-	private long ratingCount;
+	private long ratingCount = -1;
 	private double ratingMean;
 	
 	public Release(Model<Release> model, String name) {
@@ -56,9 +56,13 @@ public class Release extends Instance<Release> {
 	public Author getAuthor() {
     	return author;
     }
+	
+	public boolean hasFavoriteCount() {
+		return favoriteCount >= 0;
+	}
 
 	public int getFavoriteCount() {
-    	return favoriteCount;
+    	return favoriteCount < 0 ? 0 : favoriteCount;
     }
 
 	public void setFavoriteCount(int favoriteCount) {
@@ -72,9 +76,13 @@ public class Release extends Instance<Release> {
 	public void setMyFavorite(boolean myFavorite) {
     	this.myFavorite = myFavorite;
     }
+	
+	public boolean hasRatingCount() {
+		return ratingCount >= 0;
+	}
 
 	public long getRatingCount() {
-    	return ratingCount;
+    	return ratingCount < 0 ? 0 : ratingCount;
     }
 
 	public void setRatingCount(long ratingCount) {
