@@ -65,7 +65,7 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
     }
 	
 	@Override
-	public void setIncomingResultSet(ResultSet<Gravatar> inputResults) {
+	public void setIncomingResultSet(ResultsForUpdate<Gravatar> inputResults) {
 		setResultSet(inputResults);
 	}
 

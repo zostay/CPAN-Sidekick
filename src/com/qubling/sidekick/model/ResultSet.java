@@ -9,15 +9,23 @@ public interface ResultSet<SomeInstance extends Instance<SomeInstance>> extends 
 		public Collection<ToInstance> map(FromInstance instance);
 	}
 	
-	public abstract <OtherInstance extends Instance<OtherInstance>> void addRemap(
+	public interface OnChangeListener<SomeInstance extends Instance<SomeInstance>> {
+		public void onAdd(SomeInstance instance);
+		public void onRemove(SomeInstance instance);
+	}
+	
+	public <OtherInstance extends Instance<OtherInstance>> void addRemap(
 	        ResultSet<OtherInstance> others,
 	        Remap<OtherInstance, SomeInstance> map);
 
-	public abstract SomeInstance get(String key);
+	public SomeInstance get(String key);
 
-	public abstract SomeInstance get(int index);
+	public SomeInstance get(int index);
 
-	public abstract int getTotalSize();
+	public int getTotalSize();
 
-	public abstract ArrayList<SomeInstance> toArrayList();
+	public ArrayList<SomeInstance> toArrayList();
+	
+	public void addOnChangeListener(OnChangeListener<SomeInstance> listener);
+	public void removeOnChangeListener(OnChangeListener<SomeInstance> listener);
 }

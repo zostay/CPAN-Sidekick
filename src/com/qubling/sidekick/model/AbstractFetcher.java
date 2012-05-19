@@ -163,7 +163,8 @@ public abstract class AbstractFetcher<SomeInstance extends Instance<SomeInstance
 			@Override
 			public void onFinishedFetch(Fetcher<SomeInstance> originFetcher, ResultSet<SomeInstance> results) {
 				try {
-					updateFetcher.setIncomingResultSet(results);
+					updateFetcher.setIncomingResultSet(
+							new ResultsForUpdate<SomeInstance>(updateFetcher, results));
 					updateFetcher.call();
 				}
 				catch (Exception e) {

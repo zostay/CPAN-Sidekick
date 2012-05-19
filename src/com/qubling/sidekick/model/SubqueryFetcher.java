@@ -29,7 +29,7 @@ public class SubqueryFetcher<SomeInstance extends Instance<SomeInstance>, Foreig
 	}
 	
 	@Override
-	public void setIncomingResultSet(ResultSet<SomeInstance> inputResults) {
+	public void setIncomingResultSet(ResultsForUpdate<SomeInstance> inputResults) {
 		setResultSet(inputResults);
 	}
 	
@@ -45,7 +45,8 @@ public class SubqueryFetcher<SomeInstance extends Instance<SomeInstance>, Foreig
 		
 		ResultSet<ForeignInstance> inputResults = new Results<ForeignInstance>();
 		inputResults.addRemap(getResultSet(), remapper);
-		fetcher.setIncomingResultSet(inputResults);
+		fetcher.setIncomingResultSet(
+				new ResultsForUpdate<ForeignInstance>(fetcher, inputResults));
 		
 		service.submit(Search.countDownCallable(latch, fetcher));
 		latch.await();

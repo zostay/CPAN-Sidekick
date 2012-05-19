@@ -14,6 +14,8 @@ public class Results<SomeInstance extends Instance<SomeInstance>> implements Res
 	private List<SomeInstance> resultIndex;
 	private int totalSize = -1;
 	
+	private Collection<OnChangeListener<SomeInstance>> onChangeListeners = new HashSet<OnChangeListener<SomeInstance>>();
+	
 	public Results() {
 		results = new LinkedHashMap<String, SomeInstance>();
 		resultIndex = new ArrayList<SomeInstance>();
@@ -28,6 +30,7 @@ public class Results<SomeInstance extends Instance<SomeInstance>> implements Res
 	public boolean add(SomeInstance instance) {		
 		if (results.put(instance.getKey(), instance) == null) {
 			resultIndex.add(instance);
+			notifyOnAdd(instance);
 			return true;
 		}
 		
@@ -42,6 +45,7 @@ public class Results<SomeInstance extends Instance<SomeInstance>> implements Res
 			modified = results.put(instance.getKey(), instance) == null;
 			if (modified) {
 				resultIndex.add(instance);
+				notifyOnAdd(instance);
 			}
 		}
 		
@@ -57,6 +61,10 @@ public class Results<SomeInstance extends Instance<SomeInstance>> implements Res
 	
 	@Override
 	public void clear() {
+		for (SomeInstance instance : resultIndex) {
+			notifyOnRemove(instance);
+		}
+		
 		resultIndex.clear();
 		results.clear();
 	}
@@ -79,6 +87,7 @@ public class Results<SomeInstance extends Instance<SomeInstance>> implements Res
 			if (!keepKeys.contains(pair.getKey())) {
 				results.remove(pair.getKey());
 				resultIndex.remove(pair.getValue());
+				notifyOnRemove(pair.getValue());
 				modified = true;
 			}
 		}
@@ -94,9 +103,11 @@ public class Results<SomeInstance extends Instance<SomeInstance>> implements Res
 			if (o instanceof Instance) {
 				Instance<?> instance = (Instance<?>) o;
 				if (instance.equals(results.get(instance.getKey()))) {
-					if (results.remove(instance.getKey()) != null) {
+					SomeInstance removedInstance;
+					if ((removedInstance = results.remove(instance.getKey())) != null) {
 						modified = true;
 						resultIndex.remove(instance);
+						notifyOnRemove(removedInstance);
 					}
 				}
 			}
@@ -114,9 +125,10 @@ public class Results<SomeInstance extends Instance<SomeInstance>> implements Res
 			if (!instance.equals(results.get(instance.getKey())))
 				return false;
 			
-			Instance<SomeInstance> removed = results.remove(instance.getKey());
+			SomeInstance removed = results.remove(instance.getKey());
 			if (removed != null) {
 				resultIndex.remove(o);
+				notifyOnRemove(removed);
 				return true;
 			}
 		}
@@ -214,5 +226,27 @@ public class Results<SomeInstance extends Instance<SomeInstance>> implements Res
 	
 	protected List<SomeInstance> allResults() {
 		return Collections.unmodifiableList(resultIndex);
+	}
+	
+	@Override
+	public void addOnChangeListener(OnChangeListener<SomeInstance> listener) {
+		onChangeListeners.add(listener);
+	}
+	
+	@Override
+	public void removeOnChangeListener(OnChangeListener<SomeInstance> listener) {
+		onChangeListeners.remove(listener);
+	}
+	
+	protected void notifyOnAdd(SomeInstance instance) {
+		for (OnChangeListener<SomeInstance> listener : onChangeListeners) {
+			listener.onAdd(instance);
+		}
+	}
+	
+	protected void notifyOnRemove(SomeInstance instance) {
+		for (OnChangeListener<SomeInstance> listener : onChangeListeners) {
+			listener.onRemove(instance);
+		}
 	}
 }

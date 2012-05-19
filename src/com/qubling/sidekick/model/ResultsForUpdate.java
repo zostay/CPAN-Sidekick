@@ -4,17 +4,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-public class ResultsNeedingUpdate<SomeInstance extends Instance<SomeInstance>> 
-	implements ResultSet<SomeInstance> {
+public class ResultsForUpdate<SomeInstance extends Instance<SomeInstance>> 
+	implements ResultSet<SomeInstance>, ResultSet.OnChangeListener<SomeInstance> {
 	
 	private UpdateFetcher<SomeInstance> filter;
 	private ArrayList<SomeInstance> filteredIndex;
-	private Results<SomeInstance> unfilteredResultSet;
+	private ResultSet<SomeInstance> unfilteredResultSet;
 	
-	public ResultsNeedingUpdate(UpdateFetcher<SomeInstance> filter, Results<SomeInstance> results) {
+	public ResultsForUpdate(UpdateFetcher<SomeInstance> filter, ResultSet<SomeInstance> results) {
 		this.filter = filter;
 		this.filteredIndex = new ArrayList<SomeInstance>();
 		this.unfilteredResultSet = results;
+		
+		unfilteredResultSet.addOnChangeListener(this);
 	}
 	
 	public UpdateFetcher<SomeInstance> getFilter() {
@@ -26,86 +28,33 @@ public class ResultsNeedingUpdate<SomeInstance extends Instance<SomeInstance>>
 	}
 	
 	@Override
-	public boolean add(SomeInstance instance) {
-		boolean modified = unfilteredResultSet.add(instance);
-		
-		if (!modified) return false;
-		
-		if (filter.needsUpdate(instance)) {
-			filteredIndex.add(instance);
-			return true;
-		}
-		
-		return false;
+	public boolean add(SomeInstance instance) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException("Do not modify ResultsForUpdate");
 	}
 	
 	@Override
 	public boolean addAll(Collection<? extends SomeInstance> instances) {
-		boolean modified = unfilteredResultSet.addAll(instances);
-		
-		if (!modified) return false;
-		
-		modified = false;
-		for (SomeInstance instance : instances) {
-			if (filter.needsUpdate(instance)) {
-				filteredIndex.add(instance);
-				modified = true;
-			}
-		}
-		
-		return modified;
+		throw new UnsupportedOperationException("Do not modify ResultsForUpdate");
 	}
 	
 	@Override
 	public void clear() {
-		unfilteredResultSet.clear();
-		filteredIndex.clear();
+		throw new UnsupportedOperationException("Do not modify ResultsForUpdate");
 	}
 	
 	@Override
 	public boolean retainAll(Collection<?> collection) {
-		boolean modified = unfilteredResultSet.retainAll(collection);
-		
-		if (!modified) return false;
-		
-		modified = false;
-		ArrayList<SomeInstance> keepers = new ArrayList<SomeInstance>(filteredIndex.size());
-		for (SomeInstance instance : filteredIndex) {
-			if (collection.contains(instance)) {
-				keepers.add(instance);
-			}
-			else {
-				modified = true;
-			}
-		}
-		
-		if (modified) {
-			filteredIndex = keepers;
-		}
-		
-		return modified;
+		throw new UnsupportedOperationException("Do not modify ResultsForUpdate");
 	}
 	
 	@Override
 	public boolean removeAll(Collection<?> collection) {
-		boolean modified = unfilteredResultSet.removeAll(collection);
-		
-		if (!modified) return false;
-		
-		modified = false;
-		for (Object o : collection) {
-			if (filteredIndex.remove(o)) {
-				modified = true;
-			}
-		}
-		
-		return modified;
+		throw new UnsupportedOperationException("Do not modify ResultsForUpdate");
 	}
 	
 	@Override
 	public boolean remove(Object o) {
-		unfilteredResultSet.remove(o);
-		return filteredIndex.remove(o);
+		throw new UnsupportedOperationException("Do not modify ResultsForUpdate");
 	}
 	
 	public SomeInstance get(String key) {
@@ -178,4 +127,25 @@ public class ResultsNeedingUpdate<SomeInstance extends Instance<SomeInstance>>
 		    }
 	    }
     }
+	
+	@Override
+	public void addOnChangeListener(OnChangeListener<SomeInstance> listener) {
+		unfilteredResultSet.addOnChangeListener(listener);
+	}
+	
+	@Override
+	public void removeOnChangeListener(OnChangeListener<SomeInstance> listener) {
+		unfilteredResultSet.removeOnChangeListener(listener);
+	}
+	
+	@Override
+	public void onAdd(SomeInstance instance) {
+		if (filter.needsUpdate(instance))
+			filteredIndex.add(instance);
+	}
+	
+	@Override
+	public void onRemove(SomeInstance instance) {
+		filteredIndex.remove(instance);
+	}
 }

@@ -149,6 +149,11 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 	}
 	
 	public Search<SomeInstance> thenDoFetch(UpdateFetcher<SomeInstance>... fetchers) {
+		for (UpdateFetcher<SomeInstance> fetcher : fetchers) {
+			fetcher.setIncomingResultSet(
+					new ResultsForUpdate<SomeInstance>(fetcher, originalFetcher.getResultSet()));
+		}
+		
 		jobQueue.offer(new Job<ResultSet<SomeInstance>>(jobExecutor, fetchers));
 		return this;
 	}

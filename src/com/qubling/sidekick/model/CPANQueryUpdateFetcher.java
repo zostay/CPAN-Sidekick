@@ -9,7 +9,7 @@ public abstract class CPANQueryUpdateFetcher<SomeInstance extends Instance<SomeI
 	}
 
 	@Override
-	public void setIncomingResultSet(ResultSet<SomeInstance> input) {
+	public void setIncomingResultSet(ResultsForUpdate<SomeInstance> input) {
 		setResultSet(input);
 	}
 
