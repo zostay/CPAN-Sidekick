@@ -25,6 +25,10 @@ public class Schema {
 		releaseModel = new ReleaseModel(this);
 		moduleModel = new ModuleModel(this);
 		
+		initializeExecutors();
+	}
+	
+	private void initializeExecutors() {
 		jobExecutor = Executors.newFixedThreadPool(JOB_THREAD_POOL_SIZE);
 		controlExecutor = Executors.newCachedThreadPool();
 	}
@@ -76,6 +80,15 @@ public class Schema {
 	 */
 	public ExecutorService getControlExecutor() {
 		return controlExecutor;
+	}
+	
+	public void cancelSearch() {
+		jobExecutor.shutdown();
+		controlExecutor.shutdown();
+		
+		// We just assume shutdown. I hope that's okay.
+		
+		initializeExecutors();
 	}
 	
 	public <SomeInstance extends Instance<SomeInstance>> Search<SomeInstance> doFetch(Fetcher<SomeInstance> fetcher) {

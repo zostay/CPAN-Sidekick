@@ -88,6 +88,11 @@ public class ResultsForUpdate<SomeInstance extends Instance<SomeInstance>>
 	public int getTotalSize() {
 		return unfilteredResultSet.getTotalSize();
     }
+	
+	@Override
+	public void setTotalSize(int totalSize) {
+		throw new UnsupportedOperationException("Do not modify ResultsForUpdate");
+	}
 
 	@Override
 	public boolean isEmpty() {

@@ -3,14 +3,6 @@ package com.qubling.sidekick.model;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
-import android.util.Log;
-
-import com.qubling.sidekick.model.CPANDirectFetcher.FetchSection;
-
 public class ModuleModel extends Model<Module> {
 	public ModuleModel(Schema schema) {
 		super(schema);
@@ -24,54 +16,12 @@ public class ModuleModel extends Model<Module> {
 		return new ModuleKeywordSearch(this, keywords);
 	}
 	
-	public Fetcher<Module> fetchPod(final Module module) {
-		CPANDirectFetcher.FetchCallback<Module> podCallbacks = new CPANDirectFetcher.FetchCallback<Module>() {
-			@Override
-            public void consumeResponse(String content, ResultSet<Module> results) {
-				module.setRawPod(content);
-				results.add(module);
-            }
-		};
-		
-		CPANDirectFetcher<Module> podFetcher = new CPANDirectFetcher<Module>(this, FetchSection.MODULE_POD, module.getName(), podCallbacks);
-		return podFetcher;
+	public UpdateFetcher<Module> fetchPod() {
+		return new ModulePodFetcher(this);
 	}
 	
-	public Fetcher<Module> fetch(final Module module) {
-		CPANDirectFetcher.FetchCallback<Module> fetchCallbacks = new CPANDirectFetcher.FetchCallback<Module>() {
-			@Override
-			public void consumeResponse(String content, ResultSet<Module> results) {
-				try {
-		            Object parsedContent = new JSONTokener(content).nextValue();
-		            if (parsedContent instanceof JSONObject) {
-		                JSONObject json = (JSONObject) parsedContent;
-	
-		                // Basic Module info
-		                module.setAbstract(json.getString("abstract"));
-	
-		                // Basic Distribution Info
-		                module.setReleaseName(json.getString("distribution"));
-		                module.getRelease().setVersion(json.getString("version"));
-	
-		                // Basic Author Info
-		                module.getRelease().setAuthorPauseId(json.getString("author"));
-		                
-		                results.add(module);
-		            }
-		            else {
-		                // TODO Show an alert dialog or toast when this happens
-		                Log.e("ModuleModel", "Unexpected JSON content: " + parsedContent);
-		            }
-				}
-				catch (JSONException e) {
-					// TODO Show an alert dialog or toast when this happens
-					Log.e("ModuleModel", "Error reading JSON response while fetching details: " + e.getMessage(), e);
-				}
-			}
-		};
-		
-		CPANDirectFetcher<Module> detailsFetcher = new CPANDirectFetcher<Module>(this, FetchSection.MODULE_FETCH, module.getName(), fetchCallbacks);
-		return detailsFetcher;
+	public UpdateFetcher<Module> fetch() {
+		return new ModuleDetailsFetcher(this);
 	}
 	
 	public UpdateFetcher<Module> fetchReleaseFavorites(String myPrivateToken) {

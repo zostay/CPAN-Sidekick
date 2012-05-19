@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
+import android.app.Activity;
+
 public class SubqueryFetcher<SomeInstance extends Instance<SomeInstance>, ForeignInstance extends Instance<ForeignInstance>> 
 	extends AbstractFetcher<SomeInstance> implements UpdateFetcher<SomeInstance> {
 	
@@ -53,4 +55,22 @@ public class SubqueryFetcher<SomeInstance extends Instance<SomeInstance>, Foreig
 		
 		return getResultSet();
 	}
+
+	@Override
+    public UpdateFetcher<SomeInstance> thenAfterUpdateDoFetch(UpdateFetcher<SomeInstance> fetcher) {
+	    thenDoFetch(fetcher);
+	    return this;
+    }
+
+	@Override
+    public UpdateFetcher<SomeInstance> whenUpdateFinishedNotifyUi(Activity activity, OnFinished<SomeInstance> listener) {
+	    whenFinishedNotifyUi(activity, listener);
+	    return this;
+    }
+
+	@Override
+    public UpdateFetcher<SomeInstance> whenUpdateFinishedNotify(OnFinished<SomeInstance> listener) {
+	    whenFinishedNotify(listener);
+	    return this;
+    }
 }

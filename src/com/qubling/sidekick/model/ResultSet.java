@@ -23,6 +23,7 @@ public interface ResultSet<SomeInstance extends Instance<SomeInstance>> extends 
 	public SomeInstance get(int index);
 
 	public int getTotalSize();
+	public void setTotalSize(int totalSize) throws UnsupportedOperationException;
 
 	public ArrayList<SomeInstance> toArrayList();
 	
