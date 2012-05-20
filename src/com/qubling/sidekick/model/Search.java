@@ -1,11 +1,11 @@
 package com.qubling.sidekick.model;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -132,8 +132,8 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 	}
 	
 	private final Fetcher<SomeInstance> originalFetcher;
-	private final Deque<Job<ResultSet<SomeInstance>>> jobQueue;
-	private final Deque<List<ResultSet<SomeInstance>>> results;
+	private final Queue<Job<ResultSet<SomeInstance>>> jobQueue;
+	private final Queue<List<ResultSet<SomeInstance>>> results;
 	private final ExecutorService controlExecutor;
 	private final ExecutorService jobExecutor;
 	
@@ -142,10 +142,10 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 		this.jobExecutor = jobExecutor;
 		this.originalFetcher = fetcher;
 		
-		jobQueue = new ArrayDeque<Job<ResultSet<SomeInstance>>>();
+		jobQueue = new LinkedList<Job<ResultSet<SomeInstance>>>();
 		jobQueue.offer(new Job<ResultSet<SomeInstance>>(jobExecutor, fetcher));
 		
-		results = new ArrayDeque<List<ResultSet<SomeInstance>>>();
+		results = new LinkedList<List<ResultSet<SomeInstance>>>();
 	}
 	
 	public Search<SomeInstance> thenDoFetch(UpdateFetcher<SomeInstance>... fetchers) {
@@ -200,7 +200,7 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 			public void run() {
 				
 				// Clone the job queue
-				Deque<Job<ResultSet<SomeInstance>>> jobQueue = new ArrayDeque<Search.Job<ResultSet<SomeInstance>>>();
+				Queue<Job<ResultSet<SomeInstance>>> jobQueue = new LinkedList<Search.Job<ResultSet<SomeInstance>>>();
 				jobQueue.addAll(Search.this.jobQueue);
 				
 				while (!jobQueue.isEmpty()) {
@@ -216,11 +216,11 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 								uiLatch.countDown();
 							}
 						});
-						results.push(nextJob.getResults());
+						results.offer(nextJob.getResults());
 					}
 					else {
 						nextJob.run();
-						results.push(nextJob.getResults());
+						results.offer(nextJob.getResults());
 					}
 				}
 			}
