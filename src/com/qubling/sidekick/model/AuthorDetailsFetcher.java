@@ -6,6 +6,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import com.qubling.sidekick.api.JSONFragment;
 
 public class AuthorDetailsFetcher extends CPANQueryUpdateFetcher<Author> {
@@ -16,6 +18,7 @@ public class AuthorDetailsFetcher extends CPANQueryUpdateFetcher<Author> {
 	
 	@Override
 	public boolean needsUpdate(Author author) {
+		Log.d("AuthorDetailsFetcher", "author " + author.getPauseId() + " needs update? " + author.getGravatarUrl());
 		return author.getGravatarUrl() == null;
 	}
 
@@ -31,7 +34,7 @@ public class AuthorDetailsFetcher extends CPANQueryUpdateFetcher<Author> {
                 try {
                     for (Author author : authors) {
 
-//                        Log.d("AuthorByDistributionSearch", "Adding Author: " + author.getPauseId());
+                        Log.d("AuthorDetailsFetcher", "Adding Author: " + author.getPauseId());
 
                         JSONObject pauseid = new JSONObject()
                                 .put("pauseid", author.getPauseId());
@@ -61,6 +64,8 @@ public class AuthorDetailsFetcher extends CPANQueryUpdateFetcher<Author> {
 	        throws JSONException {
 		
 		ResultSet<Author> authors = getResultSet();
+		
+		Log.d("AuthorDetailsFetcher", response.toString());
 		
         JSONArray hits = response.getJSONObject("hits").getJSONArray("hits");
 

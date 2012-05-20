@@ -3,35 +3,72 @@ package com.qubling.sidekick.model;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.qubling.sidekick.api.HttpClientManager;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import com.qubling.sidekick.R;
+import com.qubling.sidekick.model.Search.OnSearchActivity;
 
 import android.content.Context;
+import android.net.http.AndroidHttpClient;
+import android.util.Log;
 
-public class Schema {
+public class Schema implements OnSearchActivity {
 	private final static int JOB_THREAD_POOL_SIZE = 6;
+	private static final String METACPAN_API_USER_AGENT_SUFFIX = " (Android)";
 	
 	private final GravatarModel gravatarModel;
 	private final AuthorModel authorModel;
 	private final ReleaseModel releaseModel;
 	private final ModuleModel moduleModel;
 	
+	private int runningSearches = 0;
+	
 	private ExecutorService jobExecutor, controlExecutor;
 	private Context context;
-	private HttpClientManager clientManager;
+	private HttpClient httpClient;
 	
-	public Schema(Context context, HttpClientManager clientManager) {
+	public Schema(Context context) {
 		gravatarModel = new GravatarModel(this);
 		authorModel = new AuthorModel(this);
 		releaseModel = new ReleaseModel(this);
 		moduleModel = new ModuleModel(this);
 		
-		initializeExecutors();
+		this.context = context;
+		
+		initialize();
 	}
 	
-	private void initializeExecutors() {
+	private void initialize() {
 		jobExecutor = Executors.newFixedThreadPool(JOB_THREAD_POOL_SIZE);
 		controlExecutor = Executors.newCachedThreadPool();
 	}
+	
+    private void setupHttpClient() {
+        try {
+    		
+    		String userAgent = context.getString(R.string.app_name)
+    				         + "/"
+    				         + context.getString(R.string.app_version)
+    				         + METACPAN_API_USER_AGENT_SUFFIX;
+    		
+            httpClient = (HttpClient) Class.forName("android.net.http.AndroidHttpClient")
+                .getMethod("newInstance", String.class).invoke(null, userAgent);
+            Log.i("HttpClientManager", "Using AndroidHttpClient");
+        }
+        catch (Throwable t) {
+        	Log.i("HttpClientManager", "Falling back to DefaultHttpClient");
+            httpClient = new DefaultHttpClient();
+        }
+    }
+    
+    public void closeHttpClient() {
+    	if (httpClient instanceof AndroidHttpClient) {
+    		((AndroidHttpClient) httpClient).close();
+    	}
+    	
+    	httpClient = null;
+    }
 	
 	public GravatarModel getGravatarModel() {
 		return gravatarModel;
@@ -53,8 +90,8 @@ public class Schema {
     	return context;
     }
 
-	public HttpClientManager getClientManager() {
-    	return clientManager;
+	public HttpClient getHttpClient() {
+    	return httpClient;
     }
 	
 	/**
@@ -88,10 +125,24 @@ public class Schema {
 		
 		// We just assume shutdown. I hope that's okay.
 		
-		initializeExecutors();
+		initialize();
 	}
 	
 	public <SomeInstance extends Instance<SomeInstance>> Search<SomeInstance> doFetch(Fetcher<SomeInstance> fetcher) {
-		return new Search<SomeInstance>(controlExecutor, jobExecutor, fetcher);
+		Search<SomeInstance> search = new Search<SomeInstance>(controlExecutor, jobExecutor, fetcher);
+		search.addOnSearchActivityListener(this);
+		return search;
+	}
+	
+	@Override
+	public synchronized void onSearchStart() {
+		if (runningSearches == 0) setupHttpClient();
+		runningSearches++;
+	}
+	
+	@Override
+	public synchronized void onSearchComplete() {
+		runningSearches--;
+		if (runningSearches == 0) closeHttpClient();
 	}
 }

@@ -50,6 +50,8 @@ public abstract class CPANDirectFetcher<SomeInstance extends Instance<SomeInstan
 
 	@Override
 	protected ResultSet<SomeInstance> execute() throws IOException, InterruptedException {
+		Log.d("CPANDirectFetcher", "START execute()");
+		
 		final CountDownLatch latch = new CountDownLatch(getResultSet().size());
 		ExecutorService service = getSchema().getJobExecutor();
 		
@@ -65,6 +67,8 @@ public abstract class CPANDirectFetcher<SomeInstance extends Instance<SomeInstan
 		}
 		
 		latch.await();
+		
+		Log.d("CPANDirectFetcher", "END execute()");
 		
 		return getResultSet();
 	}

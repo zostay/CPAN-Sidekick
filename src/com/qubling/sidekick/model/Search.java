@@ -3,6 +3,7 @@ package com.qubling.sidekick.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -18,7 +19,12 @@ import android.util.Log;
 
 public class Search<SomeInstance extends Instance<SomeInstance>> {
 	public interface OnFinishedFetch<SomeInstance extends Instance<SomeInstance>> {
-		public abstract void onFinishedFetch(List<ResultSet<SomeInstance>> results);
+		public void onFinishedFetch(List<ResultSet<SomeInstance>> results);
+	}
+	
+	public interface OnSearchActivity {
+		public void onSearchStart();
+		public void onSearchComplete();
 	}
 	
 	private static class Job<Thing> implements Runnable {
@@ -68,8 +74,9 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 		public void run() {
 			try {
 				CountDownLatch latch = new CountDownLatch(runCount);
-				Search.countDownCallables(latch, callables);
-				for (Callable<Thing> callable : callables) {
+				Log.d("Search.Job", "Setup a new latch: " + runCount);
+				Collection<Callable<Thing>> latchedCallables = Search.countDownCallables(latch, callables);
+				for (Callable<Thing> callable : latchedCallables) {
 					results = new ArrayList<Future<Thing>>();
 					if (callable instanceof Fetcher<?>) {
 						Fetcher<?> fetcher = (Fetcher<?>) callable;
@@ -79,7 +86,9 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 						results.add(jobExecutor.submit(callable));
 					}
 				}
+				Log.d("Search.Job", "START await()");
 				latch.await();
+				Log.d("Search.Job", "END await()");
 			}
 			catch (InterruptedException e) {
 				Log.e("Search.Job", "Interrupted while running a search job.", e);
@@ -114,6 +123,7 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 	public static <Thing> Collection<Callable<Thing>> countDownCallables(CountDownLatch latch, Collection<? extends Callable<Thing>> plainCallables) {
 		ArrayList<Callable<Thing>> latchedCallables = new ArrayList<Callable<Thing>>();
 		for (final Callable<Thing> callable : plainCallables) {
+			Log.d("Search", "countDownCallables() " + callable);
 			latchedCallables.add(countDownCallable(latch, callable));
 		}
 		
@@ -121,10 +131,14 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 	}
 	
 	public static <Thing> Callable<Thing> countDownCallable(final CountDownLatch latch, final Callable<Thing> plainCallable) {
+		Log.d("Search", "countDownCallable()");
 		return new Callable<Thing>() {
 			@Override
 			public Thing call() throws Exception {
+				Log.d("Search", "START countDownCallable call()");
 				Thing results = plainCallable.call();
+				Log.d("Search", "END countDownCallable call()");
+				Log.d("Search", "countDown(): " + latch.getCount() + " becomes " + (latch.getCount() - 1));
 				latch.countDown();
 				return results;
 			}
@@ -136,11 +150,13 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 	private final Queue<List<ResultSet<SomeInstance>>> results;
 	private final ExecutorService controlExecutor;
 	private final ExecutorService jobExecutor;
+	private final Collection<OnSearchActivity> activityListeners;
 	
 	public Search(ExecutorService controlExecutor, ExecutorService jobExecutor, Fetcher<SomeInstance> fetcher) {
 		this.controlExecutor = controlExecutor;
 		this.jobExecutor = jobExecutor;
 		this.originalFetcher = fetcher;
+		this.activityListeners = new HashSet<Search.OnSearchActivity>();
 		
 		jobQueue = new LinkedList<Job<ResultSet<SomeInstance>>>();
 		jobQueue.offer(new Job<ResultSet<SomeInstance>>(jobExecutor, fetcher));
@@ -150,6 +166,7 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 	
 	public Search<SomeInstance> thenDoFetch(UpdateFetcher<SomeInstance>... fetchers) {
 		for (UpdateFetcher<SomeInstance> fetcher : fetchers) {
+			Log.d("Search", "originalFetcher.getResultSet() " + originalFetcher + " " + originalFetcher.getResultSet());
 			fetcher.setIncomingResultSet(
 					new ResultsForUpdate<SomeInstance>(fetcher, originalFetcher.getResultSet()));
 		}
@@ -198,6 +215,7 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 		controlExecutor.submit(new Runnable() {
 			@Override
 			public void run() {
+				notifyOnSearchStart();
 				
 				// Clone the job queue
 				Queue<Job<ResultSet<SomeInstance>>> jobQueue = new LinkedList<Search.Job<ResultSet<SomeInstance>>>();
@@ -206,16 +224,24 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 				while (!jobQueue.isEmpty()) {
 					final Job<ResultSet<SomeInstance>> nextJob = jobQueue.poll();
 					
+					Log.d("Search", "Start Next Job");
+					
 					if (nextJob.getActivity() != null) {
-						final CountDownLatch uiLatch = new CountDownLatch(1);
-						nextJob.getActivity().runOnUiThread(new Runnable() {
-							
-							@Override
-							public void run() {
-								nextJob.run();
-								uiLatch.countDown();
-							}
-						});
+						try {
+							final CountDownLatch uiLatch = new CountDownLatch(1);
+							nextJob.getActivity().runOnUiThread(new Runnable() {
+								
+								@Override
+								public void run() {
+									nextJob.run();
+									uiLatch.countDown();
+								}
+							});
+							uiLatch.await();
+						}
+						catch (InterruptedException e) {
+							Log.e("Search", "UI Job was interrupted.", e);
+						}
 						results.offer(nextJob.getResults());
 					}
 					else {
@@ -223,6 +249,8 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 						results.offer(nextJob.getResults());
 					}
 				}
+				
+				notifyOnSearchComplete();
 			}
 		});
 		
@@ -243,5 +271,27 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 	
 	public ResultSet<SomeInstance> getResultSet() {
 		return originalFetcher.getResultSet();
+	}
+	
+	public void addOnSearchActivityListener(OnSearchActivity listener) {
+		activityListeners.add(listener);
+	}
+	
+	public void removeOnSearchActivityListener(OnSearchActivity listener) {
+		activityListeners.remove(listener);
+	}
+	
+	private void notifyOnSearchStart() {
+		Log.d("Search", "notifyOnSearchStart()");
+		for (OnSearchActivity listener : activityListeners) {
+			listener.onSearchStart();
+		}
+	}
+	
+	private void notifyOnSearchComplete() {
+		Log.d("Search", "notifyOnSearchComplete()");
+		for (OnSearchActivity listener : activityListeners) {
+			listener.onSearchComplete();
+		}
 	}
 }

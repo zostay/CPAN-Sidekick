@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import android.util.Log;
+
 public class ResultsForUpdate<SomeInstance extends Instance<SomeInstance>> 
 	implements ResultSet<SomeInstance>, ResultSet.OnChangeListener<SomeInstance> {
 	
@@ -15,6 +17,12 @@ public class ResultsForUpdate<SomeInstance extends Instance<SomeInstance>>
 		this.filter = filter;
 		this.filteredIndex = new ArrayList<SomeInstance>();
 		this.unfilteredResultSet = results;
+
+		for (SomeInstance instance : unfilteredResultSet) {
+			if (this.filter.needsUpdate(instance)) {
+				filteredIndex.add(instance);
+			}
+		}
 		
 		unfilteredResultSet.addOnChangeListener(this);
 	}

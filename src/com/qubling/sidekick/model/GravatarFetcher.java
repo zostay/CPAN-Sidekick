@@ -55,12 +55,16 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
 
 	@Override
     protected ResultSet<Gravatar> execute() {
+		Log.d("GravatarFetcher", "START execute()");
+			
 		ResultSet<Gravatar> inputResults = getResultSet();
 		
 		for (Gravatar gravatar : inputResults) {
             Bitmap bitmap = fetchBitmap(gravatar.getUrl());
             gravatar.setBitmap(bitmap);
 		}
+		
+		Log.d("GravatarFetcher", "END execute()");
 		
 		return inputResults;
     }

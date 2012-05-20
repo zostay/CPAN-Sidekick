@@ -54,11 +54,8 @@ public abstract class AbstractFetcher<SomeInstance extends Instance<SomeInstance
 		return model.getSchema();
 	}
 	
-	protected HttpClientManager getHttpClientManager() {
-		return getSchema().getClientManager();
-	}
-	
 	protected void setResultSet(ResultSet<SomeInstance> inputResults) {
+		Log.d("AbstractFetcher", "setResultSet() " + inputResults);
 		this.results = inputResults;
 	}
 	
@@ -96,15 +93,27 @@ public abstract class AbstractFetcher<SomeInstance extends Instance<SomeInstance
 	}
 	
 	public final ResultSet<SomeInstance> call() throws Exception {
-		ResultSet<SomeInstance> results = execute();
-		notifyOnFinished();
-		return results;
+		try {
+			Log.d("AbstractFetcher", "START call()");
+			ResultSet<SomeInstance> results = execute();
+			notifyOnFinished();
+			Log.d("AbstractFetcher", "END call()");
+			return results;
+		}
+		catch (RuntimeException e) {
+			Log.e("AbstractFetcher", "Error while executing fetch.", e);
+			throw e;
+		}
+		catch (Exception e) {
+			Log.e("AbstractFetcher", "Error while executing fetch.", e);
+			throw e;
+		}
 	}
 	
 	protected abstract ResultSet<SomeInstance> execute() throws Exception;
 
     protected HttpClient getHttpClient() {
-        return getHttpClientManager().getClient();
+        return getSchema().getHttpClient();
     }
 
     public static String getCharset(HttpResponse res) {

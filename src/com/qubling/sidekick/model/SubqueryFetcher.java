@@ -5,6 +5,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
 import android.app.Activity;
+import android.util.Log;
 
 public class SubqueryFetcher<SomeInstance extends Instance<SomeInstance>, ForeignInstance extends Instance<ForeignInstance>> 
 	extends AbstractFetcher<SomeInstance> implements UpdateFetcher<SomeInstance> {
@@ -42,6 +43,8 @@ public class SubqueryFetcher<SomeInstance extends Instance<SomeInstance>, Foreig
 	
 	@Override
 	protected ResultSet<SomeInstance> execute() throws Exception {
+		Log.d("SubqueryFetcher", "START execute()");
+		
 		CountDownLatch latch = new CountDownLatch(1);
 		ExecutorService service = getSchema().getJobExecutor();
 		
@@ -52,6 +55,8 @@ public class SubqueryFetcher<SomeInstance extends Instance<SomeInstance>, Foreig
 		
 		service.submit(Search.countDownCallable(latch, fetcher));
 		latch.await();
+		
+		Log.d("SubqueryFetcher", "END execute()");
 		
 		return getResultSet();
 	}

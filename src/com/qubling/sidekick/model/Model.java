@@ -1,12 +1,16 @@
 package com.qubling.sidekick.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 public abstract class Model<SomeInstance extends Instance<SomeInstance>> {
 	private final Schema schema;
-	private ResultSet<SomeInstance> objectCache;
+	private Map<String, SomeInstance> objectCache;
 
 	public Model(Schema schema) {
 		this.schema = schema;
+		this.objectCache = new HashMap<String, SomeInstance>();
 	}
 	
 	public Schema getSchema() {

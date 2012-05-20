@@ -6,6 +6,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 public class ModuleKeywordSearch extends CPANQueryFetcher<Module> {
 	private String safeKeywords;
 	private String cleanKeywords;
@@ -54,6 +56,9 @@ public class ModuleKeywordSearch extends CPANQueryFetcher<Module> {
 	        try { authorPauseId  = hit.getString("author");       } catch (JSONException e) {}
 	        try { releaseName    = hit.getString("distribution"); } catch (JSONException e) {}
 	        try { releaseVersion = hit.getString("version");      } catch (JSONException e) {}
+	        
+	        Log.d("ModuleKeywordSearch", "name: " + name);
+	        Log.d("ModuleKeywordSearch", "abstract: " + moduleAbstract);
 	        
 	        Module module = getModel().acquireInstance(name);
 	        module.setAbstract(moduleAbstract);
