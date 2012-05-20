@@ -17,7 +17,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 
-import com.bugsense.trace.BugSenseHandler;
 import com.qubling.sidekick.R;
 import com.qubling.sidekick.Util;
 import com.qubling.sidekick.cpan.result.Module;
@@ -116,7 +115,7 @@ public class ModuleSearchActivity extends ModuleActivity {
         setContentView(R.layout.module_search);
 
         // Setup BugSense
-        BugSenseHandler.setup(this, Util.BUGSENSE_API_KEY);
+        Util.setupBugSense(this);
 
         // Initialize the fragment, if on a tablet
         if (isTwoPanelView()) {

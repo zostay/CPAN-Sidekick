@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.KeyEvent;
 
-import com.bugsense.trace.BugSenseHandler;
 import com.qubling.sidekick.R;
 import com.qubling.sidekick.Util;
 import com.qubling.sidekick.cpan.result.Module;
@@ -31,7 +30,7 @@ public class ModuleViewActivity extends ModuleActivity {
         setContentView(R.layout.module_view);
 
         // Setup BugSense
-        BugSenseHandler.setup(this, Util.BUGSENSE_API_KEY);
+        Util.setupBugSense(this);
 
         Intent intent = getIntent();
         Module 	module = (Module) intent.getParcelableExtra(EXTRA_MODULE);

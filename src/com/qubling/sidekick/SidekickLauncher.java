@@ -28,7 +28,7 @@ public class SidekickLauncher extends Activity {
         super.onCreate(savedInstanceState);
 
         // Setup BugSense
-        BugSenseHandler.setup(this, Util.BUGSENSE_API_KEY);
+        Util.setupBugSense(this);
 
         Intent intent = new Intent(this, ModuleSearchActivity.class);
         startActivity(intent);
