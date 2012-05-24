@@ -14,7 +14,7 @@ import android.net.http.AndroidHttpClient;
 import android.util.Log;
 
 public class Schema implements OnSearchActivity {
-	private final static int JOB_THREAD_POOL_SIZE = 6;
+	private final static int JOB_THREAD_POOL_SIZE = 3;
 	private static final String METACPAN_API_USER_AGENT_SUFFIX = " (Android)";
 	
 	private final GravatarModel gravatarModel;
@@ -136,12 +136,14 @@ public class Schema implements OnSearchActivity {
 	
 	@Override
 	public synchronized void onSearchStart() {
+		Log.d("Schema", "onSearchStart()");
 		if (runningSearches == 0) setupHttpClient();
 		runningSearches++;
 	}
 	
 	@Override
 	public synchronized void onSearchComplete() {
+		Log.d("Schema", "onSearchComplete()");
 		runningSearches--;
 		if (runningSearches == 0) closeHttpClient();
 	}

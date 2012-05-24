@@ -53,7 +53,7 @@ public class SubqueryFetcher<SomeInstance extends Instance<SomeInstance>, Foreig
 		fetcher.setIncomingResultSet(
 				new ResultsForUpdate<ForeignInstance>(fetcher, inputResults));
 		
-		service.submit(Search.countDownCallable(latch, fetcher));
+		service.submit(JobManager.countDownCallable(latch, fetcher));
 		latch.await();
 		
 		Log.d("SubqueryFetcher", "END execute()");

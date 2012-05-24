@@ -1,23 +1,14 @@
 package com.qubling.sidekick.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import android.app.Activity;
 import android.util.Log;
 
-public class Search<SomeInstance extends Instance<SomeInstance>> {
+public class Search<SomeInstance extends Instance<SomeInstance>> extends JobManager<ResultSet<SomeInstance>> {
 	public interface OnFinishedFetch<SomeInstance extends Instance<SomeInstance>> {
 		public void onFinishedFetch(List<ResultSet<SomeInstance>> results);
 	}
@@ -27,141 +18,16 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 		public void onSearchComplete();
 	}
 	
-	private static class Job<Thing> implements Runnable {
-		private int runCount;
-		private ExecutorService jobExecutor;
-		private Collection<Callable<Thing>> callables;
-		private Activity activity;
-		private List<Future<Thing>> results;
-		
-		public Job(ExecutorService jobExecutor, Callable<Thing> callable) {
-			this.runCount = 1;
-			this.jobExecutor = jobExecutor;
-			this.callables = new ArrayList<Callable<Thing>>();
-			this.callables.add(callable);
-		}
-		
-		public Job(ExecutorService jobExecutor, Callable<Thing>... callables) {
-			this.runCount = callables.length;
-			this.jobExecutor = jobExecutor;
-			this.callables = new ArrayList<Callable<Thing>>();
-			Collections.addAll(this.callables, callables);
-		}
-		
-		public Job(ExecutorService jobExecutor, Runnable runnable) {
-			this.runCount = 1;
-			this.jobExecutor = jobExecutor;
-			this.callables = new ArrayList<Callable<Thing>>();
-			this.callables.add(Executors.callable(runnable, (Thing) null));
-		}
-		
-		public Job(ExecutorService jobExecutor, Runnable... runnables) {
-			this.runCount = runnables.length;
-			this.jobExecutor = jobExecutor;
-			this.callables = new ArrayList<Callable<Thing>>();
-			
-			for (Runnable runnable : runnables) {
-				this.callables.add(Executors.callable(runnable, (Thing) null));
-			}
-		}
-		
-		public Job(ExecutorService jobExecutor, Runnable runnable, Activity activity) {
-			this(jobExecutor, runnable);
-			this.activity = activity;
-		}
-		
-		@Override
-		public void run() {
-			try {
-				CountDownLatch latch = new CountDownLatch(runCount);
-				Log.d("Search.Job", "Setup a new latch: " + runCount);
-				Collection<Callable<Thing>> latchedCallables = Search.countDownCallables(latch, callables);
-				for (Callable<Thing> callable : latchedCallables) {
-					results = new ArrayList<Future<Thing>>();
-					if (callable instanceof Fetcher<?>) {
-						Fetcher<?> fetcher = (Fetcher<?>) callable;
-						results.add(fetcher.getPreferredExecutor().submit(callable));
-					}
-					else {
-						results.add(jobExecutor.submit(callable));
-					}
-				}
-				Log.d("Search.Job", "START await()");
-				latch.await();
-				Log.d("Search.Job", "END await()");
-			}
-			catch (InterruptedException e) {
-				Log.e("Search.Job", "Interrupted while running a search job.", e);
-			}
-		}
-
-		public Activity getActivity() {
-			return activity;
-		}
-		
-		public List<Thing> getResults() {
-			if (results == null) return null;
-			
-			try {
-				List<Thing> things = new ArrayList<Thing>();
-				for (Future<Thing> futureThing : results) {
-					things.add(futureThing.get());
-				}
-				return things;
-			}
-			catch (ExecutionException e) {
-				Log.e("Search", "Execution failed getting results.", e);
-				return null;
-			}
-			catch (InterruptedException e) {
-				Log.e("Search", "Execution interrupted getting results.", e);
-				return null;
-			}
-		}
-	}
-	
-	public static <Thing> Collection<Callable<Thing>> countDownCallables(CountDownLatch latch, Collection<? extends Callable<Thing>> plainCallables) {
-		ArrayList<Callable<Thing>> latchedCallables = new ArrayList<Callable<Thing>>();
-		for (final Callable<Thing> callable : plainCallables) {
-			Log.d("Search", "countDownCallables() " + callable);
-			latchedCallables.add(countDownCallable(latch, callable));
-		}
-		
-		return latchedCallables;
-	}
-	
-	public static <Thing> Callable<Thing> countDownCallable(final CountDownLatch latch, final Callable<Thing> plainCallable) {
-		Log.d("Search", "countDownCallable()");
-		return new Callable<Thing>() {
-			@Override
-			public Thing call() throws Exception {
-				Log.d("Search", "START countDownCallable call()");
-				Thing results = plainCallable.call();
-				Log.d("Search", "END countDownCallable call()");
-				Log.d("Search", "countDown(): " + latch.getCount() + " becomes " + (latch.getCount() - 1));
-				latch.countDown();
-				return results;
-			}
-		};
-	}
-	
 	private final Fetcher<SomeInstance> originalFetcher;
-	private final Queue<Job<ResultSet<SomeInstance>>> jobQueue;
-	private final Queue<List<ResultSet<SomeInstance>>> results;
-	private final ExecutorService controlExecutor;
-	private final ExecutorService jobExecutor;
 	private final Collection<OnSearchActivity> activityListeners;
 	
 	public Search(ExecutorService controlExecutor, ExecutorService jobExecutor, Fetcher<SomeInstance> fetcher) {
-		this.controlExecutor = controlExecutor;
-		this.jobExecutor = jobExecutor;
+		super(controlExecutor, jobExecutor);
+		
+		submit(fetcher);
+
 		this.originalFetcher = fetcher;
 		this.activityListeners = new HashSet<Search.OnSearchActivity>();
-		
-		jobQueue = new LinkedList<Job<ResultSet<SomeInstance>>>();
-		jobQueue.offer(new Job<ResultSet<SomeInstance>>(jobExecutor, fetcher));
-		
-		results = new LinkedList<List<ResultSet<SomeInstance>>>();
 	}
 	
 	public Search<SomeInstance> thenDoFetch(UpdateFetcher<SomeInstance>... fetchers) {
@@ -171,17 +37,17 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 					new ResultsForUpdate<SomeInstance>(fetcher, originalFetcher.getResultSet()));
 		}
 		
-		jobQueue.offer(new Job<ResultSet<SomeInstance>>(jobExecutor, fetchers));
+		submit(fetchers);
 		return this;
 	}
 	
 	public Search<SomeInstance> whenFinishedRun(Runnable... runnables) {
-		jobQueue.offer(new Job<ResultSet<SomeInstance>>(jobExecutor, runnables));
+		submit(runnables);
 		return this;
 	}
 	
 	public Search<SomeInstance> whenFinishedRunInUiThread(Activity activity, Runnable runnable) {
-		jobQueue.offer(new Job<ResultSet<SomeInstance>>(jobExecutor, runnable, activity));
+		submit(runnable, activity);
 		return this;
 	}
 	
@@ -190,11 +56,11 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 			
 			@Override
 			public void run() {
-				listener.onFinishedFetch(results.peek());
+				listener.onFinishedFetch(getResults().peek());
 			}
 		};
 		
-		jobQueue.offer(new Job<ResultSet<SomeInstance>>(jobExecutor, notifier));
+		submit(notifier);
 		return this;
 	}
 	
@@ -203,57 +69,16 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 			
 			@Override
 			public void run() {
-				listener.onFinishedFetch(results.peek());
+				listener.onFinishedFetch(getResults().peek());
 			}
 		};
 		
-		jobQueue.offer(new Job<ResultSet<SomeInstance>>(jobExecutor, notifier, activity));
+		submit(notifier, activity);
 		return this;
 	}
 	
 	public Search<SomeInstance> start() {
-		controlExecutor.submit(new Runnable() {
-			@Override
-			public void run() {
-				notifyOnSearchStart();
-				
-				// Clone the job queue
-				Queue<Job<ResultSet<SomeInstance>>> jobQueue = new LinkedList<Search.Job<ResultSet<SomeInstance>>>();
-				jobQueue.addAll(Search.this.jobQueue);
-				
-				while (!jobQueue.isEmpty()) {
-					final Job<ResultSet<SomeInstance>> nextJob = jobQueue.poll();
-					
-					Log.d("Search", "Start Next Job");
-					
-					if (nextJob.getActivity() != null) {
-						try {
-							final CountDownLatch uiLatch = new CountDownLatch(1);
-							nextJob.getActivity().runOnUiThread(new Runnable() {
-								
-								@Override
-								public void run() {
-									nextJob.run();
-									uiLatch.countDown();
-								}
-							});
-							uiLatch.await();
-						}
-						catch (InterruptedException e) {
-							Log.e("Search", "UI Job was interrupted.", e);
-						}
-						results.offer(nextJob.getResults());
-					}
-					else {
-						nextJob.run();
-						results.offer(nextJob.getResults());
-					}
-				}
-				
-				notifyOnSearchComplete();
-			}
-		});
-		
+		executeJobs();
 		return this;
 	}
 	
@@ -281,14 +106,16 @@ public class Search<SomeInstance extends Instance<SomeInstance>> {
 		activityListeners.remove(listener);
 	}
 	
-	private void notifyOnSearchStart() {
+	@Override
+	protected void executeJobsStarted() {
 		Log.d("Search", "notifyOnSearchStart()");
 		for (OnSearchActivity listener : activityListeners) {
 			listener.onSearchStart();
 		}
 	}
 	
-	private void notifyOnSearchComplete() {
+	@Override
+	protected void executeJobsComplete() {
 		Log.d("Search", "notifyOnSearchComplete()");
 		for (OnSearchActivity listener : activityListeners) {
 			listener.onSearchComplete();

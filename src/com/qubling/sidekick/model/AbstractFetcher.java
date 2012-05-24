@@ -10,8 +10,6 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 
-import com.qubling.sidekick.api.HttpClientManager;
-
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;

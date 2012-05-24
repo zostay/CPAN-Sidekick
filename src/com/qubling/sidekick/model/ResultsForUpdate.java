@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import android.util.Log;
-
 public class ResultsForUpdate<SomeInstance extends Instance<SomeInstance>> 
 	implements ResultSet<SomeInstance>, ResultSet.OnChangeListener<SomeInstance> {
 	

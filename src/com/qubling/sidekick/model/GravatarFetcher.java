@@ -60,7 +60,14 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
 		ResultSet<Gravatar> inputResults = getResultSet();
 		
 		for (Gravatar gravatar : inputResults) {
-            Bitmap bitmap = fetchBitmap(gravatar.getUrl());
+			Bitmap bitmap;
+			try {
+				bitmap = fetchBitmap(gravatar.getUrl());
+			}
+			catch (RuntimeException e) {
+				Log.e("GravatarFetcher", "error fetching Gravatar", e);
+				throw e;
+			}
             gravatar.setBitmap(bitmap);
 		}
 		
