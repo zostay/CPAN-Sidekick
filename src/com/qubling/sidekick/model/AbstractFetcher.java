@@ -67,10 +67,6 @@ public abstract class AbstractFetcher<SomeInstance extends Instance<SomeInstance
 		return model.getSchema().getContext();
 	}
 	
-	public ExecutorService getPreferredExecutor() {
-		return getSchema().getJobExecutor();
-	}
-	
 	public void addOnFinishedListener(OnFinished<SomeInstance> onCompleteListener) {
     	onFinishedListeners.add(onCompleteListener);
     }

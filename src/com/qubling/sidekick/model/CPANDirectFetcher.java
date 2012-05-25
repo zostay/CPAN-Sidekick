@@ -1,6 +1,7 @@
 package com.qubling.sidekick.model;
 
 import java.io.IOException;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -12,7 +13,8 @@ import android.app.Activity;
 import android.util.Log;
 
 public abstract class CPANDirectFetcher<SomeInstance extends Instance<SomeInstance>> 
-	extends CPANFetcher<SomeInstance> implements UpdateFetcher<SomeInstance> {
+	extends CPANFetcher<SomeInstance> 
+	implements UpdateFetcher<SomeInstance>, ControlCallable<ResultSet<SomeInstance>> {
 	
 	/**
 	 * An enumeration of direct retrieval URLs on MetaCPAN.
@@ -36,6 +38,7 @@ public abstract class CPANDirectFetcher<SomeInstance extends Instance<SomeInstan
     }
     
     private FetchSection fetchSection;
+    private BlockingQueue<Callable<ResultSet<SomeInstance>>> jobQueue;
     
     public CPANDirectFetcher(Model<SomeInstance> model, FetchSection fetchSection) {
     	super(model);
@@ -44,24 +47,23 @@ public abstract class CPANDirectFetcher<SomeInstance extends Instance<SomeInstan
     }
 	
 	@Override
-	public ExecutorService getPreferredExecutor() {
-		return getSchema().getControlExecutor();
-	}
+    public void setJobQueue(BlockingQueue<Callable<ResultSet<SomeInstance>>> jobQueue) {
+	    this.jobQueue = jobQueue;
+    }
 
 	@Override
 	protected ResultSet<SomeInstance> execute() throws IOException, InterruptedException {
 		Log.d("CPANDirectFetcher", "START execute()");
 		
 		final CountDownLatch latch = new CountDownLatch(getResultSet().size());
-		ExecutorService service = getSchema().getJobExecutor();
 		
 		for (final SomeInstance instance : getResultSet()) {
-			service.submit(new Callable<SomeInstance>() {
+			jobQueue.add(new Callable<ResultSet<SomeInstance>>() {
 				@Override
-				public SomeInstance call() throws IOException {
+				public ResultSet<SomeInstance> call() throws IOException {
 					CPANDirectFetcher.this.fetchOne(instance);
 					latch.countDown();
-					return instance;
+					return new Results<SomeInstance>(instance);
 				}
 			});
 		}

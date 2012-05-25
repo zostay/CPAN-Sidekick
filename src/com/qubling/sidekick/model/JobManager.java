@@ -76,46 +76,61 @@ public class JobManager<Thing> {
 				
 				Log.d("JobManager.JobControlLoop", "Start Next Job");
 				
-				if (nextJob.getActivity() != null) {
-					try {
-						final CountDownLatch uiLatch = new CountDownLatch(1);
-						nextJob.getActivity().runOnUiThread(new Runnable() {
-							
-							@Override
-							public void run() {
-								for (Callable<Thing> callable : nextJob.getCallables(null)) {
-									Thing result;
+				try {
+					int jobLoopsNeeded = 0;
+					final CountDownLatch latch = nextJob.getCountDownLatch();
+					
+					for (final Callable<Thing> callable : nextJob.getCallables()) {
+						if (callable instanceof ActivityUiCallable<?>) {
+							Activity activity = ((ActivityUiCallable<?>) callable).getActivity();
+							activity.runOnUiThread(new Runnable() {
+								
+								@Override
+								public void run() {
 									try {
-										result = callable.call();
+										Thing result = callable.call();
 										addResult(result);
+										latch.countDown();
 									}
 									catch (Exception e) {
 										Log.e("JobManager.JobControlLoop", "error calling callable job in UI thread", e);
 									}
-									uiLatch.countDown();
 								}
-							}
-						});
-						uiLatch.await();
+							});
+						}
+						else if (callable instanceof ControlCallable<?>) {
+							jobLoopsNeeded++; // just in case, but a bit naive
+							((ControlCallable<Thing>) callable).setJobQueue(callableQueue);
+							parent.controlExecutor.submit(new Callable<Thing>() {
+								@Override
+								public Thing call() throws Exception {
+									Thing result = callable.call();
+									addResult(result);
+									latch.countDown();
+									return result;
+								}
+							});
+						}
+						else {
+							jobLoopsNeeded++;
+							callableQueue.add(new Callable<Thing>() {
+								@Override
+								public Thing call() throws Exception {
+									Thing result = callable.call();
+									addResult(result);
+									latch.countDown();
+									return result;
+								}
+							});
+						}
 					}
-					catch (InterruptedException e) {
-						Log.e("JobManager.JobControlLoop", "UI Job was interrupted.", e);
-					}
+					
+					startJobThreads(jobLoopsNeeded);
+					
+					latch.await();
 				}
-				else {
-					CountDownLatch latch = nextJob.getCountDownLatch();
-					Collection<Callable<Thing>> callables = nextJob.getCallables(latch);
-					callableQueue.addAll(callables);
-					
-					startJobThreads(callables.size());
-					
-					try {
-						latch.await();
-					}
-					catch (InterruptedException e) {
-						// We're probably being shutdown. Shutdown.
-						return;
-					}
+				catch (InterruptedException e) {
+					Log.e("JobManager.JobControlLoop", "UI Job was interrupted.", e);
 				}
 				
 				ArrayList<Thing> resultCopy = new ArrayList<Thing>(currentResults);
@@ -147,7 +162,6 @@ public class JobManager<Thing> {
 	private static class JobGroup<Thing> {
     	private int runCount;
     	private Collection<Callable<Thing>> callables;
-    	private Activity activity;
     	
     	public JobGroup(Callable<Thing> callable) {
     		this.runCount = 1;
@@ -161,12 +175,6 @@ public class JobManager<Thing> {
     		Collections.addAll(this.callables, callables);
     	}
     	
-    	public JobGroup(Runnable runnable) {
-    		this.runCount = 1;
-    		this.callables = new ArrayList<Callable<Thing>>();
-    		this.callables.add(Executors.callable(runnable, (Thing) null));
-    	}
-    	
     	public JobGroup(Runnable... runnables) {
     		this.runCount = runnables.length;
     		this.callables = new ArrayList<Callable<Thing>>();
@@ -176,54 +184,28 @@ public class JobManager<Thing> {
     		}
     	}
     	
-    	public JobGroup(Runnable runnable, Activity activity) {
-    		this(runnable);
-    		this.activity = activity;
+    	public JobGroup(final Runnable runnable, final Activity activity) {
+    		this(new ActivityUiCallable<Thing>() {
+    			@Override
+    			public Activity getActivity() {
+    				return activity;
+    			}
+    			
+    			@Override
+    			public Thing call() {
+    				runnable.run();
+    				return null;
+    			}
+			});
     	}
     	
     	public CountDownLatch getCountDownLatch() {
     		return new CountDownLatch(runCount);
     	}
-   
-    	public Collection<Callable<Thing>> getCallables(CountDownLatch latch) {
-    		
-    		// This tells us the callables will be run synchronously
-    		if (latch == null) {
-    			return Collections.unmodifiableCollection(callables);
-    		}
-    		
-    		Collection<Callable<Thing>> latchedCallables = JobManager.countDownCallables(latch, callables);
-			return latchedCallables;
-    	}
-    
-    	public Activity getActivity() {
-    		return activity;
-    	}
-    }
-
-	public static <Thing> Collection<Callable<Thing>> countDownCallables(CountDownLatch latch, Collection<? extends Callable<Thing>> plainCallables) {
-    	ArrayList<Callable<Thing>> latchedCallables = new ArrayList<Callable<Thing>>();
-    	for (final Callable<Thing> callable : plainCallables) {
-    		Log.d("JobManager", "countDownCallables() " + callable);
-    		latchedCallables.add(countDownCallable(latch, callable));
-    	}
     	
-    	return latchedCallables;
-    }
-
-	public static <Thing> Callable<Thing> countDownCallable(final CountDownLatch latch, final Callable<Thing> plainCallable) {
-    	Log.d("JobManager", "countDownCallable()");
-    	return new Callable<Thing>() {
-    		@Override
-    		public Thing call() throws Exception {
-    			Log.d("JobManager", "START countDownCallable call()");
-    			Thing results = plainCallable.call();
-    			Log.d("JobManager", "END countDownCallable call()");
-    			Log.d("JobManager", "countDown(): " + latch.getCount() + " becomes " + (latch.getCount() - 1));
-    			latch.countDown();
-    			return results;
-    		}
-    	};
+    	public Collection<Callable<Thing>> getCallables() {
+    		return Collections.unmodifiableCollection(callables);
+    	}
     }
 
 	private final Queue<JobManager.JobGroup<Thing>> jobQueue;

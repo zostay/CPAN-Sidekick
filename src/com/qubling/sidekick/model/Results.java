@@ -21,6 +21,11 @@ public class Results<SomeInstance extends Instance<SomeInstance>> implements Res
 		resultIndex = new ArrayList<SomeInstance>();
 	}
 	
+	public Results(SomeInstance singleton) {
+		this();
+		add(singleton);
+	}
+	
 	public Results(ArrayList<SomeInstance> loadedResults) {
 		this();
 		addAll(loadedResults);

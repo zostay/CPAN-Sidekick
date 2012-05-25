@@ -17,6 +17,4 @@ public interface Fetcher<SomeInstance extends Instance<SomeInstance>> extends Ca
 	public abstract Fetcher<SomeInstance> whenFinishedNotifyUi(Activity activity, OnFinished<SomeInstance> listener);
 
 	public abstract Fetcher<SomeInstance> whenFinishedNotify(OnFinished<SomeInstance> listener);
-
-	public ExecutorService getPreferredExecutor();
 }

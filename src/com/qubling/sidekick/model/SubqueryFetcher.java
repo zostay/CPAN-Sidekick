@@ -1,6 +1,9 @@
 package com.qubling.sidekick.model;
 
 import java.util.Collection;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
@@ -8,10 +11,12 @@ import android.app.Activity;
 import android.util.Log;
 
 public class SubqueryFetcher<SomeInstance extends Instance<SomeInstance>, ForeignInstance extends Instance<ForeignInstance>> 
-	extends AbstractFetcher<SomeInstance> implements UpdateFetcher<SomeInstance> {
+	extends AbstractFetcher<SomeInstance> 
+	implements UpdateFetcher<SomeInstance>, ControlCallable<ResultSet<SomeInstance>> {
 	
 	private Results.Remap<SomeInstance, ForeignInstance> remapper;
 	private UpdateFetcher<ForeignInstance> fetcher;
+	private BlockingQueue<Callable<ResultSet<SomeInstance>>> jobQueue;
 	
 	public SubqueryFetcher(Model<SomeInstance> model, UpdateFetcher<ForeignInstance> fetcher, Results.Remap<SomeInstance, ForeignInstance> remapper) {
 		super(model);
@@ -37,23 +42,31 @@ public class SubqueryFetcher<SomeInstance extends Instance<SomeInstance>, Foreig
 	}
 	
 	@Override
-	public ExecutorService getPreferredExecutor() {
-		return getSchema().getControlExecutor();
-	}
-	
+    public void setJobQueue(BlockingQueue<Callable<ResultSet<SomeInstance>>> jobQueue) {
+		Log.d("SubqueryFetcher", "setJobQueue()");
+	    this.jobQueue = jobQueue;
+    }
+
 	@Override
 	protected ResultSet<SomeInstance> execute() throws Exception {
 		Log.d("SubqueryFetcher", "START execute()");
 		
-		CountDownLatch latch = new CountDownLatch(1);
-		ExecutorService service = getSchema().getJobExecutor();
+		final CountDownLatch latch = new CountDownLatch(1);
 		
 		ResultSet<ForeignInstance> inputResults = new Results<ForeignInstance>();
 		inputResults.addRemap(getResultSet(), remapper);
 		fetcher.setIncomingResultSet(
 				new ResultsForUpdate<ForeignInstance>(fetcher, inputResults));
+
+		jobQueue.add(new Callable<ResultSet<SomeInstance>>() {
+			@Override
+			public ResultSet<SomeInstance> call() throws Exception {
+				fetcher.call();
+				latch.countDown();
+				return SubqueryFetcher.this.getResultSet();
+			}
+		});
 		
-		service.submit(JobManager.countDownCallable(latch, fetcher));
 		latch.await();
 		
 		Log.d("SubqueryFetcher", "END execute()");
