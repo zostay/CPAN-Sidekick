@@ -59,7 +59,7 @@ public abstract class CPANQueryFetcher<SomeInstance extends Instance<SomeInstanc
     	this.searchTemplate  = searchTemplate + ".json";
     }
     
-    protected ResultSet<SomeInstance> execute() {
+    protected void execute() {
     	Log.d("CPANQueryFetcher", "START execute()");
     	
     	HashMap<String, Object> variables = new HashMap<String, Object>();
@@ -80,8 +80,6 @@ public abstract class CPANQueryFetcher<SomeInstance extends Instance<SomeInstanc
     	}
     	
     	Log.d("CPANQueryFetcher", "END execute()");
-    	
-    	return getResultSet();
     }
     
     protected abstract void prepareRequest(Map<String, Object> variables);

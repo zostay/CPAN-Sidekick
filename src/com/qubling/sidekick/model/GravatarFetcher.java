@@ -54,7 +54,7 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
     }
 
 	@Override
-    protected ResultSet<Gravatar> execute() {
+    protected void execute() {
 		Log.d("GravatarFetcher", "START execute()");
 			
 		ResultSet<Gravatar> inputResults = getResultSet();
@@ -72,8 +72,6 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
 		}
 		
 		Log.d("GravatarFetcher", "END execute()");
-		
-		return inputResults;
     }
 	
 	@Override

@@ -1,11 +1,10 @@
 package com.qubling.sidekick.model;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
 
 import android.app.Activity;
 
-public interface Fetcher<SomeInstance extends Instance<SomeInstance>> extends Callable<ResultSet<SomeInstance>> {
+public interface Fetcher<SomeInstance extends Instance<SomeInstance>> extends Callable<Void> {
 	public interface OnFinished<SomeInstance extends Instance<SomeInstance>> {
     	public abstract void onFinishedFetch(Fetcher<SomeInstance> fetcher, ResultSet<SomeInstance> results);
     }

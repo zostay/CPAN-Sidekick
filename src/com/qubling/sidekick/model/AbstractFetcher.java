@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -86,13 +85,13 @@ public abstract class AbstractFetcher<SomeInstance extends Instance<SomeInstance
 		}
 	}
 	
-	public final ResultSet<SomeInstance> call() throws Exception {
+	public final Void call() throws Exception {
 		try {
 			Log.d("AbstractFetcher", "START call()");
-			ResultSet<SomeInstance> results = execute();
+			execute();
 			notifyOnFinished();
 			Log.d("AbstractFetcher", "END call()");
-			return results;
+			return null;
 		}
 		catch (RuntimeException e) {
 			Log.e("AbstractFetcher", "Error while executing fetch.", e);
@@ -104,7 +103,7 @@ public abstract class AbstractFetcher<SomeInstance extends Instance<SomeInstance
 		}
 	}
 	
-	protected abstract ResultSet<SomeInstance> execute() throws Exception;
+	protected abstract void execute() throws Exception;
 
     protected HttpClient getHttpClient() {
         return getSchema().getHttpClient();
@@ -164,15 +163,10 @@ public abstract class AbstractFetcher<SomeInstance extends Instance<SomeInstance
     	addOnFinishedListener(new OnFinished<SomeInstance>() {
 			
 			@Override
-			public void onFinishedFetch(Fetcher<SomeInstance> originFetcher, ResultSet<SomeInstance> results) {
-				try {
-					updateFetcher.setIncomingResultSet(
-							new ResultsForUpdate<SomeInstance>(updateFetcher, results));
-					updateFetcher.call();
-				}
-				catch (Exception e) {
-					Log.e("Fetcher", "Error while executing followup fetcher.", e);
-				}
+			public void onFinishedFetch(Fetcher<SomeInstance> originFetcher, final ResultSet<SomeInstance> results) {
+				updateFetcher.setIncomingResultSet(
+						new ResultsForUpdate<SomeInstance>(updateFetcher, results));
+				getSchema().getJobManager().addToJobQueue(updateFetcher);
 			}
 		});
     	

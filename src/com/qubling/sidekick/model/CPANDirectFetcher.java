@@ -1,10 +1,8 @@
 package com.qubling.sidekick.model;
 
 import java.io.IOException;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -14,7 +12,7 @@ import android.util.Log;
 
 public abstract class CPANDirectFetcher<SomeInstance extends Instance<SomeInstance>> 
 	extends CPANFetcher<SomeInstance> 
-	implements UpdateFetcher<SomeInstance>, ControlCallable<ResultSet<SomeInstance>> {
+	implements UpdateFetcher<SomeInstance>, ControlCallable<Void> {
 	
 	/**
 	 * An enumeration of direct retrieval URLs on MetaCPAN.
@@ -38,7 +36,7 @@ public abstract class CPANDirectFetcher<SomeInstance extends Instance<SomeInstan
     }
     
     private FetchSection fetchSection;
-    private BlockingQueue<Callable<ResultSet<SomeInstance>>> jobQueue;
+    private JobManager jobManager;
     
     public CPANDirectFetcher(Model<SomeInstance> model, FetchSection fetchSection) {
     	super(model);
@@ -47,32 +45,31 @@ public abstract class CPANDirectFetcher<SomeInstance extends Instance<SomeInstan
     }
 	
 	@Override
-    public void setJobQueue(BlockingQueue<Callable<ResultSet<SomeInstance>>> jobQueue) {
-	    this.jobQueue = jobQueue;
+    public void setJobManager(JobManager jobManager) {
+	    this.jobManager = jobManager;
     }
 
 	@Override
-	protected ResultSet<SomeInstance> execute() throws IOException, InterruptedException {
+	protected void execute() throws IOException, InterruptedException {
 		Log.d("CPANDirectFetcher", "START execute()");
 		
 		final CountDownLatch latch = new CountDownLatch(getResultSet().size());
 		
 		for (final SomeInstance instance : getResultSet()) {
-			jobQueue.add(new Callable<ResultSet<SomeInstance>>() {
+			Callable<Void> job = new Callable<Void>() {
 				@Override
-				public ResultSet<SomeInstance> call() throws IOException {
+				public Void call() throws IOException {
 					CPANDirectFetcher.this.fetchOne(instance);
-					latch.countDown();
-					return new Results<SomeInstance>(instance);
+					return null;
 				}
-			});
+			};
+			
+			jobManager.addToJobQueue(job, latch);
 		}
 		
 		latch.await();
 		
 		Log.d("CPANDirectFetcher", "END execute()");
-		
-		return getResultSet();
 	}
 	
     protected void fetchOne(SomeInstance instance) throws IOException {

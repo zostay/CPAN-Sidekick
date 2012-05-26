@@ -2,15 +2,13 @@ package com.qubling.sidekick.model;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 import android.app.Activity;
 import android.util.Log;
 
-public class Search<SomeInstance extends Instance<SomeInstance>> extends JobManager<ResultSet<SomeInstance>> {
+public class Search<SomeInstance extends Instance<SomeInstance>> implements JobManager.Monitor {
 	public interface OnFinishedFetch<SomeInstance extends Instance<SomeInstance>> {
-		public void onFinishedFetch(List<ResultSet<SomeInstance>> results);
+		public void onFinishedFetch(ResultSet<SomeInstance> results);
 	}
 	
 	public interface OnSearchActivity {
@@ -18,13 +16,14 @@ public class Search<SomeInstance extends Instance<SomeInstance>> extends JobMana
 		public void onSearchComplete();
 	}
 	
+	private final JobManager jobManager;
 	private final Fetcher<SomeInstance> originalFetcher;
 	private final Collection<OnSearchActivity> activityListeners;
 	
-	public Search(ExecutorService controlExecutor, ExecutorService jobExecutor, Fetcher<SomeInstance> fetcher) {
-		super(controlExecutor, jobExecutor);
-		
-		submit(fetcher);
+	public Search(JobManager jobManager, Fetcher<SomeInstance> fetcher) {
+		this.jobManager = jobManager;
+		this.jobManager.setJobManagerMonitor(this);
+		this.jobManager.submit(fetcher);
 
 		this.originalFetcher = fetcher;
 		this.activityListeners = new HashSet<Search.OnSearchActivity>();
@@ -37,17 +36,17 @@ public class Search<SomeInstance extends Instance<SomeInstance>> extends JobMana
 					new ResultsForUpdate<SomeInstance>(fetcher, originalFetcher.getResultSet()));
 		}
 		
-		submit(fetchers);
+		jobManager.submit(fetchers);
 		return this;
 	}
 	
 	public Search<SomeInstance> whenFinishedRun(Runnable... runnables) {
-		submit(runnables);
+		jobManager.submit(runnables);
 		return this;
 	}
 	
 	public Search<SomeInstance> whenFinishedRunInUiThread(Activity activity, Runnable runnable) {
-		submit(runnable, activity);
+		jobManager.submit(runnable, activity);
 		return this;
 	}
 	
@@ -56,11 +55,11 @@ public class Search<SomeInstance extends Instance<SomeInstance>> extends JobMana
 			
 			@Override
 			public void run() {
-				listener.onFinishedFetch(getResults().peek());
+				listener.onFinishedFetch(originalFetcher.getResultSet());
 			}
 		};
 		
-		submit(notifier);
+		jobManager.submit(notifier);
 		return this;
 	}
 	
@@ -69,16 +68,16 @@ public class Search<SomeInstance extends Instance<SomeInstance>> extends JobMana
 			
 			@Override
 			public void run() {
-				listener.onFinishedFetch(getResults().peek());
+				listener.onFinishedFetch(originalFetcher.getResultSet());
 			}
 		};
 		
-		submit(notifier, activity);
+		jobManager.submit(notifier, activity);
 		return this;
 	}
 	
 	public Search<SomeInstance> start() {
-		executeJobs();
+		jobManager.executeJobs();
 		return this;
 	}
 	
@@ -107,7 +106,7 @@ public class Search<SomeInstance extends Instance<SomeInstance>> extends JobMana
 	}
 	
 	@Override
-	protected void executeJobsStarted() {
+	public void executeJobsStarted() {
 		Log.d("Search", "notifyOnSearchStart()");
 		for (OnSearchActivity listener : activityListeners) {
 			listener.onSearchStart();
@@ -115,7 +114,7 @@ public class Search<SomeInstance extends Instance<SomeInstance>> extends JobMana
 	}
 	
 	@Override
-	protected void executeJobsComplete() {
+	public void executeJobsComplete() {
 		Log.d("Search", "notifyOnSearchComplete()");
 		for (OnSearchActivity listener : activityListeners) {
 			listener.onSearchComplete();

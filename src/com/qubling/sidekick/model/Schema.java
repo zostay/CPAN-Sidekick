@@ -25,6 +25,7 @@ public class Schema implements OnSearchActivity {
 	private int runningSearches = 0;
 	
 	private ExecutorService jobExecutor, controlExecutor;
+	private JobManager jobManager;
 	private Context context;
 	private HttpClient httpClient;
 	
@@ -42,6 +43,8 @@ public class Schema implements OnSearchActivity {
 	private void initialize() {
 		jobExecutor = Executors.newFixedThreadPool(JOB_THREAD_POOL_SIZE);
 		controlExecutor = Executors.newCachedThreadPool();
+		
+		jobManager = new JobManager(controlExecutor, jobExecutor);
 	}
 	
     private void setupHttpClient() {
@@ -119,6 +122,10 @@ public class Schema implements OnSearchActivity {
 		return controlExecutor;
 	}
 	
+	public JobManager getJobManager() {
+		return jobManager;
+	}
+	
 	public void cancelSearch() {
 		jobExecutor.shutdown();
 		controlExecutor.shutdown();
@@ -129,7 +136,7 @@ public class Schema implements OnSearchActivity {
 	}
 	
 	public <SomeInstance extends Instance<SomeInstance>> Search<SomeInstance> doFetch(Fetcher<SomeInstance> fetcher) {
-		Search<SomeInstance> search = new Search<SomeInstance>(controlExecutor, jobExecutor, fetcher);
+		Search<SomeInstance> search = new Search<SomeInstance>(jobManager, fetcher);
 		search.addOnSearchActivityListener(this);
 		return search;
 	}

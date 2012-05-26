@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
@@ -18,19 +17,17 @@ import java.util.concurrent.TimeUnit;
 import android.app.Activity;
 import android.util.Log;
 
-public class JobManager<Thing> {
-	private static class JobLoop<Thing> implements Runnable {
+public class JobManager {
+	private static class JobLoop implements Runnable {
 		private static final long DEFAULT_JOB_WAIT_TIMEOUT = 10L;
 		private static final TimeUnit DEFAULT_JOB_WAIT_UNIT = TimeUnit.SECONDS;
 		
-		private JobControlLoop<Thing> controlLoop;
-		private BlockingQueue<Callable<Thing>> jobQueue;
+		private BlockingQueue<Callable<Void>> jobQueue;
 		
 		private long jobWaitTimeout = DEFAULT_JOB_WAIT_TIMEOUT;
 		private TimeUnit jobWaitUnit = DEFAULT_JOB_WAIT_UNIT;
 		
-		public JobLoop(JobControlLoop<Thing> controlLoop, BlockingQueue<Callable<Thing>> jobQueue) {
-			this.controlLoop = controlLoop;
+		public JobLoop(BlockingQueue<Callable<Void>> jobQueue) {
 			this.jobQueue = jobQueue;
 		}
 		
@@ -38,10 +35,9 @@ public class JobManager<Thing> {
 		public void run() {
 			while (true) {
 				try {
-					Callable<Thing> job = jobQueue.poll(jobWaitTimeout, jobWaitUnit);
+					Callable<Void> job = jobQueue.poll(jobWaitTimeout, jobWaitUnit);
 					if (job == null) return;
-					Thing result = job.call();
-					controlLoop.addResult(result);
+					job.call();
 				}
 				catch (InterruptedException e) {
 					return;
@@ -53,18 +49,14 @@ public class JobManager<Thing> {
 		}
 	}
 	
-	private static class JobControlLoop<Thing> implements Runnable {
-		private final JobManager<Thing> parent;
-		private final BlockingQueue<Callable<Thing>> callableQueue;
-		private final Queue<JobGroup<Thing>> jobQueue;
-		private final List<Thing> currentResults;
+	private static class JobControlLoop implements Runnable {
+		private final JobManager parent;
+		private final Queue<JobGroup> jobQueue;
 		
-		public JobControlLoop(JobManager<Thing> parent, Queue<JobGroup<Thing>> jobQueue) {
+		public JobControlLoop(JobManager parent, Queue<JobGroup> jobQueue) {
 			this.parent = parent;
-			this.jobQueue = new LinkedList<JobGroup<Thing>>();
+			this.jobQueue = new LinkedList<JobGroup>();
 			this.jobQueue.addAll(jobQueue);
-			this.callableQueue = new LinkedBlockingQueue<Callable<Thing>>();
-			this.currentResults = Collections.synchronizedList(new ArrayList<Thing>());
 		}
 		
 		@Override
@@ -72,127 +64,62 @@ public class JobManager<Thing> {
 			parent.executeJobsStarted();
 			
 			while (!jobQueue.isEmpty()) {
-				final JobGroup<Thing> nextJob = jobQueue.poll();
+				final JobGroup nextJob = jobQueue.poll();
 				
 				Log.d("JobManager.JobControlLoop", "Start Next Job");
 				
 				try {
-					int jobLoopsNeeded = 0;
-					final CountDownLatch latch = nextJob.getCountDownLatch();
+					CountDownLatch latch = nextJob.getCountDownLatch();
 					
-					for (final Callable<Thing> callable : nextJob.getCallables()) {
-						if (callable instanceof ActivityUiCallable<?>) {
-							Activity activity = ((ActivityUiCallable<?>) callable).getActivity();
-							activity.runOnUiThread(new Runnable() {
-								
-								@Override
-								public void run() {
-									try {
-										Thing result = callable.call();
-										addResult(result);
-										latch.countDown();
-									}
-									catch (Exception e) {
-										Log.e("JobManager.JobControlLoop", "error calling callable job in UI thread", e);
-									}
-								}
-							});
-						}
-						else if (callable instanceof ControlCallable<?>) {
-							jobLoopsNeeded++; // just in case, but a bit naive
-							((ControlCallable<Thing>) callable).setJobQueue(callableQueue);
-							parent.controlExecutor.submit(new Callable<Thing>() {
-								@Override
-								public Thing call() throws Exception {
-									Thing result = callable.call();
-									addResult(result);
-									latch.countDown();
-									return result;
-								}
-							});
-						}
-						else {
-							jobLoopsNeeded++;
-							callableQueue.add(new Callable<Thing>() {
-								@Override
-								public Thing call() throws Exception {
-									Thing result = callable.call();
-									addResult(result);
-									latch.countDown();
-									return result;
-								}
-							});
-						}
+					for (final Callable<Void> callable : nextJob.getCallables()) {
+						parent.addToJobQueue(callable, latch);
 					}
-					
-					startJobThreads(jobLoopsNeeded);
 					
 					latch.await();
 				}
 				catch (InterruptedException e) {
 					Log.e("JobManager.JobControlLoop", "UI Job was interrupted.", e);
 				}
-				
-				ArrayList<Thing> resultCopy = new ArrayList<Thing>(currentResults);
-				currentResults.clear();
-				parent.addResult(resultCopy);
 			}
 			
 			parent.executeJobsComplete();
 		}
-		
-		private void startJobThreads(int threadCount) {
-			try {
-				for (int i = 0; i < threadCount; i++) {
-					parent.jobExecutor.submit(new JobLoop<Thing>(this, callableQueue));
-				}
-			}
-			catch (RejectedExecutionException e) {
-				// Pretty normal occurrence. The ExecutorService is letting us 
-				// know we've already used up all the threads in the pool. As
-				// long as there's a single thread out there, we should be ok.
-			}
-		}
-		
-		private synchronized void addResult(Thing result) {
-			currentResults.add(result);
-		}
 	}
 
-	private static class JobGroup<Thing> {
+	private static class JobGroup {
     	private int runCount;
-    	private Collection<Callable<Thing>> callables;
+    	private Collection<Callable<Void>> callables;
     	
-    	public JobGroup(Callable<Thing> callable) {
+    	public JobGroup(Callable<Void> callable) {
     		this.runCount = 1;
-    		this.callables = new ArrayList<Callable<Thing>>();
+    		this.callables = new ArrayList<Callable<Void>>();
     		this.callables.add(callable);
     	}
     	
-    	public JobGroup(Callable<Thing>... callables) {
+    	public JobGroup(Callable<Void>... callables) {
     		this.runCount = callables.length;
-    		this.callables = new ArrayList<Callable<Thing>>();
+    		this.callables = new ArrayList<Callable<Void>>();
     		Collections.addAll(this.callables, callables);
     	}
     	
     	public JobGroup(Runnable... runnables) {
     		this.runCount = runnables.length;
-    		this.callables = new ArrayList<Callable<Thing>>();
+    		this.callables = new ArrayList<Callable<Void>>();
     		
     		for (Runnable runnable : runnables) {
-    			this.callables.add(Executors.callable(runnable, (Thing) null));
+    			this.callables.add(Executors.callable(runnable, (Void) null));
     		}
     	}
     	
     	public JobGroup(final Runnable runnable, final Activity activity) {
-    		this(new ActivityUiCallable<Thing>() {
+    		this(new ActivityUiCallable<Void>() {
     			@Override
     			public Activity getActivity() {
     				return activity;
     			}
     			
     			@Override
-    			public Thing call() {
+    			public Void call() {
     				runnable.run();
     				return null;
     			}
@@ -203,53 +130,129 @@ public class JobManager<Thing> {
     		return new CountDownLatch(runCount);
     	}
     	
-    	public Collection<Callable<Thing>> getCallables() {
+    	public Collection<Callable<Void>> getCallables() {
     		return Collections.unmodifiableCollection(callables);
     	}
     }
+	
+	public interface Monitor {
+		public void executeJobsStarted();
+		public void executeJobsComplete();
+	}
 
-	private final Queue<JobManager.JobGroup<Thing>> jobQueue;
-	private final Queue<List<Thing>> results;
+	private final Queue<JobGroup> jobQueue;
+	private final BlockingQueue<Callable<Void>> callableQueue;
 	private final ExecutorService controlExecutor;
 	private final ExecutorService jobExecutor;
+	private Monitor monitor;
 
 	public JobManager(ExecutorService controlExecutor, ExecutorService jobExecutor) {
 		this.controlExecutor = controlExecutor;
 		this.jobExecutor = jobExecutor;
 		
-		jobQueue = new LinkedList<JobManager.JobGroup<Thing>>();
-		results = new LinkedList<List<Thing>>();
+		jobQueue = new LinkedList<JobGroup>();
+		callableQueue = new LinkedBlockingQueue<Callable<Void>>();
 	}
 	
-	public void submit(Callable<Thing> callable) {
-		jobQueue.offer(new JobManager.JobGroup<Thing>(callable));
+	public void setJobManagerMonitor(Monitor monitor) {
+		this.monitor = monitor;
 	}
 	
-	public void submit(Callable<Thing>... callables) {
-		jobQueue.offer(new JobManager.JobGroup<Thing>(callables));
+	public void submit(Callable<Void> callable) {
+		jobQueue.offer(new JobGroup(callable));
+	}
+	
+	public void submit(Callable<Void>... callables) {
+		jobQueue.offer(new JobGroup(callables));
 	}
 	
 	public void submit(Runnable... runnables) {
-		jobQueue.offer(new JobManager.JobGroup<Thing>(runnables));
+		jobQueue.offer(new JobGroup(runnables));
 	}
 	
 	public void submit(Runnable runnable, Activity activity) {
-		jobQueue.offer(new JobManager.JobGroup<Thing>(runnable, activity));
+		jobQueue.offer(new JobGroup(runnable, activity));
 	}
 	
 	public void executeJobs() {
-		controlExecutor.submit(new JobControlLoop<Thing>(this, jobQueue));
+		controlExecutor.submit(new JobControlLoop(this, jobQueue));
 	}
 	
-	protected void executeJobsStarted() { }
-	
-	protected void executeJobsComplete() { }
-	
-	public synchronized Queue<List<Thing>> getResults() {
-		return results;
+	protected void executeJobsStarted() { 
+		if (monitor != null) monitor.executeJobsStarted();
 	}
 	
-	private synchronized void addResult(List<Thing> result) {
-		results.offer(result);
+	protected void executeJobsComplete() { 
+		if (monitor != null) monitor.executeJobsComplete();
+	}
+	
+	private void startJobThread() {
+		try {
+			jobExecutor.submit(new JobLoop(callableQueue));
+		}
+		catch (RejectedExecutionException e) {
+			// Pretty normal occurrence. The ExecutorService is letting us 
+			// know we've already used up all the threads in the pool. As
+			// long as there's a single thread out there, we should be ok.
+		}
+	}
+	
+	public void addToJobQueue(Callable<Void> callable) {
+		addToJobQueue(callable, null);
+	}
+	
+	public void addToJobQueue(final Callable<Void> callable, final CountDownLatch latch) {
+		boolean jobLoopNeeded = false;
+		
+		if (callable instanceof ActivityUiCallable<?>) {
+			Log.d("JobManager", "Callable " + callable + " is an ActivityUiCallable");
+			
+			Activity activity = ((ActivityUiCallable<?>) callable).getActivity();
+			activity.runOnUiThread(new Runnable() {
+				
+				@Override
+				public void run() {
+					try {
+						callable.call();
+						if (latch != null) latch.countDown();
+					}
+					catch (Exception e) {
+						Log.e("JobManager", "error calling callable job in UI thread", e);
+					}
+				}
+			});
+		}
+		else if (callable instanceof ControlCallable<?>) {
+			Log.d("JobManager", "Callable " + callable + " is a ControlCallable");
+			
+			jobLoopNeeded = true;
+			
+			controlExecutor.submit(new Callable<Void>() {
+				@Override
+				public Void call() throws Exception {
+					((ControlCallable<Void>) callable).setJobManager(JobManager.this);
+					callable.call();
+					if (latch != null) latch.countDown();
+					return null;
+				}
+			});
+		}
+		else {
+			Log.d("JobManager", "Callable " + callable + " is a Callable");
+			
+			jobLoopNeeded = true;
+			
+			callableQueue.add(new Callable<Void>() {
+				@Override
+				public Void call() throws Exception {
+					callable.call();
+					if (latch != null) latch.countDown();
+					return null;
+				}
+			});
+		}
+		
+		if (jobLoopNeeded) 
+			startJobThread();
 	}
 }
