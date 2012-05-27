@@ -7,6 +7,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.qubling.sidekick.R;
+import com.qubling.sidekick.job.JobManager;
 import com.qubling.sidekick.model.Search.OnSearchActivity;
 
 import android.content.Context;
@@ -17,11 +18,14 @@ public class Schema implements OnSearchActivity {
 	private final static int JOB_THREAD_POOL_SIZE = 3;
 	private static final String METACPAN_API_USER_AGENT_SUFFIX = " (Android)";
 	
+	private static int schemaIdCounter = 0;
+	
 	private final GravatarModel gravatarModel;
 	private final AuthorModel authorModel;
 	private final ReleaseModel releaseModel;
 	private final ModuleModel moduleModel;
 	
+	private int schemaId;
 	private int runningSearches = 0;
 	
 	private ExecutorService jobExecutor, controlExecutor;
@@ -30,6 +34,8 @@ public class Schema implements OnSearchActivity {
 	private HttpClient httpClient;
 	
 	public Schema(Context context) {
+		schemaId = ++schemaIdCounter;
+		
 		gravatarModel = new GravatarModel(this);
 		authorModel = new AuthorModel(this);
 		releaseModel = new ReleaseModel(this);
@@ -153,5 +159,10 @@ public class Schema implements OnSearchActivity {
 		Log.d("Schema", "onSearchComplete()");
 		runningSearches--;
 		if (runningSearches == 0) closeHttpClient();
+	}
+	
+	@Override
+	public String toString() {
+		return "Session #" + schemaId;
 	}
 }

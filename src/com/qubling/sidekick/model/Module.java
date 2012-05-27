@@ -92,4 +92,9 @@ public class Module extends Instance<Module> {
             return new Module[size];
         }
     };
+    
+    @Override
+    public String toString() {
+    	return "Module(" + getName() + ")";
+    }
 }

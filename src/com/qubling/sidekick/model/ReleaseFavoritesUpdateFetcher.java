@@ -60,4 +60,9 @@ public class ReleaseFavoritesUpdateFetcher extends ReleaseUpdateFetcher {
             }
         }
 	}
+	
+	@Override
+	public String toString() {
+		return getModel() + ":ReleaseFavoritesUpdateFetcher(" + getResultSet() + ")";
+	}
 }

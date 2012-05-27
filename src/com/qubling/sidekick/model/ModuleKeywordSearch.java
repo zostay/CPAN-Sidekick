@@ -72,4 +72,9 @@ public class ModuleKeywordSearch extends CPANQueryFetcher<Module> {
         if (results instanceof Results<?>)
         	((Results<?>) results).setTotalSize(response.getJSONObject("hits").getInt("total"));
     }
+	
+	@Override
+	public String toString() {
+		return getModel() + ":ModuleKeywordSearch(" + safeKeywords + ")";
+	}
 }

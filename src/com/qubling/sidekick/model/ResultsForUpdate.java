@@ -159,4 +159,23 @@ public class ResultsForUpdate<SomeInstance extends Instance<SomeInstance>>
 	public void onRemove(SomeInstance instance) {
 		filteredIndex.remove(instance);
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder("ResultsForUpdate(");
+		result.append(filter.getClass().getSimpleName());
+		result.append(";");
+		
+		for (int i = 0; i < size() && i < 3; i++) {
+			result.append(get(i));
+			result.append(",");
+		}
+		
+		if (size() > 3)
+			result.append("...");
+		
+		result.append(")");
+		
+		return result.toString();
+	}
 }

@@ -46,4 +46,9 @@ public class ReleaseRatingsUpdateFetcher extends ReleaseUpdateFetcher implements
             }
         }
 	}
+	
+	@Override
+	public String toString() {
+		return getModel() + ":ReleaseRatingsUpdateFetcher(" + getResultSet() + ")";
+	}
 }

@@ -3,6 +3,8 @@ package com.qubling.sidekick.model;
 import java.util.Collection;
 import java.util.HashSet;
 
+import com.qubling.sidekick.job.JobManager;
+
 import android.app.Activity;
 import android.util.Log;
 

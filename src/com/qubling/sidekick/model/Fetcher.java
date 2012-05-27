@@ -11,9 +11,9 @@ public interface Fetcher<SomeInstance extends Instance<SomeInstance>> extends Ca
 
 	public ResultSet<SomeInstance> getResultSet();
 	
-	public abstract Fetcher<SomeInstance> thenDoFetch(UpdateFetcher<SomeInstance> fetcher);
+	public abstract Consequence<SomeInstance> thenDoFetch(UpdateFetcher<SomeInstance> fetcher);
 
-	public abstract Fetcher<SomeInstance> whenFinishedNotifyUi(Activity activity, OnFinished<SomeInstance> listener);
+	public abstract Consequence<SomeInstance> whenFinishedNotifyUi(Activity activity, OnFinished<SomeInstance> listener);
 
-	public abstract Fetcher<SomeInstance> whenFinishedNotify(OnFinished<SomeInstance> listener);
+	public abstract Consequence<SomeInstance> whenFinishedNotify(OnFinished<SomeInstance> listener);
 }

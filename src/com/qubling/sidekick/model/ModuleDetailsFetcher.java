@@ -48,4 +48,8 @@ public class ModuleDetailsFetcher extends CPANDirectFetcher<Module> {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return getModel() + ":ModuleDetailsFetcher(" + getResultSet() + ")";
+	}
 }

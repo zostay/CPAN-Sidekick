@@ -66,4 +66,9 @@ public class Author extends Instance<Author> {
             return new Author[size];
         }
     };
+    
+    @Override
+    public String toString() {
+    	return "Author(" + getPauseId() + ")";
+    }
 }

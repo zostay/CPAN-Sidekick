@@ -33,4 +33,9 @@ public class AuthorModel extends Model<Author> {
 		
 		return new SubqueryFetcher<Author, Gravatar>(this, fetcher, remapper);
 	}
+	
+	@Override
+	public String toString() {
+		return getSchema() + ":AuthorModel";
+	}
 }

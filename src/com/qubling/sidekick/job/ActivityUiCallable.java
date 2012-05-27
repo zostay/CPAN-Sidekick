@@ -1,4 +1,4 @@
-package com.qubling.sidekick.model;
+package com.qubling.sidekick.job;
 
 import java.util.concurrent.Callable;
 

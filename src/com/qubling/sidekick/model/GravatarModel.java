@@ -13,4 +13,9 @@ public class GravatarModel extends Model<Gravatar> {
 	public UpdateFetcher<Gravatar> fetch(float gravatarDpSize) {
 		return new GravatarFetcher(this, gravatarDpSize);
 	}
+	
+	@Override
+	public String toString() {
+		return getSchema() + ":GravatarModel";
+	}
 }

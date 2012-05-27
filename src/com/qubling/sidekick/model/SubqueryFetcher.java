@@ -3,7 +3,9 @@ package com.qubling.sidekick.model;
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
 
-import android.app.Activity;
+import com.qubling.sidekick.job.ControlCallable;
+import com.qubling.sidekick.job.JobManager;
+
 import android.util.Log;
 
 public class SubqueryFetcher<SomeInstance extends Instance<SomeInstance>, ForeignInstance extends Instance<ForeignInstance>> 
@@ -62,22 +64,9 @@ public class SubqueryFetcher<SomeInstance extends Instance<SomeInstance>, Foreig
 		
 		Log.d("SubqueryFetcher", "END execute()");
 	}
-
+	
 	@Override
-    public UpdateFetcher<SomeInstance> thenAfterUpdateDoFetch(UpdateFetcher<SomeInstance> fetcher) {
-	    thenDoFetch(fetcher);
-	    return this;
-    }
-
-	@Override
-    public UpdateFetcher<SomeInstance> whenUpdateFinishedNotifyUi(Activity activity, OnFinished<SomeInstance> listener) {
-	    whenFinishedNotifyUi(activity, listener);
-	    return this;
-    }
-
-	@Override
-    public UpdateFetcher<SomeInstance> whenUpdateFinishedNotify(OnFinished<SomeInstance> listener) {
-	    whenFinishedNotify(listener);
-	    return this;
-    }
+	public String toString() {
+		return getModel() + ":SubqueryFetcher(" + fetcher + ";" + getResultSet() + ")";
+	}
 }

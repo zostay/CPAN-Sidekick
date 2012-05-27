@@ -82,4 +82,8 @@ public class AuthorDetailsFetcher extends CPANQueryUpdateFetcher<Author> {
         }
 	}
 
+	@Override
+	public String toString() {
+		return getModel() + ":AuthorDetailsFetcher(" + getResultSet() + ")";
+	}
 }

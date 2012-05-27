@@ -12,7 +12,6 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -123,22 +122,8 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
         	return null;
         }
     }
-
-	@Override
-    public UpdateFetcher<Gravatar> thenAfterUpdateDoFetch(UpdateFetcher<Gravatar> fetcher) {
-	    thenDoFetch(fetcher);
-	    return this;
-    }
-
-	@Override
-    public UpdateFetcher<Gravatar> whenUpdateFinishedNotifyUi(Activity activity, OnFinished<Gravatar> listener) {
-	    whenFinishedNotifyUi(activity, listener);
-	    return this;
-    }
-
-	@Override
-    public UpdateFetcher<Gravatar> whenUpdateFinishedNotify(OnFinished<Gravatar> listener) {
-	    whenFinishedNotify(listener);
-	    return this;
+    
+    public String toString() {
+    	return getModel() + ":GravatarFetch(" + gravatarDpSize + ";" + getResultSet() + ")";
     }
 }

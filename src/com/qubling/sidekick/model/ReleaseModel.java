@@ -16,4 +16,9 @@ public class ReleaseModel extends Model<Release> {
 	public UpdateFetcher<Release> fetchRatings() {
 		return new ReleaseRatingsUpdateFetcher(this);
 	}
+	
+	@Override
+	public String toString() {
+		return getSchema() + ":ReleaseModel";
+	}
 }

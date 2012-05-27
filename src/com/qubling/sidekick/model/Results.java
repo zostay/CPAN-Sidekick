@@ -254,4 +254,20 @@ public class Results<SomeInstance extends Instance<SomeInstance>> implements Res
 			listener.onRemove(instance);
 		}
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder("Results(");
+		for (int i = 0; i < size() && i < 3; i++) {
+			result.append(get(i));
+			result.append(",");
+		}
+		
+		if (size() > 3)
+			result.append("...");
+		
+		result.append(")");
+		
+		return result.toString();
+	}
 }

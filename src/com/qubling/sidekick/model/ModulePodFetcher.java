@@ -16,4 +16,8 @@ public class ModulePodFetcher extends CPANDirectFetcher<Module> {
 		module.setRawPod(content);
     }
 
+	@Override
+	public String toString() {
+		return getModel() + ":ModulePodFetcher(" + getResultSet() + ")";
+	}
 }

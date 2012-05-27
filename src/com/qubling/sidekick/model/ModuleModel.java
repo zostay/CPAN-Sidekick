@@ -95,4 +95,9 @@ public class ModuleModel extends Model<Module> {
 		UpdateFetcher<Author> fetcher = getSchema().getAuthorModel().fetchGravatars(gravatarDpSize);
 		return new SubqueryFetcher<Module, Author>(this, fetcher, remapper);
 	}
+	
+	@Override
+	public String toString() {
+		return getSchema() + ":ModuleModel";
+	}
 }

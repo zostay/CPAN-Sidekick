@@ -58,4 +58,9 @@ public class Gravatar extends Instance<Gravatar> {
             return new Gravatar[size];
         }
     };
+    
+    @Override
+    public String toString() {
+    	return "Gravatar(" + getUrl() + ")";
+    }
 }

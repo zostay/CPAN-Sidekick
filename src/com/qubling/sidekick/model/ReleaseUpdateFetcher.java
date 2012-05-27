@@ -45,4 +45,8 @@ public abstract class ReleaseUpdateFetcher extends
         return releasesTerms;
 	}
 
+	@Override
+	public String toString() {
+		return getModel() + ":RelaseUpdateFetcher(" + getResultSet() + ")";
+	}
 }

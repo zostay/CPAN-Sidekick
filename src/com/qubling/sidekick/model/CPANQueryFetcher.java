@@ -159,4 +159,9 @@ public abstract class CPANQueryFetcher<SomeInstance extends Instance<SomeInstanc
 	public String getSearchTemplate() {
     	return searchTemplate;
     }
+	
+	@Override
+	public String toString() {
+		return getModel() + ":CPANQueryFetcher(" + searchSection + ";" + searchTemplate.hashCode() + ")";
+	}
 }

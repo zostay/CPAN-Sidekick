@@ -125,4 +125,9 @@ public class Release extends Instance<Release> {
             return new Release[size];
         }
     };
+    
+    @Override
+    public String toString() {
+    	return "Release(" + getName() + ")";
+    }
 }

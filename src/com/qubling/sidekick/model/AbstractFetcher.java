@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+
+import com.qubling.sidekick.job.ActivityUiCallable;
 
 import android.app.Activity;
 import android.content.Context;
@@ -147,29 +150,62 @@ public abstract class AbstractFetcher<SomeInstance extends Instance<SomeInstance
     }
     
     @Override
-    public Fetcher<SomeInstance> whenFinishedNotify(OnFinished<SomeInstance> listener) {
-    	addOnFinishedListener(listener);
-    	return this;
+    public Consequence<SomeInstance> whenFinishedNotify(final OnFinished<SomeInstance> listener) {
+    	Callable<Void> consequence = new Callable<Void>() {
+    		@Override
+    		public Void call() throws Exception {
+    			listener.onFinishedFetch(AbstractFetcher.this, getResultSet());
+    			return null;
+    		}
+    		
+    		@Override
+    		public String toString() {
+    			return "whenFinishedNotify:ConsequentCaller(" + listener + ")";
+    		}
+		};
+		
+		return setupConsequence(consequence);
+    }
+    
+    private Consequence<SomeInstance> setupConsequence(Callable<Void> consequence) {
+		if (this instanceof Consequence<?>) {
+			return ((Consequence<SomeInstance>) this).addConsequence(consequence);
+		}
+		else {
+			return new Consequence<SomeInstance>(getModel(), this);
+		}
     }
     
     @Override
-    public Fetcher<SomeInstance> whenFinishedNotifyUi(Activity activity, OnFinished<SomeInstance> listener) {
-    	addOnFinishedListenerUi(activity, listener);
-    	return this;
-    }
-    
-    @Override
-    public Fetcher<SomeInstance> thenDoFetch(final UpdateFetcher<SomeInstance> updateFetcher) {
-    	addOnFinishedListener(new OnFinished<SomeInstance>() {
+    public Consequence<SomeInstance> whenFinishedNotifyUi(final Activity activity, final OnFinished<SomeInstance> listener) {
+    	Callable<Void> consequence = new ActivityUiCallable<Void>() {
+    		@Override
+    		public Void call() {
+    			listener.onFinishedFetch(AbstractFetcher.this, AbstractFetcher.this.getResultSet());
+    			return null;
+    		}
+
+			@Override
+            public Activity getActivity() {
+	            return activity;
+            }
 			
 			@Override
-			public void onFinishedFetch(Fetcher<SomeInstance> originFetcher, final ResultSet<SomeInstance> results) {
-				updateFetcher.setIncomingResultSet(
-						new ResultsForUpdate<SomeInstance>(updateFetcher, results));
-				getSchema().getJobManager().addToJobQueue(updateFetcher);
+			public String toString() {
+				return "whenFinishedNotifyUi:ConsequentCallable(" + listener + ")";
 			}
-		});
-    	
-    	return this;
+		};
+		
+		return setupConsequence(consequence);
+    }
+    
+    @Override
+    public Consequence<SomeInstance> thenDoFetch(final UpdateFetcher<SomeInstance> updateFetcher) {
+    	return setupConsequence(updateFetcher);
+    }
+    
+    @Override
+    public String toString() {
+    	return model + ":AbstractFetcher()";
     }
 }
