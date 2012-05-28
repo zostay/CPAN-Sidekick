@@ -9,11 +9,11 @@ import java.util.concurrent.RejectedExecutionException;
 import android.app.Activity;
 import android.util.Log;
 
-public class ParallelJob implements Runnable {
+public class Job implements Runnable {
 	private Collection<Runnable> commands;
 	private final Activity activity;
 	
-	public ParallelJob(Activity activity) {
+	public Job(Activity activity) {
 	    this.activity = activity;
 	    this.commands = new ArrayList<Runnable>();
     }
@@ -67,7 +67,7 @@ public class ParallelJob implements Runnable {
 				job.execute();
 			}
 			catch (RejectedExecutionException e) {
-				Log.e("ParallelJob", "Failed to start job in parallel, will try again.", e);
+				Log.e("Job", "Failed to start job in parallel, will try again.", e);
 				commandsCopy.offer(command);
 			}
 		}
@@ -76,7 +76,7 @@ public class ParallelJob implements Runnable {
 			latch.await();
 		}
 		catch (InterruptedException e) {
-			Log.e("ParallelJob", "Interrupted while waiting for jobs to finish.", e);
+			Log.e("Job", "Interrupted while waiting for jobs to finish.", e);
 		}
 	}
 	
@@ -87,6 +87,6 @@ public class ParallelJob implements Runnable {
 			commandList.append(command);
 			commandList.append(",");
 		}
-		return "ParallelJob " + commandList;
+		return "Job " + commandList;
 	}
 }

@@ -6,7 +6,7 @@ import java.util.HashSet;
 
 import com.qubling.sidekick.job.JobExecutor;
 import com.qubling.sidekick.job.JobMonitor;
-import com.qubling.sidekick.job.ParallelJob;
+import com.qubling.sidekick.job.Job;
 
 import android.app.Activity;
 import android.util.Log;
@@ -19,7 +19,7 @@ public class Search<SomeInstance extends Instance<SomeInstance>>
 		public void onSearchComplete();
 	}
 	
-	private static class Plan extends ArrayList<ParallelJob> {
+	private static class Plan extends ArrayList<Job> {
         private static final long serialVersionUID = -8139612794037092258L; 
 	}
 	
@@ -40,19 +40,13 @@ public class Search<SomeInstance extends Instance<SomeInstance>>
 		};
 	}
 	
-	@SuppressWarnings("unchecked")
-	public Search(Activity activity, Fetcher<SomeInstance> fetcher) {
-		if (activity instanceof Fetcher.OnFinished<?>) {
-			finishListener = (Fetcher.OnFinished<SomeInstance>) activity;
-		}
-		else {
-			finishListener = null;
-		}
+	public Search(Activity activity, Fetcher<SomeInstance> fetcher, Fetcher.OnFinished<SomeInstance> listener) {
+		finishListener = listener;
 		
 		this.activity = activity;
 		
 		this.searchPlan = new Search.Plan();
-		ParallelJob originalJob = new ParallelJob(activity);
+		Job originalJob = new Job(activity);
 		originalJob.addCommand(fetcher, makeFollowup(fetcher));
 		this.searchPlan.add(originalJob);
 		
@@ -61,7 +55,7 @@ public class Search<SomeInstance extends Instance<SomeInstance>>
 	}
 	
 	public Search<SomeInstance> thenDoFetch(UpdateFetcher<SomeInstance>... fetchersArray) {
-		ParallelJob fetcherJob = new ParallelJob(activity);
+		Job fetcherJob = new Job(activity);
 		for (UpdateFetcher<SomeInstance> fetcher : fetchersArray) {
 			Log.d("Search", "originalFetcher.getResultSet() " + originalFetcher + " " + originalFetcher.getResultSet());
 			fetcher.setIncomingResultSet(
@@ -76,7 +70,7 @@ public class Search<SomeInstance extends Instance<SomeInstance>>
 	}
 	
 	public Search<SomeInstance> whenFinishedRun(Runnable... runnablesArray) {
-		ParallelJob commandJob = new ParallelJob(activity);
+		Job commandJob = new Job(activity);
 		for (Runnable runnable : runnablesArray) {
 			commandJob.addCommand(runnable);
 		}
@@ -90,7 +84,7 @@ public class Search<SomeInstance extends Instance<SomeInstance>>
 		executeJobsStarted();
 		
 		JobExecutor executor = new JobExecutor(activity);
-		for (ParallelJob job : searchPlan) {
+		for (Job job : searchPlan) {
 			executor.addCommand(job);
 		}
 		

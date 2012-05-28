@@ -87,8 +87,8 @@ public class Schema implements OnSearchActivity {
     	return httpClient;
     }
 	
-	public <SomeInstance extends Instance<SomeInstance>> Search<SomeInstance> doFetch(Fetcher<SomeInstance> fetcher) {
-		Search<SomeInstance> search = new Search<SomeInstance>(activity, fetcher);
+	public <SomeInstance extends Instance<SomeInstance>> Search<SomeInstance> doFetch(Fetcher<SomeInstance> fetcher, Fetcher.OnFinished<SomeInstance> listener) {
+		Search<SomeInstance> search = new Search<SomeInstance>(activity, fetcher, listener);
 		search.addOnSearchActivityListener(this);
 		return search;
 	}

@@ -22,13 +22,21 @@ public class JobExecutor extends AsyncTask<Runnable, Void, Void> {
 	
 	public void addCommand(Runnable command, final Runnable followup) {
 		plan.add(command);
-		plan.add(new Runnable() {
-			
-			@Override
-			public void run() {
-				activity.runOnUiThread(followup);
-			}
-		});
+		
+		if (followup != null) {
+			plan.add(new Runnable() {
+				
+				@Override
+				public void run() {
+					activity.runOnUiThread(followup);
+				}
+				
+				@Override
+				public String toString() {
+					return "UI Notify " + followup;
+				}
+			});
+		}
 	}
 
 	@Override
@@ -43,10 +51,9 @@ public class JobExecutor extends AsyncTask<Runnable, Void, Void> {
 		
 		Log.d("JobExecutor", "doInBackground() Starting Final Jobs");
 		for (Runnable command : finalCommands) {
-			Log.d("JobExecutor", "Start " + command);
+			Log.d("JobExecutor", "Start Final " + command);
 			command.run();
-			Log.d("JobExecutor", "End " + command);
-			command.run();
+			Log.d("JobExecutor", "End Final " + command);
 		}
 		Log.d("JobExecutor", "doInBackground() Ending Final Jobs");
 		
