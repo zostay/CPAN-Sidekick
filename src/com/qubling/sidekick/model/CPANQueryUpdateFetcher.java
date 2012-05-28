@@ -18,4 +18,9 @@ public abstract class CPANQueryUpdateFetcher<SomeInstance extends Instance<SomeI
 		return getModel() + ":CPANQueryFetcher(" + getSearchSection() + ";" + getSearchTemplate().hashCode() + ")";
 	}
 
+	@Override
+	public SerialUpdateFetcher<SomeInstance> thenDoFetch(UpdateFetcher<SomeInstance> fetcher) {
+		return super.thenDoFetch(fetcher);
+	}
+
 }

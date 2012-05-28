@@ -28,9 +28,20 @@ public class ModuleKeywordSearch extends CPANQueryFetcher<Module> {
 	@Override
     public void consumeResponse(JSONObject response) throws JSONException {
 		ResultSet<Module> results = getResultSet();
+		
+		JSONObject topHits = response.getJSONObject("hits");
+		if (topHits == null) {
+			Log.e("ModuleKeywordSearch", "Unexpected response (top hits missing): " + response);
+			return;
+		}
+		
+        JSONArray hits = topHits.getJSONArray("hits");
+        if (hits == null) {
+        	Log.e("ModuleKeywordSearch", "Unexpected response (nested hits missing): " + response);
+        	return;
+        }
 
         // Slurp up the matches
-        JSONArray hits = response.getJSONObject("hits").getJSONArray("hits");
         for (int i = 0; i < hits.length(); i++) {
             JSONObject hit = hits.getJSONObject(i).getJSONObject("_source");
             

@@ -4,4 +4,6 @@ public interface UpdateFetcher<SomeInstance extends Instance<SomeInstance>> exte
 	public void setIncomingResultSet(ResultsForUpdate<SomeInstance> input);
 	
 	public boolean needsUpdate(SomeInstance instance);
+
+    public SerialUpdateFetcher<SomeInstance> thenDoFetch(UpdateFetcher<SomeInstance> updateFetcher);
 }

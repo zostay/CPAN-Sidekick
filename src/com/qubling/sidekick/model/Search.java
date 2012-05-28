@@ -1,85 +1,113 @@
 package com.qubling.sidekick.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-import com.qubling.sidekick.job.JobManager;
+import com.qubling.sidekick.job.JobExecutor;
+import com.qubling.sidekick.job.JobMonitor;
+import com.qubling.sidekick.job.ParallelJob;
 
 import android.app.Activity;
 import android.util.Log;
 
-public class Search<SomeInstance extends Instance<SomeInstance>> implements JobManager.Monitor {
-	public interface OnFinishedFetch<SomeInstance extends Instance<SomeInstance>> {
-		public void onFinishedFetch(ResultSet<SomeInstance> results);
-	}
+public class Search<SomeInstance extends Instance<SomeInstance>> 
+	implements JobMonitor {
 	
 	public interface OnSearchActivity {
 		public void onSearchStart();
 		public void onSearchComplete();
 	}
 	
-	private final JobManager jobManager;
+	private static class Plan extends ArrayList<ParallelJob> {
+        private static final long serialVersionUID = -8139612794037092258L; 
+	}
+	
+	private final Activity activity;
 	private final Fetcher<SomeInstance> originalFetcher;
+	private final Search.Plan searchPlan;
+	private final Fetcher.OnFinished<SomeInstance> finishListener;
 	private final Collection<OnSearchActivity> activityListeners;
 	
-	public Search(JobManager jobManager, Fetcher<SomeInstance> fetcher) {
-		this.jobManager = jobManager;
-		this.jobManager.setJobManagerMonitor(this);
-		this.jobManager.submit(fetcher);
-
+	private Runnable makeFollowup(final Fetcher<SomeInstance> fetcher) {
+		if (finishListener == null) return null;
+		
+		return new Runnable() {
+			@Override
+			public void run() {
+				finishListener.onFinishedFetch(fetcher, originalFetcher.getResultSet());
+			}
+		};
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Search(Activity activity, Fetcher<SomeInstance> fetcher) {
+		if (activity instanceof Fetcher.OnFinished<?>) {
+			finishListener = (Fetcher.OnFinished<SomeInstance>) activity;
+		}
+		else {
+			finishListener = null;
+		}
+		
+		this.activity = activity;
+		
+		this.searchPlan = new Search.Plan();
+		ParallelJob originalJob = new ParallelJob(activity);
+		originalJob.addCommand(fetcher, makeFollowup(fetcher));
+		this.searchPlan.add(originalJob);
+		
 		this.originalFetcher = fetcher;
 		this.activityListeners = new HashSet<Search.OnSearchActivity>();
 	}
 	
-	public Search<SomeInstance> thenDoFetch(UpdateFetcher<SomeInstance>... fetchers) {
-		for (UpdateFetcher<SomeInstance> fetcher : fetchers) {
+	public Search<SomeInstance> thenDoFetch(UpdateFetcher<SomeInstance>... fetchersArray) {
+		ParallelJob fetcherJob = new ParallelJob(activity);
+		for (UpdateFetcher<SomeInstance> fetcher : fetchersArray) {
 			Log.d("Search", "originalFetcher.getResultSet() " + originalFetcher + " " + originalFetcher.getResultSet());
 			fetcher.setIncomingResultSet(
 					new ResultsForUpdate<SomeInstance>(fetcher, originalFetcher.getResultSet()));
+			
+			fetcherJob.addCommand(fetcher, makeFollowup(fetcher));
 		}
 		
-		jobManager.submit(fetchers);
-		return this;
-	}
-	
-	public Search<SomeInstance> whenFinishedRun(Runnable... runnables) {
-		jobManager.submit(runnables);
-		return this;
-	}
-	
-	public Search<SomeInstance> whenFinishedRunInUiThread(Activity activity, Runnable runnable) {
-		jobManager.submit(runnable, activity);
-		return this;
-	}
-	
-	public Search<SomeInstance> whenFinishedNotify(final OnFinishedFetch<SomeInstance> listener) {
-		Runnable notifier = new Runnable() {
-			
-			@Override
-			public void run() {
-				listener.onFinishedFetch(originalFetcher.getResultSet());
-			}
-		};
+		searchPlan.add(fetcherJob);
 		
-		jobManager.submit(notifier);
 		return this;
 	}
 	
-	public Search<SomeInstance> whenFinishedNotifyUi(Activity activity, final OnFinishedFetch<SomeInstance> listener) {
-		Runnable notifier = new Runnable() {
-			
-			@Override
-			public void run() {
-				listener.onFinishedFetch(originalFetcher.getResultSet());
-			}
-		};
+	public Search<SomeInstance> whenFinishedRun(Runnable... runnablesArray) {
+		ParallelJob commandJob = new ParallelJob(activity);
+		for (Runnable runnable : runnablesArray) {
+			commandJob.addCommand(runnable);
+		}
 		
-		jobManager.submit(notifier, activity);
+		searchPlan.add(commandJob);
+		
 		return this;
 	}
 	
 	public Search<SomeInstance> start() {
-		jobManager.executeJobs();
+		executeJobsStarted();
+		
+		JobExecutor executor = new JobExecutor(activity);
+		for (ParallelJob job : searchPlan) {
+			executor.addCommand(job);
+		}
+		
+		Runnable[] finalCommands = new Runnable[1];
+		finalCommands[0] = new Runnable() {
+			@Override
+			public void run() {
+				executeJobsComplete();
+			}
+			
+			@Override
+			public String toString() {
+				return "Notify executeJobsComplete()";
+			}
+		};
+		executor.execute(finalCommands);
+		
 		return this;
 	}
 	

@@ -65,9 +65,19 @@ public class AuthorDetailsFetcher extends CPANQueryUpdateFetcher<Author> {
 		
 		ResultSet<Author> authors = getResultSet();
 		
-		Log.d("AuthorDetailsFetcher", response.toString());
+		JSONObject topHits = response.getJSONObject("hits");
+		if (topHits == null) {
+			Log.e("AuthorDetailsFetcher", "Unexpected response (top hits missing): " + response);
+			return;
+		}
 		
-        JSONArray hits = response.getJSONObject("hits").getJSONArray("hits");
+        JSONArray hits = topHits.getJSONArray("hits");
+        if (hits == null) {
+        	Log.e("AuthorDetailsFetcher", "Unexpected response (nested hits missing): " + response);
+        	return;
+        }
+		
+		Log.d("AuthorDetailsFetcher", response.toString());
 
         for (int i = 0; i < hits.length(); i++) {
             JSONObject jsonAuthor = hits.getJSONObject(i).getJSONObject("_source");

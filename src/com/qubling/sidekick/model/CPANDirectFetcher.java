@@ -1,20 +1,15 @@
 package com.qubling.sidekick.model;
 
 import java.io.IOException;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
-
-import com.qubling.sidekick.job.ControlCallable;
-import com.qubling.sidekick.job.JobManager;
 
 import android.util.Log;
 
 public abstract class CPANDirectFetcher<SomeInstance extends Instance<SomeInstance>> 
 	extends CPANFetcher<SomeInstance> 
-	implements UpdateFetcher<SomeInstance>, ControlCallable<Void> {
+	implements UpdateFetcher<SomeInstance> {
 	
 	/**
 	 * An enumeration of direct retrieval URLs on MetaCPAN.
@@ -38,57 +33,38 @@ public abstract class CPANDirectFetcher<SomeInstance extends Instance<SomeInstan
     }
     
     private FetchSection fetchSection;
-    private JobManager jobManager;
     
     public CPANDirectFetcher(Model<SomeInstance> model, FetchSection fetchSection) {
     	super(model);
     	
     	this.fetchSection  = fetchSection;
     }
-	
-	@Override
-    public void setJobManager(JobManager jobManager) {
-	    this.jobManager = jobManager;
-    }
 
 	@Override
-	protected void execute() throws IOException, InterruptedException {
+	protected void execute() {
 		Log.d("CPANDirectFetcher", "START execute()");
 		
-		final CountDownLatch latch = new CountDownLatch(getResultSet().size());
-		
-		for (final SomeInstance instance : getResultSet()) {
-			Callable<Void> job = new Callable<Void>() {
-				@Override
-				public Void call() throws IOException {
-					CPANDirectFetcher.this.fetchOne(instance);
-					return null;
-				}
-			};
-			
-			jobManager.addToJobQueue(job, latch);
+		for (SomeInstance instance : getResultSet()) {
+			fetchOne(instance);
 		}
-		
-		latch.await();
 		
 		Log.d("CPANDirectFetcher", "END execute()");
 	}
 	
-    protected void fetchOne(SomeInstance instance) throws IOException {
+    protected void fetchOne(SomeInstance instance) {
         String fetchContent;
         try {
             HttpGet fetchRequest = new HttpGet(fetchSection.getBaseUrl() + instance.getKey());
             HttpResponse fetchResponse = getHttpClient().execute(fetchRequest);
 
             fetchContent = slurpContent(fetchResponse);
+            
+            consumeResponse(fetchContent, instance);
         }
 
         catch (IOException e) {
             Log.e("CPANDirectFetcher", "Cannot fetch from " + fetchSection.getBaseUrl() + instance.getKey() + ": " + e.getMessage(), e);
-            throw e;
         }
-        
-        consumeResponse(fetchContent, instance);
     }
     
     public abstract void consumeResponse(String content, SomeInstance instance);
@@ -105,6 +81,11 @@ public abstract class CPANDirectFetcher<SomeInstance extends Instance<SomeInstan
 	@Override
 	public String toString() {
 		return getModel() + ":CPANDirectFetcher(" + fetchSection + ";" + getResultSet() + ")";
+	}
+
+	@Override
+	public SerialUpdateFetcher<SomeInstance> thenDoFetch(UpdateFetcher<SomeInstance> fetcher) {
+		return super.thenDoFetch(fetcher);
 	}
 
 }

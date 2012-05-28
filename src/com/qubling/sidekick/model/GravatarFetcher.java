@@ -126,4 +126,9 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
     public String toString() {
     	return getModel() + ":GravatarFetch(" + gravatarDpSize + ";" + getResultSet() + ")";
     }
+
+	@Override
+	public SerialUpdateFetcher<Gravatar> thenDoFetch(UpdateFetcher<Gravatar> fetcher) {
+		return super.thenDoFetch(fetcher);
+	}
 }

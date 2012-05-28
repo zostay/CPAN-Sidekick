@@ -4,13 +4,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-
-import com.qubling.sidekick.job.ActivityUiCallable;
 
 import android.app.Activity;
 import android.content.Context;
@@ -66,7 +63,7 @@ public abstract class AbstractFetcher<SomeInstance extends Instance<SomeInstance
 	}
 	
 	protected Context getContext() {
-		return model.getSchema().getContext();
+		return model.getSchema().getActivity();
 	}
 	
 	public void addOnFinishedListener(OnFinished<SomeInstance> onCompleteListener) {
@@ -88,25 +85,14 @@ public abstract class AbstractFetcher<SomeInstance extends Instance<SomeInstance
 		}
 	}
 	
-	public final Void call() throws Exception {
-		try {
-			Log.d("AbstractFetcher", "START call()");
-			execute();
-			notifyOnFinished();
-			Log.d("AbstractFetcher", "END call()");
-			return null;
-		}
-		catch (RuntimeException e) {
-			Log.e("AbstractFetcher", "Error while executing fetch.", e);
-			throw e;
-		}
-		catch (Exception e) {
-			Log.e("AbstractFetcher", "Error while executing fetch.", e);
-			throw e;
-		}
+	public final void run() {
+		Log.d("AbstractFetcher", "START call()");
+		execute();
+		notifyOnFinished();
+		Log.d("AbstractFetcher", "END call()");
 	}
 	
-	protected abstract void execute() throws Exception;
+	protected abstract void execute();
 
     protected HttpClient getHttpClient() {
         return getSchema().getHttpClient();
@@ -149,59 +135,9 @@ public abstract class AbstractFetcher<SomeInstance extends Instance<SomeInstance
         return contentStr.toString();
     }
     
-    @Override
-    public Consequence<SomeInstance> whenFinishedNotify(final OnFinished<SomeInstance> listener) {
-    	Callable<Void> consequence = new Callable<Void>() {
-    		@Override
-    		public Void call() throws Exception {
-    			listener.onFinishedFetch(AbstractFetcher.this, getResultSet());
-    			return null;
-    		}
-    		
-    		@Override
-    		public String toString() {
-    			return "whenFinishedNotify:ConsequentCaller(" + listener + ")";
-    		}
-		};
-		
-		return setupConsequence(consequence);
-    }
-    
-    private Consequence<SomeInstance> setupConsequence(Callable<Void> consequence) {
-		if (this instanceof Consequence<?>) {
-			return ((Consequence<SomeInstance>) this).addConsequence(consequence);
-		}
-		else {
-			return new Consequence<SomeInstance>(getModel(), this);
-		}
-    }
-    
-    @Override
-    public Consequence<SomeInstance> whenFinishedNotifyUi(final Activity activity, final OnFinished<SomeInstance> listener) {
-    	Callable<Void> consequence = new ActivityUiCallable<Void>() {
-    		@Override
-    		public Void call() {
-    			listener.onFinishedFetch(AbstractFetcher.this, AbstractFetcher.this.getResultSet());
-    			return null;
-    		}
-
-			@Override
-            public Activity getActivity() {
-	            return activity;
-            }
-			
-			@Override
-			public String toString() {
-				return "whenFinishedNotifyUi:ConsequentCallable(" + listener + ")";
-			}
-		};
-		
-		return setupConsequence(consequence);
-    }
-    
-    @Override
-    public Consequence<SomeInstance> thenDoFetch(final UpdateFetcher<SomeInstance> updateFetcher) {
-    	return setupConsequence(updateFetcher);
+    @SuppressWarnings("unchecked")
+    protected SerialUpdateFetcher<SomeInstance> thenDoFetch(UpdateFetcher<SomeInstance> updateFetcher) {
+    	return new SerialUpdateFetcher<SomeInstance>(getModel(), (UpdateFetcher<SomeInstance>) this);
     }
     
     @Override
