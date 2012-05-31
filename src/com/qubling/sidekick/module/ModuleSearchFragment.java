@@ -1,7 +1,9 @@
 package com.qubling.sidekick.module;
 
+import java.util.ArrayList;
+
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,21 +12,28 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.qubling.sidekick.R;
-import com.qubling.sidekick.api.ModelList;
-import com.qubling.sidekick.api.cpan.ModuleSearch;
-import com.qubling.sidekick.cpan.collection.ModuleList;
-import com.qubling.sidekick.cpan.result.Module;
+import com.qubling.sidekick.model.Fetcher;
+import com.qubling.sidekick.model.Module;
+import com.qubling.sidekick.model.ModuleModel;
+import com.qubling.sidekick.model.ResultSet;
+import com.qubling.sidekick.model.Schema;
+import com.qubling.sidekick.model.Search;
+import com.qubling.sidekick.model.UpdateFetcher;
 import com.qubling.sidekick.widget.ModuleListAdapter;
 
-public class ModuleSearchFragment extends ModuleFragment implements ModuleList.OnModuleListUpdated, ModuleList.OnMoreItemsRequested {
-
-    private ModuleList moduleList;
+public class ModuleSearchFragment extends ModuleFragment implements Fetcher.OnFinished<Module> {
+	
+	private Search<Module> search;
     private String lastSearchText;
 
-    private ModuleSearch currentSearch;
+    private Schema searchSession;
 
-    public ModuleSearch getCurrentSearch() {
-    	return currentSearch;
+    public Schema getSearchSession() {
+    	return searchSession;
+    }
+    
+    public ResultSet<Module> getResultSet() {
+    	return search != null ? search.getResultSet() : null;
     }
 
     private ListView getSearchResultsListView() {
@@ -39,29 +48,17 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
 	@Override
     public void onCreate(Bundle state) {
 	    super.onCreate(state);
+	    
+	    searchSession = new Schema(this.getActivity());
+//        search = buildSearch("");
 
         // Load from the state, if we can
         if (state != null && state.containsKey("moduleList")) {
-            Parcelable[] moduleParcels = state.getParcelableArray("moduleList");
-            int totalCount = state.getInt("moduleListTotalCount");
+        	ArrayList<Module> moduleList = state.getParcelableArrayList("moduleList");
             lastSearchText = state.getString("lastSearchText");
-
-            // Is this necessary? Had a class cast exception at one point.
-            Module[] modules = new Module[moduleParcels.length];
-            System.arraycopy(moduleParcels, 0, modules, 0, moduleParcels.length);
-
-            moduleList = new ModuleList(modules, totalCount);
-
-            moduleList.addModelListUpdatedListener(this);
-            moduleList.addMoreItemsRequestedListener(this);
-        }
-
-        // Or load from scratch
-        else {
-            moduleList = new ModuleList();
-
-            moduleList.addModelListUpdatedListener(this);
-            moduleList.addMoreItemsRequestedListener(this);
+            search = buildSearch(lastSearchText);
+        	search.getResultSet().addAll(moduleList);
+        	search.getResultSet().setTotalSize(state.getInt("moduleListTotalSize"));
         }
     }
 
@@ -69,7 +66,7 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
     public void onActivityCreated(Bundle state) {
 	    super.onActivityCreated(state);
 
-        ModuleListAdapter adapter = new ModuleListAdapter(this.getActivity(), moduleList);
+        ModuleListAdapter adapter = new ModuleListAdapter(this.getActivity(), search);
         ListView moduleListView = getSearchResultsListView();
         moduleListView.setAdapter(adapter);
 
@@ -91,21 +88,57 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
 
         });
 
-        onModelListUpdated(moduleList);
         freshenModuleList();
     }
+	
+	private void freshenModuleList() {
+		// TODO Do we need to itereate through the loaded modules and fetch
+		// their details again just to be sure we have them?
+	}
+	
+	private Search<Module> buildSearch(String searchText) {
+		Log.d("ModuleSearchFragment", "buildSearch(" + searchText + ")");
+		
+		// Load the fetchers we need
+        ModuleModel modules = getSearchSession().getModuleModel();
+        Fetcher<Module> keywordSearch  = modules.searchByKeyword(lastSearchText = searchText);
+        UpdateFetcher<Module> fetchFavorites = modules.fetchReleaseFavorites("");
+        UpdateFetcher<Module> fetchRatings   = modules.fetchReleaseRatings();
+        UpdateFetcher<Module> fetchAuthors   = modules.fetchAuthors();
+        UpdateFetcher<Module> fetchGravatars = modules.fetchGravatars(GRAVATAR_DP_SIZE);
+        
+        // Start the search task
+        @SuppressWarnings("unchecked")
+        Search<Module> search = getSearchSession()
+        		.doFetch(keywordSearch, this)
+        		.thenDoFetch(
+        				fetchAuthors.thenDoFetch(fetchGravatars),
+        				fetchFavorites, 
+        				fetchRatings
+        			);
+
+        ListView moduleListView = getSearchResultsListView();
+        if (moduleListView != null) {
+        	ModuleListAdapter adapter = (ModuleListAdapter) moduleListView.getAdapter();
+        	adapter.setSearch(search);
+        }
+        
+        search.addOnSearchActivityListener(this.getModuleActivity());
+		
+        return search;
+	}
 
 	public void doNewSearch(String searchText) {
-        // Clear the module list
-        moduleList.clear();
-
+        
         // Start the search task
-        ModuleSearch search = new ModuleSearch(
-        		getClientManager(),
-                ModuleSearchFragment.this.getActivity(),
-                moduleList,
-                lastSearchText = searchText);
-        startSearch(search, true);
+        search = buildSearch(searchText);
+        
+        startSearch(true);
+        
+        ListView moduleListView = getSearchResultsListView();
+        ModuleListAdapter moduleListAdapter = new ModuleListAdapter(
+        		getActivity(), search);
+        moduleListView.setAdapter(moduleListAdapter);
 	}
 
 	@Override
@@ -121,9 +154,9 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
 	    // If running, it should stop now...
 	    cancelSearch();
 
-        Module[] modules = new Module[moduleList.size()];
-        state.putParcelableArray("moduleList", moduleList.toArray(modules));
-        state.putInt("moduleListTotalCount", moduleList.getTotalCount());
+	    ArrayList<Module> moduleList = getResultSet().toArrayList();
+        state.putParcelableArrayList("moduleList", moduleList);
+        state.putInt("moduleListTotalCount", getResultSet().getTotalSize());
         state.putString("lastSearchText", lastSearchText);
 
         // Remember which one has been tapped
@@ -133,76 +166,35 @@ public class ModuleSearchFragment extends ModuleFragment implements ModuleList.O
         state.putInt("moduleListCurrentSelection", position);
     }
 
-    @Override
-    public void onModelListUpdated(ModelList<Module> modelList) {
+	@Override
+    public void onFinishedFetch(Fetcher<Module> fetcher, ResultSet<Module> results) {
+		Log.d("ModuleSearchFragment", "onFinishedFetch()");
+		redrawModuleList();
+    }
+
+    private void redrawModuleList() {
     	// Might happen if the results are still loading when the screen is rotated or something
     	if (getActivity() == null) return;
 
-        ModuleList list = (ModuleList) modelList;
-//        Log.d("ModuleSearchActivity", "onModelListUpdated");
-
-        // Load the module list if this is a change in the underlying model
-        ModuleListAdapter adapter;
-        if (moduleList != list) {
-            moduleList = list;
-            moduleList.addModelListUpdatedListener(this);
-            moduleList.addMoreItemsRequestedListener(this);
-//            Log.d("ModuleSearchActivity", "moduleList.size(): " + moduleList.size());
-
-            // Show search results
-            adapter = new ModuleListAdapter(getActivity(), list);
-
-            ListView moduleListView = getSearchResultsListView();
-            moduleListView.setAdapter(adapter);
-        }
-
-        else {
-        	ListView moduleSearchResults = (ListView) getActivity().findViewById(R.id.list_search_results);
-        	adapter = (ModuleListAdapter) moduleSearchResults.getAdapter();
-        }
+        // Load the module list
+    	ListView moduleSearchResults = (ListView) getActivity().findViewById(R.id.list_search_results);
+    	ModuleListAdapter adapter = (ModuleListAdapter) moduleSearchResults.getAdapter();
 
         onSearchCompleted(adapter);
+        
+        adapter.notifyDataSetChanged();
 
         cancelSearch();
     }
 
-    @Override
-    public void onMoreItemsRequested(ModuleList list) {
-
-        // Start the search task
-        ModuleSearch search = new ModuleSearch(getClientManager(), getActivity(), moduleList, lastSearchText);
-        search.setFrom(moduleList.size());
-
-        startSearch(search, false);
-    }
-
-    private void freshenModuleList() {
-        for (Module module : moduleList) {
-            fetchModule(module, new ModuleList.OnModuleListUpdated() {
-
-                @Override
-                public void onModelListUpdated(ModelList<Module> modelList) {
-                    moduleList.notifyModelListUpdated();
-                }
-            });
-        }
-    }
-
-    private synchronized void startSearch(ModuleSearch newSearch, boolean modal) {
+    private synchronized void startSearch(boolean modal) {
         getModuleActivity().startSearch(modal);
-
-    	currentSearch = newSearch;
-        currentSearch.execute();
+        Log.d("ModuleSearchFragment", "startSearch(" + modal + ")");
+    	search.start();
     }
 
     private synchronized void cancelSearch() {
-
-        // Stop the search right now
-        if (currentSearch != null) {
-            currentSearch.cancel(false);
-            currentSearch = null;
-        }
-
+//    	searchSession.cancelSearch();
         getModuleActivity().cancelSearch();
     }
 }

@@ -12,7 +12,7 @@ import android.view.KeyEvent;
 
 import com.qubling.sidekick.R;
 import com.qubling.sidekick.Util;
-import com.qubling.sidekick.cpan.result.Module;
+import com.qubling.sidekick.model.Module;
 
 /**
  * An activity for viewing a single CPAN module.

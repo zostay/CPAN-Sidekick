@@ -1,7 +1,6 @@
 package com.qubling.sidekick.module;
 
 import java.util.Collections;
-import java.util.Stack;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -15,16 +14,21 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.qubling.sidekick.R;
-import com.qubling.sidekick.api.HttpClientManager;
-import com.qubling.sidekick.api.ModelList;
-import com.qubling.sidekick.api.cpan.MetaCPANAPI;
-import com.qubling.sidekick.api.cpan.ModulePODFetcher;
-import com.qubling.sidekick.cpan.collection.ModuleList;
-import com.qubling.sidekick.cpan.result.Module;
+import com.qubling.sidekick.model.CPANFetcher;
+import com.qubling.sidekick.model.Fetcher;
+import com.qubling.sidekick.model.ModuleModel;
+import com.qubling.sidekick.model.ResultSet;
+import com.qubling.sidekick.model.Module;
+import com.qubling.sidekick.model.Schema;
+import com.qubling.sidekick.model.Search;
+import com.qubling.sidekick.model.UpdateFetcher;
+import com.qubling.sidekick.util.LinkedListStack;
+import com.qubling.sidekick.util.Stack;
 import com.qubling.sidekick.widget.ModuleHelper;
 
-public class ModuleViewFragment extends ModuleFragment implements ModuleViewThingyFragment {
-    private Stack<Module> moduleHistory = new Stack<Module>();
+public class ModuleViewFragment extends ModuleFragment implements ModuleViewThingyFragment, Fetcher.OnFinished<Module> {
+    private Stack<Module> moduleHistory = new LinkedListStack<Module>();
+	private Schema searchSession;
     private Module module;
 
     public void setModule(Module module) {
@@ -42,6 +46,11 @@ public class ModuleViewFragment extends ModuleFragment implements ModuleViewThin
 
     public Module getModule() {
     	return module;
+    }
+    
+    @Override
+    public void onCreate(Bundle state) {
+	    searchSession = new Schema(this.getActivity());
     }
 
     @Override
@@ -61,16 +70,16 @@ public class ModuleViewFragment extends ModuleFragment implements ModuleViewThin
                 }
 
                 // Let the built-in handler get all the POD API URLs
-                else if (url.startsWith(MetaCPANAPI.METACPAN_API_POD_URL)) {
+                else if (url.startsWith(CPANFetcher.METACPAN_API_POD_URL)) {
                 	return false;
                 }
 
                 // Rewrite MetaCPAN module URLs to fetch the POD
-                else if (url.startsWith(MetaCPANAPI.METACPAN_MODULE_URL)) {
+                else if (url.startsWith(CPANFetcher.METACPAN_MODULE_URL)) {
                     moduleHistory.push(module);
 
-                    String moduleName = url.substring(MetaCPANAPI.METACPAN_MODULE_URL.length());
-                    module = new Module(moduleName);
+                    String moduleName = url.substring(CPANFetcher.METACPAN_MODULE_URL.length());
+                    module = searchSession.getModuleModel().acquireInstance(moduleName);
 
                     fetchModule();
 
@@ -97,7 +106,7 @@ public class ModuleViewFragment extends ModuleFragment implements ModuleViewThin
         	Parcelable[] historyArray = state.getParcelableArray("viewModuleHistory");
         	Module[] moduleHistoryArray = new Module[historyArray.length];
         	System.arraycopy(historyArray, 0, moduleHistoryArray, 0, historyArray.length);
-        	moduleHistory = new Stack<Module>();
+        	moduleHistory = new LinkedListStack<Module>();
         	Collections.addAll(moduleHistory, moduleHistoryArray);
         }
 
@@ -120,32 +129,61 @@ public class ModuleViewFragment extends ModuleFragment implements ModuleViewThin
 
 	    state.putParcelable("viewModule", module);
     }
+    
+    public Search<Module> buildSearch() {
+    	ModuleModel modules = searchSession.getModuleModel();
+    	Fetcher<Module> moduleFetch = modules.fetch();
+    	moduleFetch.getResultSet().add(module);
+    	UpdateFetcher<Module> fetchPod = modules.fetchPod();
+    	
+    	// TODO These are common with ModuleSearchFragment, SHARE!!!
+        UpdateFetcher<Module> fetchFavorites = modules.fetchReleaseFavorites("");
+        UpdateFetcher<Module> fetchRatings   = modules.fetchReleaseRatings();
+        UpdateFetcher<Module> fetchAuthors   = modules.fetchAuthors();
+        UpdateFetcher<Module> fetchGravatars = modules.fetchGravatars(GRAVATAR_DP_SIZE);
+    	
+        @SuppressWarnings("unchecked")
+        Search<Module> search = searchSession.doFetch(moduleFetch, this)
+        		.thenDoFetch(
+        				fetchPod,
+        				fetchFavorites, 
+        				fetchRatings,
+        				fetchAuthors
+        						.thenDoFetch(fetchGravatars)
+        			);
+        
+        search.addOnSearchActivityListener(this.getModuleActivity());
+        
+        return search;
+    }
 
 	public void fetchModule() {
 
     	// No module loaded, skip it
     	if (module == null) return;
-
-    	final View moduleInfo = getActivity().findViewById(R.id.module_info);
-        fetchModule(module,
-                new ModuleList.OnModuleListUpdated() {
-                    @Override
-                    public void onModelListUpdated(ModelList<Module> modelList) {
-//                        Log.d("ModuleViewActivity", "onModelListUpdated updating header");
-                        ModuleHelper.updateItem(moduleInfo, module);
-                    }
-                },
-                new ModuleFetchTask() {
-                    @Override
-                    public void doFetchTask(HttpClientManager clientManager, Module module) {
-                        WebView podView = (WebView) getActivity().findViewById(R.id.module_pod);
-                        new ModulePODFetcher(clientManager, podView).execute(module);
-                    }
-                });
+    	
+    	Search<Module> search = buildSearch();
+    	search.start();
     }
+	
+	public void onFinishedFetch(Fetcher<Module> fetcher, ResultSet<Module> modules) {
+    	View moduleInfo = getActivity().findViewById(R.id.module_info);
+    	
+		ModuleHelper.updateItem(moduleInfo, module);
+		
+		if (module.getRawPod() != null) {
+			WebView podView = (WebView) getActivity().findViewById(R.id.module_pod);
+			
+			String formattedPod = "<html><head><link href=\"style/pod.css\" type=\"text/css\" rel=\"stylesheet\"/></head><body class=\"pod\">"
+                    + module.getRawPod()
+                    + "</body></html>";
+
+			podView.loadDataWithBaseURL("file:///android_asset/web/pod/", formattedPod, "text/html", "UTF-8", null);
+		}
+	}
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && !moduleHistory.empty()) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && !moduleHistory.isEmpty()) {
 
             module = moduleHistory.pop();
 

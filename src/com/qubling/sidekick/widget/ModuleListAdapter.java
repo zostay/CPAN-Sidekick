@@ -13,53 +13,55 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.qubling.sidekick.R;
-import com.qubling.sidekick.api.ModelList;
-import com.qubling.sidekick.cpan.collection.ModuleList;
-import com.qubling.sidekick.cpan.result.Module;
+import com.qubling.sidekick.model.Module;
+import com.qubling.sidekick.model.ResultSet;
+import com.qubling.sidekick.model.Search;
 
 /**
- * This is a {@link BaseAdapter} for displaying module infomration in a list
+ * This is a {@link BaseAdapter} for displaying module information in a list
  * view.
  *
  * @author sterling
  *
  */
-public class ModuleListAdapter extends BaseAdapter implements ModuleList.OnModuleListUpdated {
+public class ModuleListAdapter extends BaseAdapter {
 
     private int VIEW_TYPE_MODULE    = 0;
     private int VIEW_TYPE_LOAD_MORE = 1;
     private int VIEW_TYPE_COUNT     = 2;
 
-    private ModuleList moduleList;
+    private Search<Module> search;
+    
     private LayoutInflater inflater;
     private int currentModule = -1;
 
     private View loadMoreItemsRow;
 
-    public ModuleListAdapter(Context context, ModuleList items) {
-        this.inflater    = LayoutInflater.from(context);
-        this.moduleList  = items;
-
-        moduleList.addModelListUpdatedListener(this);
+    public ModuleListAdapter(Context context, Search<Module> search) {
+        this.inflater      = LayoutInflater.from(context);
+        this.search        = search;
+    }
+    
+    private ResultSet<Module> getResultSet() {
+    	return search != null ? search.getResultSet() : null;
     }
 
     private boolean hasMoreItems() {
-        return moduleList.getTotalCount() > moduleList.size();
-    }
-
-    @Override
-    public void onModelListUpdated(ModelList<Module> list) {
-        notifyDataSetChanged();
+    	ResultSet<Module> results = getResultSet();
+        return results.getTotalSize() > results.size();
     }
 
     @Override
     public int getCount() {
-        return moduleList.size() + (hasMoreItems() ? 1 : 0);
+    	if (getResultSet() == null)
+    		return 0;
+    	
+        return getResultSet().size() + (hasMoreItems() ? 1 : 0);
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (hasMoreItems() && position == moduleList.size()) {
+        if (hasMoreItems() && position == getResultSet().size()) {
             return VIEW_TYPE_LOAD_MORE;
         }
         else {
@@ -71,18 +73,23 @@ public class ModuleListAdapter extends BaseAdapter implements ModuleList.OnModul
     public int getViewTypeCount() {
         return VIEW_TYPE_COUNT;
     }
+    
+    private void requestMoreItems() {
+    	search.fetchMore();
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+    	ResultSet<Module> results = getResultSet();
 
         // Return the load more items row
-        if (hasMoreItems() && position == moduleList.size()) {
-            moduleList.requestMoreItems();
+        if (hasMoreItems() && position == results.size()) {
+            requestMoreItems();
             return getLoadMoreItemsRow(parent);
         }
 
         // How does this happen?
-        if (position == moduleList.size()) {
+        if (position == results.size()) {
             Log.e("ModuleList", "the load items position was requested but shouldn't have been");
             return null;
         }
@@ -124,8 +131,10 @@ public class ModuleListAdapter extends BaseAdapter implements ModuleList.OnModul
 
     @Override
     public Module getItem(int position) {
-        if (position < moduleList.size())
-            return moduleList.get(position);
+    	ResultSet<Module> results = getResultSet();
+    	
+        if (position < results.size())
+            return results.get(position);
 
         return null;
     }
@@ -142,6 +151,11 @@ public class ModuleListAdapter extends BaseAdapter implements ModuleList.OnModul
 
     public void setCurrentModule(int currentModule) {
     	this.currentModule = currentModule;
+    	notifyDataSetChanged();
+    }
+    
+    public void setSearch(Search<Module> search) {
+    	this.search = search;
     	notifyDataSetChanged();
     }
 

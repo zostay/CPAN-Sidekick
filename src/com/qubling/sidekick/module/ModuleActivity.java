@@ -9,8 +9,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Window;
 
-import com.qubling.sidekick.api.HttpClientManager;
-import com.qubling.sidekick.cpan.result.Module;
+import com.qubling.sidekick.model.Module;
+import com.qubling.sidekick.model.Search.OnSearchActivity;
 
 /**
  * This is an abstract activity for sharing functionality between the
@@ -19,7 +19,7 @@ import com.qubling.sidekick.cpan.result.Module;
  * @author sterling
  *
  */
-public abstract class ModuleActivity extends FragmentActivity implements HttpClientManager.OnHttpClientAction {
+public abstract class ModuleActivity extends FragmentActivity implements OnSearchActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,13 +29,23 @@ public abstract class ModuleActivity extends FragmentActivity implements HttpCli
     }
 
 	@Override
-    public void onActionsStart() {
-        setProgressBarIndeterminateVisibility(true);
+    public void onSearchStart() {
+		this.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+		        setProgressBarIndeterminateVisibility(true);
+			}
+		});
     }
 
 	@Override
-    public void onActionsComplete() {
-        setProgressBarIndeterminateVisibility(false);
+    public void onSearchComplete() {
+		this.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				setProgressBarIndeterminateVisibility(false);
+			}
+		});
     }
 
     public void startSearch(boolean modal) {}

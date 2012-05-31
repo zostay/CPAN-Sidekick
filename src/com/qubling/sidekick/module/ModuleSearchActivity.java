@@ -19,7 +19,7 @@ import android.view.View;
 
 import com.qubling.sidekick.R;
 import com.qubling.sidekick.Util;
-import com.qubling.sidekick.cpan.result.Module;
+import com.qubling.sidekick.model.Module;
 import com.qubling.sidekick.widget.ModuleListAdapter;
 
 /**

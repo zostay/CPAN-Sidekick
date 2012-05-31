@@ -15,9 +15,10 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.qubling.sidekick.R;
-import com.qubling.sidekick.cpan.result.Author;
-import com.qubling.sidekick.cpan.result.Distribution;
-import com.qubling.sidekick.cpan.result.Module;
+import com.qubling.sidekick.model.Author;
+import com.qubling.sidekick.model.Gravatar;
+import com.qubling.sidekick.model.Release;
+import com.qubling.sidekick.model.Module;
 
 /**
  * Tools for filling in module data into views.
@@ -45,34 +46,42 @@ public final class ModuleHelper {
         }
         moduleName.setText(formattedString);
 
-        Author author = item.getAuthor();
-        if (author == null) author = new Author("...");
+        Release release = item.getRelease();
+        if (release == null) {
+        	item.setReleaseName("...");
+        	release = item.getRelease();
+        }
 
-        Distribution distribution = item.getDistribution();
-        if (distribution == null) distribution = new Distribution("...", "...", null);
+        Author author = release.getAuthor();
+        if (author == null) {
+        	release.setAuthorPauseId("...");
+        	author = release.getAuthor();
+        }
+        
+        Gravatar gravatar = author.getGravatar();
 
         // Set the distribution author, name, and version
-        TextView distributionName = (TextView) row.findViewById(R.id.module_author_distribution);
+        TextView releaseName = (TextView) row.findViewById(R.id.module_author_distribution);
         StringBuilder authorDist = new StringBuilder();
         authorDist.append(author.getPauseId());
         authorDist.append('/');
-        authorDist.append(distribution.getName());
+        authorDist.append(release.getName());
         authorDist.append('-');
-        authorDist.append(distribution.getVersion());
-        distributionName.setText(authorDist);
+        authorDist.append(release.getVersion());
+        releaseName.setText(authorDist);
 
         // Set the rating bar
         RatingBar distRating = (RatingBar) row.findViewById(R.id.module_release_rating);
-        distRating.setRating((float) distribution.getRating());
+        distRating.setRating((float) release.getRatingMean());
 
         // Set the rating count
         TextView distRatingCount = (TextView) row.findViewById(R.id.module_release_rating_count);
-    	distRatingCount.setText(String.valueOf(distribution.getRatingCount()));
+    	distRatingCount.setText(String.valueOf(release.getRatingCount()));
 
         // Set the favorite count
         Button favoriteCount = (Button) row.findViewById(R.id.module_release_favorite);
-        if (distribution.getFavoriteCount() > 0) {
-            favoriteCount.setText(distribution.getFavoriteCount() + "++ ");
+        if (release.getFavoriteCount() > 0) {
+            favoriteCount.setText(release.getFavoriteCount() + "++ ");
             favoriteCount.setBackgroundResource(R.drawable.btn_favorite_others);
             favoriteCount.setShadowLayer(1.5f, 1f, 1f, R.color.favorite_text_shadow_color);
         }
@@ -85,14 +94,14 @@ public final class ModuleHelper {
         }
 
         // Mark this as our favorite
-        if (distribution.isMyFavorite()) {
+        if (release.isMyFavorite()) {
             favoriteCount.setBackgroundResource(R.drawable.btn_favorite_mine);
         }
 
         // Set the quick contact badge to the author's picture
         QuickContactBadge badge = (QuickContactBadge) row.findViewById(R.id.module_author_avatar);
-        if (author.getGravatarBitmap() != null) {
-            badge.setImageBitmap(author.getGravatarBitmap());
+        if (gravatar != null && gravatar.getBitmap() != null) {
+            badge.setImageBitmap(gravatar.getBitmap());
         }
 
         // No user picture, set to default

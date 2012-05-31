@@ -9,7 +9,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.bugsense.trace.BugSenseHandler;
 import com.qubling.sidekick.module.ModuleSearchActivity;
 
 /**
