@@ -3,6 +3,13 @@ package com.qubling.sidekick.model;
 import java.util.Collection;
 import java.util.Collections;
 
+import com.qubling.sidekick.fetch.Fetcher;
+import com.qubling.sidekick.fetch.ModuleDetailsFetcher;
+import com.qubling.sidekick.fetch.ModuleKeywordSearch;
+import com.qubling.sidekick.fetch.ModulePodFetcher;
+import com.qubling.sidekick.fetch.SubqueryFetcher;
+import com.qubling.sidekick.fetch.UpdateFetcher;
+
 public class ModuleModel extends Model<Module> {
 	public ModuleModel(Schema schema) {
 		super(schema);

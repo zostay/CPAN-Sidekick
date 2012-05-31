@@ -1,4 +1,4 @@
-package com.qubling.sidekick.model;
+package com.qubling.sidekick.fetch;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +14,11 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+
+import com.qubling.sidekick.model.Gravatar;
+import com.qubling.sidekick.model.Model;
+import com.qubling.sidekick.model.ResultSet;
+import com.qubling.sidekick.model.ResultsForUpdate;
 
 import android.content.Context;
 import android.graphics.Bitmap;

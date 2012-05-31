@@ -12,13 +12,13 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.qubling.sidekick.R;
-import com.qubling.sidekick.model.Fetcher;
+import com.qubling.sidekick.fetch.Fetcher;
+import com.qubling.sidekick.fetch.UpdateFetcher;
 import com.qubling.sidekick.model.Module;
 import com.qubling.sidekick.model.ModuleModel;
 import com.qubling.sidekick.model.ResultSet;
 import com.qubling.sidekick.model.Schema;
 import com.qubling.sidekick.model.Search;
-import com.qubling.sidekick.model.UpdateFetcher;
 import com.qubling.sidekick.widget.ModuleListAdapter;
 
 public class ModuleSearchFragment extends ModuleFragment implements Fetcher.OnFinished<Module> {

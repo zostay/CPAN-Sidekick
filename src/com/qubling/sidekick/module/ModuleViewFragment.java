@@ -14,14 +14,14 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.qubling.sidekick.R;
-import com.qubling.sidekick.model.CPANFetcher;
-import com.qubling.sidekick.model.Fetcher;
+import com.qubling.sidekick.fetch.CPANFetcher;
+import com.qubling.sidekick.fetch.Fetcher;
+import com.qubling.sidekick.fetch.UpdateFetcher;
 import com.qubling.sidekick.model.ModuleModel;
 import com.qubling.sidekick.model.ResultSet;
 import com.qubling.sidekick.model.Module;
 import com.qubling.sidekick.model.Schema;
 import com.qubling.sidekick.model.Search;
-import com.qubling.sidekick.model.UpdateFetcher;
 import com.qubling.sidekick.util.LinkedListStack;
 import com.qubling.sidekick.util.Stack;
 import com.qubling.sidekick.widget.ModuleHelper;

@@ -4,6 +4,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.qubling.sidekick.R;
+import com.qubling.sidekick.fetch.Fetcher;
 import com.qubling.sidekick.model.Search.OnSearchActivity;
 
 import android.app.Activity;

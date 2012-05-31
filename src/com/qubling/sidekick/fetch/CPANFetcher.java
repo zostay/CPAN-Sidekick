@@ -1,4 +1,7 @@
-package com.qubling.sidekick.model;
+package com.qubling.sidekick.fetch;
+
+import com.qubling.sidekick.model.Instance;
+import com.qubling.sidekick.model.Model;
 
 public abstract class CPANFetcher<SomeInstance extends Instance<SomeInstance>> extends AbstractFetcher<SomeInstance> {
 	public static final String METACPAN_API_URL = "http://api.metacpan.org/";

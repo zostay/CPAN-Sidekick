@@ -1,4 +1,4 @@
-package com.qubling.sidekick.model;
+package com.qubling.sidekick.fetch;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,6 +8,14 @@ import java.util.Set;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+
+import com.qubling.sidekick.fetch.Fetcher.OnFinished;
+import com.qubling.sidekick.model.Instance;
+import com.qubling.sidekick.model.Model;
+import com.qubling.sidekick.model.ResultSet;
+import com.qubling.sidekick.model.Results;
+import com.qubling.sidekick.model.ResultsForUpdate;
+import com.qubling.sidekick.model.Schema;
 
 import android.app.Activity;
 import android.content.Context;

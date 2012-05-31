@@ -1,9 +1,13 @@
-package com.qubling.sidekick.model;
+package com.qubling.sidekick.fetch;
 
 import java.io.IOException;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+
+import com.qubling.sidekick.model.Instance;
+import com.qubling.sidekick.model.Model;
+import com.qubling.sidekick.model.ResultsForUpdate;
 
 import android.util.Log;
 

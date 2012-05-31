@@ -1,10 +1,13 @@
-package com.qubling.sidekick.model;
+package com.qubling.sidekick.fetch;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.qubling.sidekick.api.JSONFragment;
+import com.qubling.sidekick.model.Model;
+import com.qubling.sidekick.model.Release;
+import com.qubling.sidekick.model.ResultSet;
 
 public abstract class ReleaseUpdateFetcher extends
         CPANQueryUpdateFetcher<Release> {

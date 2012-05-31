@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
+import com.qubling.sidekick.fetch.Fetcher;
+import com.qubling.sidekick.fetch.LimitedFetcher;
+import com.qubling.sidekick.fetch.UpdateFetcher;
 import com.qubling.sidekick.job.JobExecutor;
 import com.qubling.sidekick.job.JobMonitor;
 import com.qubling.sidekick.job.Job;

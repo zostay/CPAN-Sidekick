@@ -1,4 +1,8 @@
-package com.qubling.sidekick.model;
+package com.qubling.sidekick.fetch;
+
+import com.qubling.sidekick.model.Instance;
+import com.qubling.sidekick.model.Model;
+import com.qubling.sidekick.model.ResultsForUpdate;
 
 public abstract class CPANQueryUpdateFetcher<SomeInstance extends Instance<SomeInstance>>
         extends CPANQueryFetcher<SomeInstance> implements

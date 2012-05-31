@@ -1,6 +1,13 @@
-package com.qubling.sidekick.model;
+package com.qubling.sidekick.fetch;
 
 import java.util.Collection;
+
+import com.qubling.sidekick.model.Instance;
+import com.qubling.sidekick.model.Model;
+import com.qubling.sidekick.model.ResultSet;
+import com.qubling.sidekick.model.Results;
+import com.qubling.sidekick.model.ResultsForUpdate;
+import com.qubling.sidekick.model.ResultSet.Remap;
 
 import android.util.Log;
 

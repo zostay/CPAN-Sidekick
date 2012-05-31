@@ -1,4 +1,4 @@
-package com.qubling.sidekick.model;
+package com.qubling.sidekick.fetch;
 
 import java.util.Map;
 
@@ -7,6 +7,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.qubling.sidekick.api.JSONFragment;
+import com.qubling.sidekick.model.Model;
+import com.qubling.sidekick.model.Release;
+import com.qubling.sidekick.model.ResultSet;
 
 public class ReleaseFavoritesUpdateFetcher extends ReleaseUpdateFetcher {
 	private String myPrivateToken;

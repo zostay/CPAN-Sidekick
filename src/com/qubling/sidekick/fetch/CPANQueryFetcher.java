@@ -1,4 +1,4 @@
-package com.qubling.sidekick.model;
+package com.qubling.sidekick.fetch;
 
 import java.io.IOException;
 import java.nio.charset.UnsupportedCharsetException;
@@ -15,6 +15,8 @@ import org.json.JSONTokener;
 import android.util.Log;
 
 import com.qubling.sidekick.api.StringTemplate;
+import com.qubling.sidekick.model.Instance;
+import com.qubling.sidekick.model.Model;
 
 public abstract class CPANQueryFetcher<SomeInstance extends Instance<SomeInstance>> 
 	extends CPANFetcher<SomeInstance> implements LimitedFetcher<SomeInstance> {

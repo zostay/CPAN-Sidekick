@@ -1,10 +1,15 @@
-package com.qubling.sidekick.model;
+package com.qubling.sidekick.fetch;
 
 import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.qubling.sidekick.model.Model;
+import com.qubling.sidekick.model.Module;
+import com.qubling.sidekick.model.ResultSet;
+import com.qubling.sidekick.model.Results;
 
 import android.util.Log;
 

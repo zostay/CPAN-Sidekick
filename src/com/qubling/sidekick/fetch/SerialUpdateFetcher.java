@@ -1,7 +1,11 @@
-package com.qubling.sidekick.model;
+package com.qubling.sidekick.fetch;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.qubling.sidekick.model.Instance;
+import com.qubling.sidekick.model.Model;
+import com.qubling.sidekick.model.ResultsForUpdate;
 
 import android.util.Log;
 

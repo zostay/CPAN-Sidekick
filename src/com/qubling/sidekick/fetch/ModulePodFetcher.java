@@ -1,4 +1,7 @@
-package com.qubling.sidekick.model;
+package com.qubling.sidekick.fetch;
+
+import com.qubling.sidekick.model.Model;
+import com.qubling.sidekick.model.Module;
 
 public class ModulePodFetcher extends CPANDirectFetcher<Module> {
 

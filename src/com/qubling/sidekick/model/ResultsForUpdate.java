@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import com.qubling.sidekick.fetch.UpdateFetcher;
+
 public class ResultsForUpdate<SomeInstance extends Instance<SomeInstance>> 
 	implements ResultSet<SomeInstance>, ResultSet.OnChangeListener<SomeInstance> {
 	
