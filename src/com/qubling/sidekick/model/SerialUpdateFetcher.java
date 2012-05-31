@@ -3,6 +3,8 @@ package com.qubling.sidekick.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.util.Log;
+
 public class SerialUpdateFetcher<SomeInstance extends Instance<SomeInstance>>
         extends AbstractFetcher<SomeInstance> implements
         UpdateFetcher<SomeInstance> {
@@ -35,28 +37,32 @@ public class SerialUpdateFetcher<SomeInstance extends Instance<SomeInstance>>
 
 	@Override
 	protected void execute() {
+		Log.d("SerialUpdateFetcher", "START execute() " + this);
 		for (UpdateFetcher<SomeInstance> fetcher : fetchers) {
+			Log.d("SerialUpdateFetcher", "Run " + fetcher);
 			fetcher.run();
 		}
+		Log.d("SerialUpdateFetcher", "END execute()");
 	}
 
 	@Override
 	public SerialUpdateFetcher<SomeInstance> thenDoFetch(UpdateFetcher<SomeInstance> fetcher) {
+		Log.d("SerialUpdateFetcher", "Adding new fetcher " + fetcher);
 		fetchers.add(fetcher);
 		return this;
 	}
 	
 	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder();
+		StringBuilder fetcherList = new StringBuilder();
 		for (int i = 0; i < 3 && i < fetchers.size(); i++) {
 			UpdateFetcher<SomeInstance> fetcher = fetchers.get(i);
-			result.append(fetcher);
-			result.append(",");
+			fetcherList.append(fetcher);
+			fetcherList.append(",");
 		}
 		
-		if (fetchers.size() > 3) result.append("...");
+		if (fetchers.size() > 3) fetcherList.append("...");
 		
-		return getModel() + ":SerialUpdateFetcher(" + result + ")";
+		return getModel() + ":SerialUpdateFetcher(" + fetcherList + ")";
 	}
 }

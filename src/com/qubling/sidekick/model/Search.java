@@ -37,6 +37,11 @@ public class Search<SomeInstance extends Instance<SomeInstance>>
 			public void run() {
 				finishListener.onFinishedFetch(fetcher, originalFetcher.getResultSet());
 			}
+			
+			@Override
+			public String toString() {
+				return "Followup " + finishListener;
+			}
 		};
 	}
 	

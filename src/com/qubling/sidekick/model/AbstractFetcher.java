@@ -137,7 +137,10 @@ public abstract class AbstractFetcher<SomeInstance extends Instance<SomeInstance
     
     @SuppressWarnings("unchecked")
     protected SerialUpdateFetcher<SomeInstance> thenDoFetch(UpdateFetcher<SomeInstance> updateFetcher) {
-    	return new SerialUpdateFetcher<SomeInstance>(getModel(), (UpdateFetcher<SomeInstance>) this);
+    	SerialUpdateFetcher<SomeInstance> serialFetcher = new SerialUpdateFetcher<SomeInstance>(getModel(), (UpdateFetcher<SomeInstance>) this);
+    	updateFetcher.setIncomingResultSet(
+    			new ResultsForUpdate<SomeInstance>(updateFetcher, getResultSet()));
+    	return serialFetcher.thenDoFetch(updateFetcher);
     }
     
     @Override

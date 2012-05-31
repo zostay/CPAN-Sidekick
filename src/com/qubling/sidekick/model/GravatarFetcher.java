@@ -2,11 +2,14 @@ package com.qubling.sidekick.model;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
@@ -26,7 +29,7 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
     private static final int TIMEOUT_CONNECTION = 2000;
     private static final int TIMEOUT_SOCKET = 3000;
     
-    public static final int DEFAULT_TIMEOUT_ABSOLUTE = 10000;
+    public static final int DEFAULT_TIMEOUT_ABSOLUTE = 3100;
     
     public GravatarFetcher(Model<Gravatar> model, float gravatarDpSize, int timeoutAbsolute) {
     	super(model);
@@ -41,6 +44,7 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
     
     @Override
     public boolean needsUpdate(Gravatar gravatar) {
+//    	Log.d("GravatarFetcher", "Needs update? " + (gravatar.getBitmap() == null));
     	return gravatar.getBitmap() == null;
     }
     
@@ -54,23 +58,22 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
 
 	@Override
     protected void execute() {
-		Log.d("GravatarFetcher", "START execute()");
+//		Log.d("GravatarFetcher", "START execute()");
 			
 		ResultSet<Gravatar> inputResults = getResultSet();
 		
 		for (Gravatar gravatar : inputResults) {
-			Bitmap bitmap;
 			try {
-				bitmap = fetchBitmap(gravatar.getUrl());
+				Bitmap bitmap = fetchBitmap(gravatar.getUrl());
+	            gravatar.setBitmap(bitmap);
+//	            Log.d("GravatarFetcher", "Fetched " + gravatar.getUrl());
 			}
 			catch (RuntimeException e) {
 				Log.e("GravatarFetcher", "error fetching Gravatar", e);
-				throw e;
 			}
-            gravatar.setBitmap(bitmap);
 		}
 		
-		Log.d("GravatarFetcher", "END execute()");
+//		Log.d("GravatarFetcher", "END execute()");
     }
 	
 	@Override
@@ -87,7 +90,7 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
                 512);
 
         Matcher resizeGravatarMatcher = RESIZE_GRAVATAR_PATTERN.matcher(gravatarURL);
-        String resizedGravatarURL = resizeGravatarMatcher.replaceFirst("$1s=" + gravatarPixelSize);
+        final String resizedGravatarURL = resizeGravatarMatcher.replaceFirst("$1s=" + gravatarPixelSize);
 
         try {
 
@@ -96,11 +99,24 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
             HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_CONNECTION);
             HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_SOCKET);
 
-            // Do the request
+            // Prepare the request
 //            Log.d("AuthorByDistributionSearch", "Gravatar: " + resizedGravatarURL);
-            HttpGet req = new HttpGet(resizedGravatarURL);
+            HttpClient httpClient = getHttpClient();
+            final HttpGet req = new HttpGet(resizedGravatarURL);
             req.setParams(httpParams);
-            HttpResponse res = getHttpClient().execute(req);
+            
+            // Start the absolute timer for the request
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					Log.e("GravatarFetcher", "Gravatar took too long, aborting fetch: " + resizedGravatarURL);
+					req.abort();
+				}
+			}, timeoutAbsolute);
+            
+            // Do the request
+            HttpResponse res = httpClient.execute(req);
 
             // Get the response content
             HttpEntity entity = res.getEntity();
