@@ -3,9 +3,9 @@ package com.qubling.sidekick.model;
 import java.util.Collection;
 import java.util.Collections;
 
-import com.qubling.sidekick.fetch.AuthorDetailsFetcher;
 import com.qubling.sidekick.fetch.SubqueryFetcher;
 import com.qubling.sidekick.fetch.UpdateFetcher;
+import com.qubling.sidekick.fetch.cpan.AuthorDetailsFetcher;
 
 public class AuthorModel extends Model<Author> {
 	

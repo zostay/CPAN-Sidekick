@@ -1,7 +1,7 @@
 package com.qubling.sidekick.model;
 
-import com.qubling.sidekick.fetch.GravatarFetcher;
 import com.qubling.sidekick.fetch.UpdateFetcher;
+import com.qubling.sidekick.fetch.other.GravatarFetcher;
 
 public class GravatarModel extends Model<Gravatar> {
 	

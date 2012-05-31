@@ -1,5 +1,7 @@
-package com.qubling.sidekick.fetch;
+package com.qubling.sidekick.fetch.cpan;
 
+import com.qubling.sidekick.fetch.SerialUpdateFetcher;
+import com.qubling.sidekick.fetch.UpdateFetcher;
 import com.qubling.sidekick.model.Instance;
 import com.qubling.sidekick.model.Model;
 import com.qubling.sidekick.model.ResultsForUpdate;

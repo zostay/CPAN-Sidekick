@@ -1,4 +1,4 @@
-package com.qubling.sidekick.fetch;
+package com.qubling.sidekick.fetch.cpan;
 
 import java.util.Map;
 
@@ -9,7 +9,6 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.qubling.sidekick.api.JSONFragment;
-import com.qubling.sidekick.fetch.CPANQueryFetcher.SearchSection;
 import com.qubling.sidekick.model.Author;
 import com.qubling.sidekick.model.Model;
 import com.qubling.sidekick.model.ResultSet;

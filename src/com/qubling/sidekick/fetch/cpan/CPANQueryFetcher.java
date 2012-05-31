@@ -1,4 +1,4 @@
-package com.qubling.sidekick.fetch;
+package com.qubling.sidekick.fetch.cpan;
 
 import java.io.IOException;
 import java.nio.charset.UnsupportedCharsetException;
@@ -15,6 +15,7 @@ import org.json.JSONTokener;
 import android.util.Log;
 
 import com.qubling.sidekick.api.StringTemplate;
+import com.qubling.sidekick.fetch.LimitedFetcher;
 import com.qubling.sidekick.model.Instance;
 import com.qubling.sidekick.model.Model;
 

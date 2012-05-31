@@ -4,11 +4,11 @@ import java.util.Collection;
 import java.util.Collections;
 
 import com.qubling.sidekick.fetch.Fetcher;
-import com.qubling.sidekick.fetch.ModuleDetailsFetcher;
-import com.qubling.sidekick.fetch.ModuleKeywordSearch;
-import com.qubling.sidekick.fetch.ModulePodFetcher;
 import com.qubling.sidekick.fetch.SubqueryFetcher;
 import com.qubling.sidekick.fetch.UpdateFetcher;
+import com.qubling.sidekick.fetch.cpan.ModuleDetailsFetcher;
+import com.qubling.sidekick.fetch.cpan.ModuleKeywordSearch;
+import com.qubling.sidekick.fetch.cpan.ModulePodFetcher;
 
 public class ModuleModel extends Model<Module> {
 	public ModuleModel(Schema schema) {

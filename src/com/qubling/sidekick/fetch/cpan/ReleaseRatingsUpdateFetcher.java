@@ -1,4 +1,4 @@
-package com.qubling.sidekick.fetch;
+package com.qubling.sidekick.fetch.cpan;
 
 import java.util.Map;
 
@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.qubling.sidekick.api.JSONFragment;
+import com.qubling.sidekick.fetch.UpdateFetcher;
 import com.qubling.sidekick.model.Model;
 import com.qubling.sidekick.model.Release;
 import com.qubling.sidekick.model.ResultSet;

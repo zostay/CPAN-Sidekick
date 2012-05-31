@@ -1,4 +1,4 @@
-package com.qubling.sidekick.fetch;
+package com.qubling.sidekick.fetch.other;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +15,9 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
+import com.qubling.sidekick.fetch.AbstractFetcher;
+import com.qubling.sidekick.fetch.SerialUpdateFetcher;
+import com.qubling.sidekick.fetch.UpdateFetcher;
 import com.qubling.sidekick.model.Gravatar;
 import com.qubling.sidekick.model.Model;
 import com.qubling.sidekick.model.ResultSet;

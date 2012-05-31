@@ -14,9 +14,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.qubling.sidekick.R;
-import com.qubling.sidekick.fetch.CPANFetcher;
 import com.qubling.sidekick.fetch.Fetcher;
 import com.qubling.sidekick.fetch.UpdateFetcher;
+import com.qubling.sidekick.fetch.cpan.CPANFetcher;
 import com.qubling.sidekick.model.ModuleModel;
 import com.qubling.sidekick.model.ResultSet;
 import com.qubling.sidekick.model.Module;

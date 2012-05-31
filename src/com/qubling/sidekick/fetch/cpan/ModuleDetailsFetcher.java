@@ -1,4 +1,4 @@
-package com.qubling.sidekick.fetch;
+package com.qubling.sidekick.fetch.cpan;
 
 import org.json.JSONException;
 import org.json.JSONObject;

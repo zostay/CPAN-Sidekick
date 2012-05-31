@@ -1,8 +1,8 @@
 package com.qubling.sidekick.model;
 
-import com.qubling.sidekick.fetch.ReleaseFavoritesUpdateFetcher;
-import com.qubling.sidekick.fetch.ReleaseRatingsUpdateFetcher;
 import com.qubling.sidekick.fetch.UpdateFetcher;
+import com.qubling.sidekick.fetch.cpan.ReleaseFavoritesUpdateFetcher;
+import com.qubling.sidekick.fetch.cpan.ReleaseRatingsUpdateFetcher;
 
 public class ReleaseModel extends Model<Release> {
 	public ReleaseModel(Schema schema) {

@@ -1,4 +1,4 @@
-package com.qubling.sidekick.fetch;
+package com.qubling.sidekick.fetch.cpan;
 
 import com.qubling.sidekick.model.Model;
 import com.qubling.sidekick.model.Module;
