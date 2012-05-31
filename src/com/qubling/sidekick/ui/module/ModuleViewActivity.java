@@ -3,7 +3,7 @@
  *
  * This software may be distributed under the terms of the Artistic License 2.0.
  */
-package com.qubling.sidekick.module;
+package com.qubling.sidekick.ui.module;
 
 import android.content.Intent;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package com.qubling.sidekick.release;
+package com.qubling.sidekick.ui.release;
 
 import android.support.v4.app.Fragment;
 

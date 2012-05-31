@@ -1,4 +1,4 @@
-package com.qubling.sidekick.module;
+package com.qubling.sidekick.ui.module;
 
 import java.util.ArrayList;
 

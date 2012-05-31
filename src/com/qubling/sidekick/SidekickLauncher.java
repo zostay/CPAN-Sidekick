@@ -9,7 +9,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.qubling.sidekick.module.ModuleSearchActivity;
+import com.qubling.sidekick.ui.module.ModuleSearchActivity;
 
 /**
  * An activity for starting up the application. This is mostly used to give the
