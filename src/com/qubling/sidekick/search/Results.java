@@ -1,5 +1,6 @@
 package com.qubling.sidekick.search;
 
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,7 +12,10 @@ import java.util.Map;
 
 import com.qubling.sidekick.instance.Instance;
 
-public class Results<SomeInstance extends Instance<SomeInstance>> implements ResultSet<SomeInstance> {
+public class Results<SomeInstance extends Instance<SomeInstance>> 
+		extends AbstractCollection<SomeInstance> 
+		implements ResultSet<SomeInstance> {
+	
 	private Map<String, SomeInstance> results;
 	private List<SomeInstance> resultIndex;
 	private int totalSize = -1;
@@ -41,22 +45,10 @@ public class Results<SomeInstance extends Instance<SomeInstance>> implements Res
 			return true;
 		}
 		
+		if (resultIndex.size() > results.size())
+			throw new IllegalStateException("invariant violated: index is larger than base collection");
+		
 		return false;
-	}
-	
-	@Override
-    public boolean addAll(Collection<? extends SomeInstance> instances) {
-		boolean modified = false;
-		
-		for (SomeInstance instance : instances) {
-			modified = results.put(instance.getKey(), instance) == null;
-			if (modified) {
-				resultIndex.add(instance);
-				notifyOnAdd(instance);
-			}
-		}
-		
-		return modified;
 	}
 	
 	@Override
@@ -92,31 +84,8 @@ public class Results<SomeInstance extends Instance<SomeInstance>> implements Res
 		
 		for (Map.Entry<String, SomeInstance> pair : results.entrySet()) {
 			if (!keepKeys.contains(pair.getKey())) {
-				results.remove(pair.getKey());
-				resultIndex.remove(pair.getValue());
-				notifyOnRemove(pair.getValue());
+				remove(pair.getValue());
 				modified = true;
-			}
-		}
-		
-		return modified;
-	}
-	
-	@Override
-	public boolean removeAll(Collection<?> collection) {
-		boolean modified = false;
-		
-		for (Object o : collection) {
-			if (o instanceof Instance) {
-				Instance<?> instance = (Instance<?>) o;
-				if (instance.equals(results.get(instance.getKey()))) {
-					SomeInstance removedInstance;
-					if ((removedInstance = results.remove(instance.getKey())) != null) {
-						modified = true;
-						resultIndex.remove(instance);
-						notifyOnRemove(removedInstance);
-					}
-				}
 			}
 		}
 		
