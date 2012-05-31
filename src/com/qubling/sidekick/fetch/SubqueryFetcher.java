@@ -4,9 +4,9 @@ import java.util.Collection;
 
 import com.qubling.sidekick.model.Instance;
 import com.qubling.sidekick.model.Model;
-import com.qubling.sidekick.model.ResultSet;
-import com.qubling.sidekick.model.Results;
-import com.qubling.sidekick.model.ResultsForUpdate;
+import com.qubling.sidekick.search.ResultSet;
+import com.qubling.sidekick.search.Results;
+import com.qubling.sidekick.search.ResultsForUpdate;
 
 import android.util.Log;
 

@@ -16,9 +16,9 @@ import com.qubling.sidekick.fetch.Fetcher;
 import com.qubling.sidekick.fetch.UpdateFetcher;
 import com.qubling.sidekick.model.Module;
 import com.qubling.sidekick.model.ModuleModel;
-import com.qubling.sidekick.model.ResultSet;
-import com.qubling.sidekick.model.Schema;
-import com.qubling.sidekick.model.Search;
+import com.qubling.sidekick.search.ResultSet;
+import com.qubling.sidekick.search.Schema;
+import com.qubling.sidekick.search.Search;
 import com.qubling.sidekick.widget.ModuleListAdapter;
 
 public class ModuleSearchFragment extends ModuleFragment implements Fetcher.OnFinished<Module> {

@@ -1,7 +1,9 @@
-package com.qubling.sidekick.model;
+package com.qubling.sidekick.search;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+import com.qubling.sidekick.model.Instance;
 
 public interface ResultSet<SomeInstance extends Instance<SomeInstance>> extends Collection<SomeInstance>, Iterable<SomeInstance>  {
 	

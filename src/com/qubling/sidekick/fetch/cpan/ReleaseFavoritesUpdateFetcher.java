@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import com.qubling.sidekick.api.JSONFragment;
 import com.qubling.sidekick.model.Model;
 import com.qubling.sidekick.model.Release;
-import com.qubling.sidekick.model.ResultSet;
+import com.qubling.sidekick.search.ResultSet;
 
 public class ReleaseFavoritesUpdateFetcher extends ReleaseUpdateFetcher {
 	private String myPrivateToken;

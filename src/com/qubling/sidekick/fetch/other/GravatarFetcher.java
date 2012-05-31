@@ -20,8 +20,8 @@ import com.qubling.sidekick.fetch.SerialUpdateFetcher;
 import com.qubling.sidekick.fetch.UpdateFetcher;
 import com.qubling.sidekick.model.Gravatar;
 import com.qubling.sidekick.model.Model;
-import com.qubling.sidekick.model.ResultSet;
-import com.qubling.sidekick.model.ResultsForUpdate;
+import com.qubling.sidekick.search.ResultSet;
+import com.qubling.sidekick.search.ResultsForUpdate;
 
 import android.content.Context;
 import android.graphics.Bitmap;

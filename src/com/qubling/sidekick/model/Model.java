@@ -3,6 +3,8 @@ package com.qubling.sidekick.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.qubling.sidekick.search.Schema;
+
 
 public abstract class Model<SomeInstance extends Instance<SomeInstance>> {
 	private final Schema schema;

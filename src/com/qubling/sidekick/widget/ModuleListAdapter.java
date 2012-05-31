@@ -14,8 +14,8 @@ import android.widget.BaseAdapter;
 
 import com.qubling.sidekick.R;
 import com.qubling.sidekick.model.Module;
-import com.qubling.sidekick.model.ResultSet;
-import com.qubling.sidekick.model.Search;
+import com.qubling.sidekick.search.ResultSet;
+import com.qubling.sidekick.search.Search;
 
 /**
  * This is a {@link BaseAdapter} for displaying module information in a list

@@ -6,6 +6,8 @@ import java.util.Collections;
 import com.qubling.sidekick.fetch.SubqueryFetcher;
 import com.qubling.sidekick.fetch.UpdateFetcher;
 import com.qubling.sidekick.fetch.cpan.AuthorDetailsFetcher;
+import com.qubling.sidekick.search.ResultSet;
+import com.qubling.sidekick.search.Schema;
 
 public class AuthorModel extends Model<Author> {
 	
@@ -22,7 +24,7 @@ public class AuthorModel extends Model<Author> {
 	}
 	
 	public UpdateFetcher<Author> fetchGravatars(float gravatarDpSize) {
-		Results.Remap<Author, Gravatar> remapper = new Results.Remap<Author, Gravatar>() {
+		ResultSet.Remap<Author, Gravatar> remapper = new ResultSet.Remap<Author, Gravatar>() {
 			@Override
 			public Collection<Gravatar> map(Author author) {
 				if (author.getGravatar() == null) {

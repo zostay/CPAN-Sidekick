@@ -11,10 +11,10 @@ import org.apache.http.client.HttpClient;
 
 import com.qubling.sidekick.model.Instance;
 import com.qubling.sidekick.model.Model;
-import com.qubling.sidekick.model.ResultSet;
-import com.qubling.sidekick.model.Results;
-import com.qubling.sidekick.model.ResultsForUpdate;
-import com.qubling.sidekick.model.Schema;
+import com.qubling.sidekick.search.ResultSet;
+import com.qubling.sidekick.search.Results;
+import com.qubling.sidekick.search.ResultsForUpdate;
+import com.qubling.sidekick.search.Schema;
 
 import android.app.Activity;
 import android.content.Context;

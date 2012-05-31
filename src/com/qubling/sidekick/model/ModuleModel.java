@@ -9,6 +9,8 @@ import com.qubling.sidekick.fetch.UpdateFetcher;
 import com.qubling.sidekick.fetch.cpan.ModuleDetailsFetcher;
 import com.qubling.sidekick.fetch.cpan.ModuleKeywordSearch;
 import com.qubling.sidekick.fetch.cpan.ModulePodFetcher;
+import com.qubling.sidekick.search.ResultSet;
+import com.qubling.sidekick.search.Schema;
 
 public class ModuleModel extends Model<Module> {
 	public ModuleModel(Schema schema) {
@@ -32,7 +34,7 @@ public class ModuleModel extends Model<Module> {
 	}
 	
 	public UpdateFetcher<Module> fetchReleaseFavorites(String myPrivateToken) {
-		Results.Remap<Module, Release> remapper = new Results.Remap<Module, Release>() {
+		ResultSet.Remap<Module, Release> remapper = new ResultSet.Remap<Module, Release>() {
 			@Override
 			public Collection<Release> map(Module module) {
 				Release release = module.getRelease();
@@ -50,7 +52,7 @@ public class ModuleModel extends Model<Module> {
 	}
 	
 	public UpdateFetcher<Module> fetchReleaseRatings() {
-		Results.Remap<Module, Release> remapper = new Results.Remap<Module, Release>() {
+		ResultSet.Remap<Module, Release> remapper = new ResultSet.Remap<Module, Release>() {
 			@Override
 			public Collection<Release> map(Module module) {
 				Release release = module.getRelease();
@@ -68,7 +70,7 @@ public class ModuleModel extends Model<Module> {
 	}
 	
 	public UpdateFetcher<Module> fetchAuthors() {
-		Results.Remap<Module, Author> remapper = new Results.Remap<Module, Author>() {
+		ResultSet.Remap<Module, Author> remapper = new ResultSet.Remap<Module, Author>() {
 			@Override
 			public Collection<Author> map(Module module) {
 				Author author = module.getAuthor();
@@ -86,7 +88,7 @@ public class ModuleModel extends Model<Module> {
 	}
 	
 	public UpdateFetcher<Module> fetchGravatars(float gravatarDpSize) {
-		Results.Remap<Module, Author> remapper = new Results.Remap<Module, Author>() {
+		ResultSet.Remap<Module, Author> remapper = new ResultSet.Remap<Module, Author>() {
 			@Override
 			public Collection<Author> map(Module module) {
 				Author author = module.getAuthor();

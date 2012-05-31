@@ -1,4 +1,4 @@
-package com.qubling.sidekick.model;
+package com.qubling.sidekick.search;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.qubling.sidekick.model.Instance;
 
 public class Results<SomeInstance extends Instance<SomeInstance>> implements ResultSet<SomeInstance> {
 	private Map<String, SomeInstance> results;

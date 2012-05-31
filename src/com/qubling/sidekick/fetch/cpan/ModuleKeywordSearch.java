@@ -8,8 +8,8 @@ import org.json.JSONObject;
 
 import com.qubling.sidekick.model.Model;
 import com.qubling.sidekick.model.Module;
-import com.qubling.sidekick.model.ResultSet;
-import com.qubling.sidekick.model.Results;
+import com.qubling.sidekick.search.ResultSet;
+import com.qubling.sidekick.search.Results;
 
 import android.util.Log;
 

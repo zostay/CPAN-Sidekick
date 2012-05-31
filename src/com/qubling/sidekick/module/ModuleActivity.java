@@ -10,7 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.Window;
 
 import com.qubling.sidekick.model.Module;
-import com.qubling.sidekick.model.Search.OnSearchActivity;
+import com.qubling.sidekick.search.Search.OnSearchActivity;
 
 /**
  * This is an abstract activity for sharing functionality between the

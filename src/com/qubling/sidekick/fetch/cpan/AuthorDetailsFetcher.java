@@ -11,7 +11,7 @@ import android.util.Log;
 import com.qubling.sidekick.api.JSONFragment;
 import com.qubling.sidekick.model.Author;
 import com.qubling.sidekick.model.Model;
-import com.qubling.sidekick.model.ResultSet;
+import com.qubling.sidekick.search.ResultSet;
 
 public class AuthorDetailsFetcher extends CPANQueryUpdateFetcher<Author> {
 	

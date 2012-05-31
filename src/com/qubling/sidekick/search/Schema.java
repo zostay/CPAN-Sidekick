@@ -1,11 +1,16 @@
-package com.qubling.sidekick.model;
+package com.qubling.sidekick.search;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.qubling.sidekick.R;
 import com.qubling.sidekick.fetch.Fetcher;
-import com.qubling.sidekick.model.Search.OnSearchActivity;
+import com.qubling.sidekick.model.AuthorModel;
+import com.qubling.sidekick.model.GravatarModel;
+import com.qubling.sidekick.model.Instance;
+import com.qubling.sidekick.model.ModuleModel;
+import com.qubling.sidekick.model.ReleaseModel;
+import com.qubling.sidekick.search.Search.OnSearchActivity;
 
 import android.app.Activity;
 import android.net.http.AndroidHttpClient;
