@@ -6,11 +6,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.qubling.sidekick.api.JSONFragment;
 import com.qubling.sidekick.fetch.UpdateFetcher;
 import com.qubling.sidekick.instance.Release;
 import com.qubling.sidekick.model.Model;
 import com.qubling.sidekick.search.ResultSet;
+import com.qubling.sidekick.util.JSONFragment;
 
 public class ReleaseRatingsUpdateFetcher extends ReleaseUpdateFetcher implements
         UpdateFetcher<Release> {

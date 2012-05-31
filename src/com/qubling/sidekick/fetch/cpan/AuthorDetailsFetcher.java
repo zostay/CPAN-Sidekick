@@ -8,10 +8,10 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
-import com.qubling.sidekick.api.JSONFragment;
 import com.qubling.sidekick.instance.Author;
 import com.qubling.sidekick.model.Model;
 import com.qubling.sidekick.search.ResultSet;
+import com.qubling.sidekick.util.JSONFragment;
 
 public class AuthorDetailsFetcher extends CPANQueryUpdateFetcher<Author> {
 	
