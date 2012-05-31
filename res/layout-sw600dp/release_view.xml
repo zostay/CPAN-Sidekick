@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/fragment1"
-        android:name="com.qubling.sidekick.release.ReleaseInfoFragment"
+        android:name="com.qubling.sidekick.ui.release.ReleaseInfoFragment"
         android:layout_width="300dp"
         android:layout_height="match_parent" >
         <!-- Preview: layout=@layout/release_view_fragment -->
