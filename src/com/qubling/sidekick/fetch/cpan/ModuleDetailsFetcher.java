@@ -4,8 +4,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import com.qubling.sidekick.instance.Module;
 import com.qubling.sidekick.model.Model;
-import com.qubling.sidekick.model.Module;
 
 import android.util.Log;
 

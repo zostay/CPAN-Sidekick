@@ -9,6 +9,9 @@ import com.qubling.sidekick.fetch.UpdateFetcher;
 import com.qubling.sidekick.fetch.cpan.ModuleDetailsFetcher;
 import com.qubling.sidekick.fetch.cpan.ModuleKeywordSearch;
 import com.qubling.sidekick.fetch.cpan.ModulePodFetcher;
+import com.qubling.sidekick.instance.Author;
+import com.qubling.sidekick.instance.Module;
+import com.qubling.sidekick.instance.Release;
 import com.qubling.sidekick.search.ResultSet;
 import com.qubling.sidekick.search.Schema;
 

@@ -15,10 +15,10 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.qubling.sidekick.R;
-import com.qubling.sidekick.model.Author;
-import com.qubling.sidekick.model.Gravatar;
-import com.qubling.sidekick.model.Release;
-import com.qubling.sidekick.model.Module;
+import com.qubling.sidekick.instance.Author;
+import com.qubling.sidekick.instance.Gravatar;
+import com.qubling.sidekick.instance.Module;
+import com.qubling.sidekick.instance.Release;
 
 /**
  * Tools for filling in module data into views.

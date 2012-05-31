@@ -6,6 +6,8 @@ import java.util.Collections;
 import com.qubling.sidekick.fetch.SubqueryFetcher;
 import com.qubling.sidekick.fetch.UpdateFetcher;
 import com.qubling.sidekick.fetch.cpan.AuthorDetailsFetcher;
+import com.qubling.sidekick.instance.Author;
+import com.qubling.sidekick.instance.Gravatar;
 import com.qubling.sidekick.search.ResultSet;
 import com.qubling.sidekick.search.Schema;
 

@@ -1,7 +1,7 @@
 package com.qubling.sidekick.fetch.cpan;
 
 import com.qubling.sidekick.fetch.AbstractFetcher;
-import com.qubling.sidekick.model.Instance;
+import com.qubling.sidekick.instance.Instance;
 import com.qubling.sidekick.model.Model;
 
 public abstract class CPANFetcher<SomeInstance extends Instance<SomeInstance>> extends AbstractFetcher<SomeInstance> {

@@ -5,9 +5,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.qubling.sidekick.R;
 import com.qubling.sidekick.fetch.Fetcher;
+import com.qubling.sidekick.instance.Instance;
 import com.qubling.sidekick.model.AuthorModel;
 import com.qubling.sidekick.model.GravatarModel;
-import com.qubling.sidekick.model.Instance;
 import com.qubling.sidekick.model.ModuleModel;
 import com.qubling.sidekick.model.ReleaseModel;
 import com.qubling.sidekick.search.Search.OnSearchActivity;

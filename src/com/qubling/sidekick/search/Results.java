@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.qubling.sidekick.model.Instance;
+import com.qubling.sidekick.instance.Instance;
 
 public class Results<SomeInstance extends Instance<SomeInstance>> implements ResultSet<SomeInstance> {
 	private Map<String, SomeInstance> results;

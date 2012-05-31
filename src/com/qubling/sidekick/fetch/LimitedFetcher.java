@@ -1,6 +1,6 @@
 package com.qubling.sidekick.fetch;
 
-import com.qubling.sidekick.model.Instance;
+import com.qubling.sidekick.instance.Instance;
 
 public interface LimitedFetcher<SomeInstance extends Instance<SomeInstance>> extends Fetcher<SomeInstance> {
 	public int getFrom();

@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Window;
 
-import com.qubling.sidekick.model.Module;
+import com.qubling.sidekick.instance.Module;
 import com.qubling.sidekick.search.Search.OnSearchActivity;
 
 /**

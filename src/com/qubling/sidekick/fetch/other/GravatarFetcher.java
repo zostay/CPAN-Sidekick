@@ -18,7 +18,7 @@ import org.apache.http.params.HttpParams;
 import com.qubling.sidekick.fetch.AbstractFetcher;
 import com.qubling.sidekick.fetch.SerialUpdateFetcher;
 import com.qubling.sidekick.fetch.UpdateFetcher;
-import com.qubling.sidekick.model.Gravatar;
+import com.qubling.sidekick.instance.Gravatar;
 import com.qubling.sidekick.model.Model;
 import com.qubling.sidekick.search.ResultSet;
 import com.qubling.sidekick.search.ResultsForUpdate;

@@ -8,8 +8,8 @@ import org.json.JSONObject;
 
 import com.qubling.sidekick.api.JSONFragment;
 import com.qubling.sidekick.fetch.UpdateFetcher;
+import com.qubling.sidekick.instance.Release;
 import com.qubling.sidekick.model.Model;
-import com.qubling.sidekick.model.Release;
 import com.qubling.sidekick.search.ResultSet;
 
 public class ReleaseRatingsUpdateFetcher extends ReleaseUpdateFetcher implements

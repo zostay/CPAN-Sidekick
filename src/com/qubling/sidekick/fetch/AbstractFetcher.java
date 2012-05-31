@@ -9,7 +9,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 
-import com.qubling.sidekick.model.Instance;
+import com.qubling.sidekick.instance.Instance;
 import com.qubling.sidekick.model.Model;
 import com.qubling.sidekick.search.ResultSet;
 import com.qubling.sidekick.search.Results;

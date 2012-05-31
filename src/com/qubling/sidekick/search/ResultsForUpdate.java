@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import com.qubling.sidekick.fetch.UpdateFetcher;
-import com.qubling.sidekick.model.Instance;
+import com.qubling.sidekick.instance.Instance;
 
 public class ResultsForUpdate<SomeInstance extends Instance<SomeInstance>> 
 	implements ResultSet<SomeInstance>, ResultSet.OnChangeListener<SomeInstance> {

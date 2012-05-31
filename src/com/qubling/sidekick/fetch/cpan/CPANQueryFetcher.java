@@ -16,7 +16,7 @@ import android.util.Log;
 
 import com.qubling.sidekick.api.StringTemplate;
 import com.qubling.sidekick.fetch.LimitedFetcher;
-import com.qubling.sidekick.model.Instance;
+import com.qubling.sidekick.instance.Instance;
 import com.qubling.sidekick.model.Model;
 
 public abstract class CPANQueryFetcher<SomeInstance extends Instance<SomeInstance>> 

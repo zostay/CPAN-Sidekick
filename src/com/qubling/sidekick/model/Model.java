@@ -3,6 +3,7 @@ package com.qubling.sidekick.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.qubling.sidekick.instance.Instance;
 import com.qubling.sidekick.search.Schema;
 
 

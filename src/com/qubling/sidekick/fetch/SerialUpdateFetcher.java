@@ -3,7 +3,7 @@ package com.qubling.sidekick.fetch;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.qubling.sidekick.model.Instance;
+import com.qubling.sidekick.instance.Instance;
 import com.qubling.sidekick.model.Model;
 import com.qubling.sidekick.search.ResultsForUpdate;
 

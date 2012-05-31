@@ -3,6 +3,7 @@ package com.qubling.sidekick.model;
 import com.qubling.sidekick.fetch.UpdateFetcher;
 import com.qubling.sidekick.fetch.cpan.ReleaseFavoritesUpdateFetcher;
 import com.qubling.sidekick.fetch.cpan.ReleaseRatingsUpdateFetcher;
+import com.qubling.sidekick.instance.Release;
 import com.qubling.sidekick.search.Schema;
 
 public class ReleaseModel extends Model<Release> {

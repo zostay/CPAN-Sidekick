@@ -7,10 +7,10 @@ import java.util.HashSet;
 import com.qubling.sidekick.fetch.Fetcher;
 import com.qubling.sidekick.fetch.LimitedFetcher;
 import com.qubling.sidekick.fetch.UpdateFetcher;
+import com.qubling.sidekick.instance.Instance;
 import com.qubling.sidekick.job.JobExecutor;
 import com.qubling.sidekick.job.JobMonitor;
 import com.qubling.sidekick.job.Job;
-import com.qubling.sidekick.model.Instance;
 
 import android.app.Activity;
 import android.util.Log;

@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.qubling.sidekick.R;
-import com.qubling.sidekick.model.Module;
+import com.qubling.sidekick.instance.Module;
 import com.qubling.sidekick.search.ResultSet;
 import com.qubling.sidekick.search.Search;
 

@@ -1,6 +1,6 @@
 package com.qubling.sidekick.fetch;
 
-import com.qubling.sidekick.model.Instance;
+import com.qubling.sidekick.instance.Instance;
 import com.qubling.sidekick.search.ResultSet;
 
 public interface Fetcher<SomeInstance extends Instance<SomeInstance>> extends Runnable {

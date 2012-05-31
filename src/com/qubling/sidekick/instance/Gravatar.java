@@ -1,4 +1,6 @@
-package com.qubling.sidekick.model;
+package com.qubling.sidekick.instance;
+
+import com.qubling.sidekick.model.Model;
 
 import android.graphics.Bitmap;
 import android.os.Parcel;

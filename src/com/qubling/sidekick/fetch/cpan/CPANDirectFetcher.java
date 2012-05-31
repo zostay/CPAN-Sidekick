@@ -7,7 +7,7 @@ import org.apache.http.client.methods.HttpGet;
 
 import com.qubling.sidekick.fetch.SerialUpdateFetcher;
 import com.qubling.sidekick.fetch.UpdateFetcher;
-import com.qubling.sidekick.model.Instance;
+import com.qubling.sidekick.instance.Instance;
 import com.qubling.sidekick.model.Model;
 import com.qubling.sidekick.search.ResultsForUpdate;
 

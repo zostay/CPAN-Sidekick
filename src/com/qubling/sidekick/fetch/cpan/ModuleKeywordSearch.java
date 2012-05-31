@@ -6,8 +6,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.qubling.sidekick.instance.Module;
 import com.qubling.sidekick.model.Model;
-import com.qubling.sidekick.model.Module;
 import com.qubling.sidekick.search.ResultSet;
 import com.qubling.sidekick.search.Results;
 

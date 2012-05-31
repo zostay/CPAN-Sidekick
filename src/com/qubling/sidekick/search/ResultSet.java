@@ -3,7 +3,7 @@ package com.qubling.sidekick.search;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.qubling.sidekick.model.Instance;
+import com.qubling.sidekick.instance.Instance;
 
 public interface ResultSet<SomeInstance extends Instance<SomeInstance>> extends Collection<SomeInstance>, Iterable<SomeInstance>  {
 	

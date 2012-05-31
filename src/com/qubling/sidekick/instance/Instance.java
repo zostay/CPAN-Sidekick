@@ -1,6 +1,8 @@
-package com.qubling.sidekick.model;
+package com.qubling.sidekick.instance;
 
 import java.util.Date;
+
+import com.qubling.sidekick.model.Model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
