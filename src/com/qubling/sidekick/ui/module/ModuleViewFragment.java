@@ -39,6 +39,7 @@ public class ModuleViewFragment extends ModuleFragment implements ModuleViewThin
     	}
 
     	this.module = module;
+    	this.module.attachToModel(searchSession.getModuleModel());
 
     	View moduleInfo = getActivity().findViewById(R.id.module_info);
     	ModuleHelper.updateItem(moduleInfo, module);
@@ -50,6 +51,8 @@ public class ModuleViewFragment extends ModuleFragment implements ModuleViewThin
     
     @Override
     public void onCreate(Bundle state) {
+    	super.onCreate(state);
+    	
 	    searchSession = new Schema(this.getActivity());
     }
 
@@ -100,6 +103,7 @@ public class ModuleViewFragment extends ModuleFragment implements ModuleViewThin
 
         if (state != null && state.containsKey("viewModule")) {
         	module = (Module) state.getParcelable("viewModule");
+        	module.attachToModel(searchSession.getModuleModel());
         }
 
         if (state != null && state.containsKey("viewModuleHistory")) {
