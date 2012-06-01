@@ -8,8 +8,6 @@ import com.qubling.sidekick.search.ResultSet;
 import com.qubling.sidekick.search.Results;
 import com.qubling.sidekick.search.ResultsForUpdate;
 
-import android.util.Log;
-
 public class SubqueryFetcher<SomeInstance extends Instance<SomeInstance>, ForeignInstance extends Instance<ForeignInstance>> 
 	extends AbstractFetcher<SomeInstance> 
 	implements UpdateFetcher<SomeInstance> {
@@ -42,7 +40,7 @@ public class SubqueryFetcher<SomeInstance extends Instance<SomeInstance>, Foreig
 
 	@Override
 	protected void execute() {
-		Log.d("SubqueryFetcher", "START execute()");
+//		Log.d("SubqueryFetcher", "START execute()");
 		
 		ResultSet<ForeignInstance> inputResults = new Results<ForeignInstance>();
 		inputResults.addRemap(getResultSet(), remapper);
@@ -50,7 +48,7 @@ public class SubqueryFetcher<SomeInstance extends Instance<SomeInstance>, Foreig
 				new ResultsForUpdate<ForeignInstance>(fetcher, inputResults));
 		fetcher.run();
 		
-		Log.d("SubqueryFetcher", "END execute()");
+//		Log.d("SubqueryFetcher", "END execute()");
 	}
 	
 	@Override

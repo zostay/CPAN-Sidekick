@@ -63,14 +63,14 @@ public abstract class CPANQueryFetcher<SomeInstance extends Instance<SomeInstanc
     }
     
     protected void execute() {
-    	Log.d("CPANQueryFetcher", "START execute()");
+//    	Log.d("CPANQueryFetcher", "START execute()");
     	
     	HashMap<String, Object> variables = new HashMap<String, Object>();
     	variables.put("from", from);
     	variables.put("size", size);
     	
     	prepareRequest(variables);
-    	Log.d("CPANQueryFetcher", "Setup variables by calling prepareRequest()");
+//    	Log.d("CPANQueryFetcher", "Setup variables by calling prepareRequest()");
     	JSONObject searchResponse = makeMetaCPANRequest(variables);
     	
     	try {
@@ -82,19 +82,19 @@ public abstract class CPANQueryFetcher<SomeInstance extends Instance<SomeInstanc
     		Log.e("CPANQueryFetcher", "Error while reading JSON during query: " + e.getMessage(), e);
     	}
     	
-    	Log.d("CPANQueryFetcher", "END execute()");
+//    	Log.d("CPANQueryFetcher", "END execute()");
     }
     
     protected abstract void prepareRequest(Map<String, Object> variables);
     protected abstract void consumeResponse(JSONObject searchResponse) throws JSONException;
 
     private JSONObject makeMetaCPANRequest(Map<String, Object> variables) {
-    	Log.d("CPANQueryFetcher", "START makeMetaCPANRequest()");
+//    	Log.d("CPANQueryFetcher", "START makeMetaCPANRequest()");
     	
         StringTemplate templater = new StringTemplate(getContext());
         String json = templater.processTemplate(searchTemplate, variables);
 
-        Log.d("CPANQueryFetcher", "REQ " + searchSection.getPath() + ": " + json);
+//        Log.d("CPANQueryFetcher", "REQ " + searchSection.getPath() + ": " + json);
 
         try {
 
@@ -108,7 +108,7 @@ public abstract class CPANQueryFetcher<SomeInstance extends Instance<SomeInstanc
             // Read the content
             String content = slurpContent(res);
 
-            Log.d("CPANQueryFetcher", "RES " + searchSection.getPath() + ": " + content);
+//            Log.d("CPANQueryFetcher", "RES " + searchSection.getPath() + ": " + content);
 
             // Parse the response into JSON and return it
             Object parsedContent = new JSONTokener(content).nextValue();
@@ -134,7 +134,7 @@ public abstract class CPANQueryFetcher<SomeInstance extends Instance<SomeInstanc
             Log.e("CPANQueryFetcher", e.toString());
         }
         
-        Log.d("CPANQueryFetcher", "END makeMetaCPANRequest()");
+//        Log.d("CPANQueryFetcher", "END makeMetaCPANRequest()");
 
         return null;
     }

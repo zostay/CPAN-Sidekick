@@ -21,7 +21,7 @@ public class AuthorDetailsFetcher extends CPANQueryUpdateFetcher<Author> {
 	
 	@Override
 	public boolean needsUpdate(Author author) {
-		Log.d("AuthorDetailsFetcher", "author " + author.getPauseId() + " needs update? " + author.getGravatarUrl());
+//		Log.d("AuthorDetailsFetcher", "author " + author.getPauseId() + " needs update? " + author.getGravatarUrl());
 		return author.getGravatarUrl() == null;
 	}
 
@@ -37,7 +37,7 @@ public class AuthorDetailsFetcher extends CPANQueryUpdateFetcher<Author> {
                 try {
                     for (Author author : authors) {
 
-                        Log.d("AuthorDetailsFetcher", "Adding Author: " + author.getPauseId());
+//                        Log.d("AuthorDetailsFetcher", "Adding Author: " + author.getPauseId());
 
                         JSONObject pauseid = new JSONObject()
                                 .put("pauseid", author.getPauseId());
@@ -80,7 +80,7 @@ public class AuthorDetailsFetcher extends CPANQueryUpdateFetcher<Author> {
         	return;
         }
 		
-		Log.d("AuthorDetailsFetcher", response.toString());
+//		Log.d("AuthorDetailsFetcher", response.toString());
 
         for (int i = 0; i < hits.length(); i++) {
             JSONObject jsonAuthor = hits.getJSONObject(i).getJSONObject("_source");

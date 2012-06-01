@@ -7,8 +7,6 @@ import com.qubling.sidekick.instance.Instance;
 import com.qubling.sidekick.model.Model;
 import com.qubling.sidekick.search.ResultsForUpdate;
 
-import android.util.Log;
-
 public class SerialUpdateFetcher<SomeInstance extends Instance<SomeInstance>>
         extends AbstractFetcher<SomeInstance> implements
         UpdateFetcher<SomeInstance> {
@@ -41,17 +39,17 @@ public class SerialUpdateFetcher<SomeInstance extends Instance<SomeInstance>>
 
 	@Override
 	protected void execute() {
-		Log.d("SerialUpdateFetcher", "START execute() " + this);
+//		Log.d("SerialUpdateFetcher", "START execute() " + this);
 		for (UpdateFetcher<SomeInstance> fetcher : fetchers) {
-			Log.d("SerialUpdateFetcher", "Run " + fetcher);
+//			Log.d("SerialUpdateFetcher", "Run " + fetcher);
 			fetcher.run();
 		}
-		Log.d("SerialUpdateFetcher", "END execute()");
+//		Log.d("SerialUpdateFetcher", "END execute()");
 	}
 
 	@Override
 	public SerialUpdateFetcher<SomeInstance> thenDoFetch(UpdateFetcher<SomeInstance> fetcher) {
-		Log.d("SerialUpdateFetcher", "Adding new fetcher " + fetcher);
+//		Log.d("SerialUpdateFetcher", "Adding new fetcher " + fetcher);
 		fetchers.add(fetcher);
 		return this;
 	}

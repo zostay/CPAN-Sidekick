@@ -48,13 +48,13 @@ public abstract class CPANDirectFetcher<SomeInstance extends Instance<SomeInstan
 
 	@Override
 	protected void execute() {
-		Log.d("CPANDirectFetcher", "START execute()");
+//		Log.d("CPANDirectFetcher", "START execute()");
 		
 		for (SomeInstance instance : getResultSet()) {
 			fetchOne(instance);
 		}
 		
-		Log.d("CPANDirectFetcher", "END execute()");
+//		Log.d("CPANDirectFetcher", "END execute()");
 	}
 	
     protected void fetchOne(SomeInstance instance) {

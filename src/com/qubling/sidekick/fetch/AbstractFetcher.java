@@ -18,7 +18,6 @@ import com.qubling.sidekick.search.Schema;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 
 public abstract class AbstractFetcher<SomeInstance extends Instance<SomeInstance>> implements Fetcher<SomeInstance> {
 	public static class OnFinishedUi<SomeInstance extends Instance<SomeInstance>> implements OnFinished<SomeInstance> {
@@ -59,7 +58,7 @@ public abstract class AbstractFetcher<SomeInstance extends Instance<SomeInstance
 	}
 	
 	protected void setResultSet(ResultSet<SomeInstance> inputResults) {
-		Log.d("AbstractFetcher", "setResultSet() " + inputResults);
+//		Log.d("AbstractFetcher", "setResultSet() " + inputResults);
 		this.results = inputResults;
 	}
 	
@@ -93,10 +92,10 @@ public abstract class AbstractFetcher<SomeInstance extends Instance<SomeInstance
 	}
 	
 	public final void run() {
-		Log.d("AbstractFetcher", "START call()");
+//		Log.d("AbstractFetcher", "START call()");
 		execute();
 		notifyOnFinished();
-		Log.d("AbstractFetcher", "END call()");
+//		Log.d("AbstractFetcher", "END call()");
 	}
 	
 	protected abstract void execute();

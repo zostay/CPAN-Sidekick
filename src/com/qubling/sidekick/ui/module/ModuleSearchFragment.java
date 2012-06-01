@@ -3,7 +3,6 @@ package com.qubling.sidekick.ui.module;
 import java.util.ArrayList;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,7 +96,7 @@ public class ModuleSearchFragment extends ModuleFragment implements Fetcher.OnFi
 	}
 	
 	private Search<Module> buildSearch(String searchText) {
-		Log.d("ModuleSearchFragment", "buildSearch(" + searchText + ")");
+//		Log.d("ModuleSearchFragment", "buildSearch(" + searchText + ")");
 		
 		// Load the fetchers we need
         ModuleModel modules = getSearchSession().getModuleModel();
@@ -168,7 +167,7 @@ public class ModuleSearchFragment extends ModuleFragment implements Fetcher.OnFi
 
 	@Override
     public void onFinishedFetch(Fetcher<Module> fetcher, ResultSet<Module> results) {
-		Log.d("ModuleSearchFragment", "onFinishedFetch()");
+//		Log.d("ModuleSearchFragment", "onFinishedFetch()");
 		redrawModuleList();
     }
 
@@ -189,7 +188,7 @@ public class ModuleSearchFragment extends ModuleFragment implements Fetcher.OnFi
 
     private synchronized void startSearch(boolean modal) {
         getModuleActivity().startSearch(modal);
-        Log.d("ModuleSearchFragment", "startSearch(" + modal + ")");
+//        Log.d("ModuleSearchFragment", "startSearch(" + modal + ")");
     	search.start();
     }
 

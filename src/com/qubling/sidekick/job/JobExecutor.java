@@ -5,7 +5,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.util.Log;
 
 public class JobExecutor extends AsyncTask<Runnable, Void, Void> {
 	private Activity activity;
@@ -41,21 +40,21 @@ public class JobExecutor extends AsyncTask<Runnable, Void, Void> {
 
 	@Override
 	protected Void doInBackground(Runnable... finalCommands) {
-		Log.d("JobExecutor", "doInBackground() Starting Jobs");
+//		Log.d("JobExecutor", "doInBackground() Starting Jobs");
 		for (Runnable command : plan) {
-			Log.d("JobExecutor", "Start " + command);
+//			Log.d("JobExecutor", "Start " + command);
 			command.run();
-			Log.d("JobExecutor", "End " + command);
+//			Log.d("JobExecutor", "End " + command);
 		}
-		Log.d("JobExecutor", "doInBackground() Ending Jobs");
+//		Log.d("JobExecutor", "doInBackground() Ending Jobs");
 		
-		Log.d("JobExecutor", "doInBackground() Starting Final Jobs");
+//		Log.d("JobExecutor", "doInBackground() Starting Final Jobs");
 		for (Runnable command : finalCommands) {
-			Log.d("JobExecutor", "Start Final " + command);
+//			Log.d("JobExecutor", "Start Final " + command);
 			command.run();
-			Log.d("JobExecutor", "End Final " + command);
+//			Log.d("JobExecutor", "End Final " + command);
 		}
-		Log.d("JobExecutor", "doInBackground() Ending Final Jobs");
+//		Log.d("JobExecutor", "doInBackground() Ending Final Jobs");
 		
 		return null;
 	}

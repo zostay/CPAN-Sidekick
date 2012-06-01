@@ -101,14 +101,14 @@ public class Schema implements OnSearchActivity {
 	
 	@Override
 	public synchronized void onSearchStart() {
-		Log.d("Schema", "onSearchStart()");
+//		Log.d("Schema", "onSearchStart()");
 		if (runningSearches == 0) setupHttpClient();
 		runningSearches++;
 	}
 	
 	@Override
 	public synchronized void onSearchComplete() {
-		Log.d("Schema", "onSearchComplete()");
+//		Log.d("Schema", "onSearchComplete()");
 		runningSearches--;
 		if (runningSearches == 0) closeHttpClient();
 	}

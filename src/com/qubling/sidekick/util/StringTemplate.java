@@ -37,7 +37,7 @@ public class StringTemplate {
 
         String assetName = "template/" + templateName + ".tmpl";
         
-        Log.d("StringTemplate", "Using asset " + assetName + " to build template");
+//        Log.d("StringTemplate", "Using asset " + assetName + " to build template");
 
         // Load the JSON query template
         Resources resources;
@@ -48,12 +48,12 @@ public class StringTemplate {
         	Log.d("StringTemplate", "bummer", t);
         	throw t;
         }
-        Log.d("StringTemplate", "getResources()");
+//        Log.d("StringTemplate", "getResources()");
         try {
             InputStream moduleSearchTemplateIn = resources.getAssets().open(assetName);
-            Log.d("StringTemplate", "open()");
+//            Log.d("StringTemplate", "open()");
             InputStreamReader moduleSearchTemplateReader = new InputStreamReader(moduleSearchTemplateIn, "UTF-8");
-            Log.d("StringTemplate", "new InputStreamReader()");
+//            Log.d("StringTemplate", "new InputStreamReader()");
             char[] buf = new char[1000];
             StringBuilder moduleSearchTemplateBuilder = new StringBuilder();
             int readLength;
@@ -72,7 +72,7 @@ public class StringTemplate {
     }
 
     public String processTemplate(String templateName, Map<String, Object> variables) {
-    	Log.d("StringTemplate", "START processTemplate()");
+//    	Log.d("StringTemplate", "START processTemplate()");
     	
         String template = loadTemplate(templateName);
 
@@ -82,7 +82,7 @@ public class StringTemplate {
             String variable = matcher.group(1);
             String format   = matcher.group(2);
             
-            Log.d("StringTemplate", "Found variable "+ variable + " with format " + format);
+//            Log.d("StringTemplate", "Found variable "+ variable + " with format " + format);
 
             Object objectValue = variables.get(variable);
             String value;
@@ -112,13 +112,13 @@ public class StringTemplate {
                 throw new RuntimeException("unknown format specifier [" + format + "] in template [" + templateName + "]");
             }
 
-            Log.d("StringTemplate", variable + ": " + value);
+//            Log.d("StringTemplate", variable + ": " + value);
             
             matcher.appendReplacement(completedTemplate, Matcher.quoteReplacement(value));
         }
         matcher.appendTail(completedTemplate);
         
-        Log.d("StringTemplate", "END processTemplate()");
+//        Log.d("StringTemplate", "END processTemplate()");
 
         return completedTemplate.toString();
     }

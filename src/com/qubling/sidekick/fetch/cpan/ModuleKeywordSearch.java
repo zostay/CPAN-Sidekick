@@ -73,8 +73,8 @@ public class ModuleKeywordSearch extends CPANQueryFetcher<Module> {
 	        try { releaseName    = hit.getString("distribution"); } catch (JSONException e) {}
 	        try { releaseVersion = hit.getString("version");      } catch (JSONException e) {}
 	        
-	        Log.d("ModuleKeywordSearch", "name: " + name);
-	        Log.d("ModuleKeywordSearch", "abstract: " + moduleAbstract);
+//	        Log.d("ModuleKeywordSearch", "name: " + name);
+//	        Log.d("ModuleKeywordSearch", "abstract: " + moduleAbstract);
 	        
 	        Module module = getModel().acquireInstance(name);
 	        module.setAbstract(moduleAbstract);

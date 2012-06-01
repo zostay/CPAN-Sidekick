@@ -13,7 +13,6 @@ import com.qubling.sidekick.job.JobMonitor;
 import com.qubling.sidekick.job.Job;
 
 import android.app.Activity;
-import android.util.Log;
 
 public class Search<SomeInstance extends Instance<SomeInstance>> 
 	implements JobMonitor {
@@ -66,7 +65,7 @@ public class Search<SomeInstance extends Instance<SomeInstance>>
 	public Search<SomeInstance> thenDoFetch(UpdateFetcher<SomeInstance>... fetchersArray) {
 		Job fetcherJob = new Job(activity);
 		for (UpdateFetcher<SomeInstance> fetcher : fetchersArray) {
-			Log.d("Search", "originalFetcher.getResultSet() " + originalFetcher + " " + originalFetcher.getResultSet());
+//			Log.d("Search", "originalFetcher.getResultSet() " + originalFetcher + " " + originalFetcher.getResultSet());
 			fetcher.setIncomingResultSet(
 					new ResultsForUpdate<SomeInstance>(fetcher, originalFetcher.getResultSet()));
 			
@@ -140,7 +139,7 @@ public class Search<SomeInstance extends Instance<SomeInstance>>
 	
 	@Override
 	public void executeJobsStarted() {
-		Log.d("Search", "notifyOnSearchStart()");
+//		Log.d("Search", "notifyOnSearchStart()");
 		for (OnSearchActivity listener : activityListeners) {
 			listener.onSearchStart();
 		}
@@ -148,7 +147,7 @@ public class Search<SomeInstance extends Instance<SomeInstance>>
 	
 	@Override
 	public void executeJobsComplete() {
-		Log.d("Search", "notifyOnSearchComplete()");
+//		Log.d("Search", "notifyOnSearchComplete()");
 		for (OnSearchActivity listener : activityListeners) {
 			listener.onSearchComplete();
 		}
