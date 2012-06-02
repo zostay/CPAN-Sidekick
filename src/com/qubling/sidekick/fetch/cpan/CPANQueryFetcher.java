@@ -65,6 +65,11 @@ public abstract class CPANQueryFetcher<SomeInstance extends Instance<SomeInstanc
     protected void execute() {
 //    	Log.d("CPANQueryFetcher", "START execute()");
     	
+    	if (!shouldCompleteRequest()) {
+//    		Log.d("CPANQueryFetcher", "Quitting execute() because shouldCompleteRequest() is false");
+    		return;
+    	}
+    	
     	HashMap<String, Object> variables = new HashMap<String, Object>();
     	variables.put("from", from);
     	variables.put("size", size);
@@ -85,6 +90,7 @@ public abstract class CPANQueryFetcher<SomeInstance extends Instance<SomeInstanc
 //    	Log.d("CPANQueryFetcher", "END execute()");
     }
     
+    protected abstract boolean shouldCompleteRequest();
     protected abstract void prepareRequest(Map<String, Object> variables);
     protected abstract void consumeResponse(JSONObject searchResponse) throws JSONException;
 

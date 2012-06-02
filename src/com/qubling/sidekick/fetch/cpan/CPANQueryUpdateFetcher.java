@@ -28,5 +28,11 @@ public abstract class CPANQueryUpdateFetcher<SomeInstance extends Instance<SomeI
 	public SerialUpdateFetcher<SomeInstance> thenDoFetch(UpdateFetcher<SomeInstance> fetcher) {
 		return super.thenDoFetch(fetcher);
 	}
+	
+	@Override
+	public boolean shouldCompleteRequest() {
+//		Log.d("CPANQueryUpdateFetcher", "getResultSet().size() = " + getResultSet().size());
+		return getResultSet().size() > 0;
+	}
 
 }

@@ -23,6 +23,12 @@ public class ModuleKeywordSearch extends CPANQueryFetcher<Module> {
 		safeKeywords = keywords.replace("\"", "\\\"");
 		cleanKeywords = safeKeywords.replace("::", " ");
 	}
+	
+	@Override
+	protected boolean shouldCompleteRequest() {
+//		Log.d("ModuleKeywordSearch", "safeKeywords is '" + safeKeywords + "' contains anti-whitespace " + safeKeywords.matches(".*\\S.*"));
+		return safeKeywords.matches(".*\\S.*");
+	}
 
 	@Override
 	protected void prepareRequest(Map<String, Object> variables) {
