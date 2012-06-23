@@ -17,7 +17,7 @@ public class ModuleDetailsFetcher extends CPANDirectFetcher<Module> {
 
 	@Override
 	public boolean needsUpdate(Module module) {
-		return module.getAbstract() == null
+		return module.getModuleAbstract() == null
 			|| module.getReleaseName() == null
 			|| module.getRelease().getVersion() == null
 			|| module.getAuthorPauseId() == null;
@@ -31,7 +31,7 @@ public class ModuleDetailsFetcher extends CPANDirectFetcher<Module> {
                 JSONObject json = (JSONObject) parsedContent;
 
                 // Basic Module info
-                module.setAbstract(json.getString("abstract"));
+                module.setModuleAbstract(json.getString("abstract"));
 
                 // Basic Distribution Info
                 module.setReleaseName(json.getString("distribution"));

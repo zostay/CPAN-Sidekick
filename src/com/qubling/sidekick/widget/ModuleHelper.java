@@ -8,6 +8,7 @@ package com.qubling.sidekick.widget;
 import android.graphics.Color;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.QuickContactBadge;
@@ -34,13 +35,13 @@ public final class ModuleHelper {
         // Set the module name and abstract
         TextView moduleName = (TextView) row.findViewById(R.id.module_name);
         SpannableStringBuilder formattedString = new SpannableStringBuilder(item.getName());
-        if (item.getAbstract() != null) {
-            formattedString.append(" - " + item.getAbstract());
+        if (item.getModuleAbstract() != null) {
+            formattedString.append(" - " + item.getModuleAbstract());
 
             ForegroundColorSpan color = new ForegroundColorSpan(Color.GRAY);
             formattedString.setSpan(
                     color,
-                    formattedString.length() - item.getAbstract().length() - 3,
+                    formattedString.length() - item.getModuleAbstract().length() - 3,
                     formattedString.length(),
                     0);
         }

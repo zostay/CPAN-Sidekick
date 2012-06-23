@@ -33,11 +33,11 @@ public class Module extends Instance<Module> {
     	return name;
     }
 	
-	public String getAbstract() {
+	public String getModuleAbstract() {
 		return moduleAbstract;
 	}
 	
-	public void setAbstract(String moduleAbstract) {
+	public void setModuleAbstract(String moduleAbstract) {
 		this.moduleAbstract = moduleAbstract;
 	}
 	

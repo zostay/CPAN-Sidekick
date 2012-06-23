@@ -1,11 +1,13 @@
 package com.qubling.sidekick.ui.module;
 
 import java.util.Collections;
+import java.util.Date;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +34,7 @@ public class ModuleViewFragment extends ModuleFragment implements ModuleViewThin
     private Module module;
 
     public void setModule(Module module) {
+//    	Log.d("ModuleViewFragment", "setModule(): " + new Gson().toJson(module));
 
     	// If we have a module in place, push it on to the history stack
     	if (this.module != null) {

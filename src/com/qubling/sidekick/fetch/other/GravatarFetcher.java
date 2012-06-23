@@ -2,6 +2,7 @@ package com.qubling.sidekick.fetch.other;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Matcher;
@@ -36,6 +37,9 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
     private static final Pattern RESIZE_GRAVATAR_PATTERN = Pattern.compile("([?&])s=[0-9]+\\b");
     private static final int TIMEOUT_CONNECTION = 2000;
     private static final int TIMEOUT_SOCKET = 3000;
+    
+    private static final String GRAVATAR_TOOK_TOO_LONG = "Gravatar took too long";
+//    private static int requestCounter = 0;
     
     public static final int DEFAULT_TIMEOUT_ABSOLUTE = 3100;
     
@@ -114,17 +118,27 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
             req.setParams(httpParams);
             
             // Start the absolute timer for the request
+//            final int reqId = ++requestCounter;
+//            final Date ts = new Date();
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
 				@Override
 				public void run() {
-					Log.e("GravatarFetcher", "Gravatar took too long, aborting fetch: " + resizedGravatarURL);
+//					long elapsed = new Date().getTime() - ts.getTime();
+//					Log.w("GravatarFetcher", "Gravatar request #" + reqId + " took too long (" + elapsed + " µs), aborting fetch: " + resizedGravatarURL);
+					Log.w("GravatarFetcher", "Gravatar request took too long, aborting fetch: " + resizedGravatarURL);
 					req.abort();
+					throw new RuntimeException(GRAVATAR_TOOK_TOO_LONG);
 				}
 			}, timeoutAbsolute);
             
             // Do the request
             HttpResponse res = httpClient.execute(req);
+            
+            // Request is finished, stop the timer
+//            long elapsed = new Date().getTime() - ts.getTime();
+//            Log.d("GravatarFetcher", "Gravatar request #" + reqId + " finished executing request (" + elapsed + " µs)");
+            timer.cancel();
 
             // Get the response content
             HttpEntity entity = res.getEntity();
@@ -132,9 +146,14 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
             Bitmap gravatarBitmap = BitmapFactory.decodeStream(content);
             return gravatarBitmap;
         }
+        
+        catch (InterruptedIOException e) {
+        	// No message, since this probably means Gravatar took too long
+        	return null;
+        }
 
         catch (IOException e) {
-            Log.e("GravatarFetcher", "Error loading Gravatar: " + e);
+            Log.e("GravatarFetcher", "Error loading Gravatar: " + e, e);
             return null;
         }
 
@@ -142,8 +161,17 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
         // This is a stupid exception and nearly any illegal state exception we can ignore by
         // just not loading the Gravatar. The bitmap is not *that* important.
         catch (IllegalStateException e) {
-        	Log.e("GravatarFetcher", "Error fetching Gravatar: " + e);
+        	Log.e("GravatarFetcher", "Error fetching Gravatar: " + e, e);
         	return null;
+        }
+        
+        catch (RuntimeException e) {
+        	if (GRAVATAR_TOOK_TOO_LONG.equals(e.getMessage())) {
+        		return null;
+        	}
+        	else {
+        		throw e;
+        	}
         }
     }
     

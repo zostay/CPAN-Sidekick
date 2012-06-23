@@ -8,7 +8,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public abstract class Instance<SomeInstance extends Instance<SomeInstance>> implements Parcelable {
-	private Model<SomeInstance> model;
+	private transient Model<SomeInstance> model;
 	
 	public Instance() { }
 	

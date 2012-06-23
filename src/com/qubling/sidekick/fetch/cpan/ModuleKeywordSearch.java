@@ -83,7 +83,7 @@ public class ModuleKeywordSearch extends CPANQueryFetcher<Module> {
 //	        Log.d("ModuleKeywordSearch", "abstract: " + moduleAbstract);
 	        
 	        Module module = getModel().acquireInstance(name);
-	        module.setAbstract(moduleAbstract);
+	        module.setModuleAbstract(moduleAbstract);
 	        module.setReleaseName(releaseName);
 	        module.getRelease().setVersion(releaseVersion);
 	        module.getRelease().setAuthorPauseId(authorPauseId);

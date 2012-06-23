@@ -91,7 +91,7 @@ public class ModuleSearchFragment extends ModuleFragment implements Fetcher.OnFi
     }
 	
 	private void freshenModuleList() {
-		// TODO Do we need to itereate through the loaded modules and fetch
+		// TODO Do we need to iterate through the loaded modules and fetch
 		// their details again just to be sure we have them?
 	}
 	
@@ -153,10 +153,12 @@ public class ModuleSearchFragment extends ModuleFragment implements Fetcher.OnFi
 	    // If running, it should stop now...
 	    cancelSearch();
 
-	    ArrayList<Module> moduleList = getResultSet().toArrayList();
-        state.putParcelableArrayList("moduleList", moduleList);
-        state.putInt("moduleListTotalCount", getResultSet().getTotalSize());
-        state.putString("lastSearchText", lastSearchText);
+	    if (getResultSet() != null) {
+	    	ArrayList<Module> moduleList = getResultSet().toArrayList();
+	    	state.putParcelableArrayList("moduleList", moduleList);
+	    	state.putInt("moduleListTotalCount", getResultSet().getTotalSize());
+	    	state.putString("lastSearchText", lastSearchText);
+	    }
 
         // Remember which one has been tapped
         ModuleListAdapter adapter = (ModuleListAdapter) getSearchResultsListView().getAdapter();
