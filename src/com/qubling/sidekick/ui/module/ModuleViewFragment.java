@@ -1,13 +1,11 @@
 package com.qubling.sidekick.ui.module;
 
 import java.util.Collections;
-import java.util.Date;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;

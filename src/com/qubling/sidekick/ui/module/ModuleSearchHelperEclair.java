@@ -1,7 +1,6 @@
 package com.qubling.sidekick.ui.module;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
