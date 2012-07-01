@@ -10,7 +10,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Gravatar extends Instance<Gravatar> {
-    private static final Pattern RESIZE_GRAVATAR_PATTERN = Pattern.compile("([?&])s=[0-9]+\\b");
+    private static final Pattern RESIZE_GRAVATAR_PATTERN = Pattern.compile("([?&])s(ize)?=[0-9]+\\b");
     
 	private String url;
 	private Bitmap bitmap;
