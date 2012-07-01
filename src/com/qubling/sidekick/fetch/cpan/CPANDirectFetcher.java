@@ -10,6 +10,7 @@ import com.qubling.sidekick.fetch.UpdateFetcher;
 import com.qubling.sidekick.instance.Instance;
 import com.qubling.sidekick.model.Model;
 import com.qubling.sidekick.search.ResultsForUpdate;
+import com.qubling.sidekick.util.HttpUtils;
 
 import android.util.Log;
 
@@ -63,7 +64,7 @@ public abstract class CPANDirectFetcher<SomeInstance extends Instance<SomeInstan
             HttpGet fetchRequest = new HttpGet(fetchSection.getBaseUrl() + instance.getKey());
             HttpResponse fetchResponse = getHttpClient().execute(fetchRequest);
 
-            fetchContent = slurpContent(fetchResponse);
+            fetchContent = HttpUtils.slurpContent(fetchResponse);
             
             consumeResponse(fetchContent, instance);
         }

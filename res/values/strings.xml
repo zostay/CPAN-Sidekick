@@ -22,4 +22,5 @@
     <string name="sample_module_author_pauseid">MSCHWERN</string>
     <string name="sample_module_author_fullname">Michael G Schwern</string>
     <string name="sample_release_metadata">License: Perl_5</string>
+    <string name="cannot_connect_to_metacpan">Cannot connect to MetaCPAN. Please make sure your device is connected to the network.</string>
 </resources>

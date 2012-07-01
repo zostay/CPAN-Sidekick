@@ -40,6 +40,11 @@ public class ModuleKeywordSearch extends CPANQueryFetcher<Module> {
     public void consumeResponse(JSONObject response) throws JSONException {
 		ResultSet<Module> results = getResultSet();
 		
+		if (response == null) {
+		    Log.e("ModuleKeywordSearch", "Unexpected response (response is null)");
+		    return;
+		}
+		
 		JSONObject topHits = response.getJSONObject("hits");
 		if (topHits == null) {
 			Log.e("ModuleKeywordSearch", "Unexpected response (top hits missing): " + response);

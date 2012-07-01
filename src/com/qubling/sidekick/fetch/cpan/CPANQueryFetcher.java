@@ -17,6 +17,7 @@ import android.util.Log;
 import com.qubling.sidekick.fetch.LimitedFetcher;
 import com.qubling.sidekick.instance.Instance;
 import com.qubling.sidekick.model.Model;
+import com.qubling.sidekick.util.HttpUtils;
 import com.qubling.sidekick.util.StringTemplate;
 
 public abstract class CPANQueryFetcher<SomeInstance extends Instance<SomeInstance>> 
@@ -112,7 +113,7 @@ public abstract class CPANQueryFetcher<SomeInstance extends Instance<SomeInstanc
             HttpResponse res = getHttpClient().execute(req);
 
             // Read the content
-            String content = slurpContent(res);
+            String content = HttpUtils.slurpContent(res);
 
 //            Log.d("CPANQueryFetcher", "RES " + searchSection.getPath() + ": " + content);
 
