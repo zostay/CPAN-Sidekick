@@ -27,6 +27,7 @@ public abstract class Model<SomeInstance extends Instance<SomeInstance>> {
 		
 		if (instance == null) {
 			instance = constructInstance(key);
+			objectCache.put(key, instance);
 		}
 		
 		return instance;
