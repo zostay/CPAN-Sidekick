@@ -1,5 +1,8 @@
 package com.qubling.sidekick.search;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 
@@ -13,7 +16,6 @@ import com.qubling.sidekick.model.ReleaseModel;
 import com.qubling.sidekick.search.Search.OnSearchActivity;
 
 import android.app.Activity;
-import android.net.http.AndroidHttpClient;
 import android.util.Log;
 
 public class Schema implements OnSearchActivity {
@@ -62,9 +64,25 @@ public class Schema implements OnSearchActivity {
     }
     
     public void closeHttpClient() {
-    	if (httpClient instanceof AndroidHttpClient) {
-    		((AndroidHttpClient) httpClient).close();
-    	}
+        try {
+            Class<?> androidHttpClient = Class.forName("android.net.http.AndroidHttpClient");
+            if (androidHttpClient.isInstance(httpClient)) {
+                Method close = androidHttpClient.getMethod("close");
+                close.invoke(httpClient);
+            }
+        }
+        catch (ClassNotFoundException e) {
+            // ignore
+        }
+        catch (NoSuchMethodException e) {
+            // ignore
+        }
+        catch (InvocationTargetException e) {
+            // ignore
+        }
+        catch (IllegalAccessException e) {
+            // ignore
+        }
     	
     	httpClient = null;
     }
