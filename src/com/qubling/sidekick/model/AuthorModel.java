@@ -30,9 +30,11 @@ public class AuthorModel extends Model<Author> {
 			@Override
 			public Collection<Gravatar> map(Author author) {
 				if (author.getGravatar() == null) {
+//				    Log.d("AuthorModel", "Author->Gravatar " + author.getPauseId() + "->()");
 					return Collections.emptyList();
 				}
 				else {
+//				    Log.d("AuthorModel", "Author->Gravatar " + author.getPauseId() + "->" + author.getGravatarUrl());
 					return Collections.singleton(author.getGravatar());
 				}
 			}

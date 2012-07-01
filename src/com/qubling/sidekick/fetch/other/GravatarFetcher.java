@@ -81,7 +81,7 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
 			try {
 				Bitmap bitmap = fetchBitmap(gravatar.getUrl(gravatarPixelSize));
 	            gravatar.setBitmap(bitmap);
-//	            Log.d("GravatarFetcher", "Fetched " + gravatar.getUrl());
+//	            Log.d("GravatarFetcher", "Fetched " + gravatar.getUrl(gravatarPixelSize));
 			}
 			catch (RuntimeException e) {
 				Log.e("GravatarFetcher", "error fetching Gravatar", e);

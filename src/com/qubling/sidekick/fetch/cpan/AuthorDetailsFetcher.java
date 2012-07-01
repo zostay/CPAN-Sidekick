@@ -91,7 +91,11 @@ public class AuthorDetailsFetcher extends CPANQueryUpdateFetcher<Author> {
             Author author = authors.get(pauseId);
             if (author != null) {
             	author.setGravatarUrl(gravatarUrl);
+//            	Log.d("AuthorDetailsFetcher", "Setting author Gravatar " + author.getPauseId() + ": " + gravatarUrl);
             }
+//            else {
+//                Log.d("AuthorDetailsFetcher", "Not setting author Gravatar " + pauseId);
+//            }
         }
 	}
 

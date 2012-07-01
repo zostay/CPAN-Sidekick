@@ -28,11 +28,16 @@ public abstract class Model<SomeInstance extends Instance<SomeInstance>> {
 	
 	public SomeInstance acquireInstance(String key) {
 		SomeInstance instance = objectCache.get(key);
+//		Log.d("Model", "objectCache contains " + objectCache.size());
 		
 		if (instance == null) {
+//		    Log.d("Model", "objectCache miss " + key);
 			instance = constructInstance(key);
 			objectCache.put(key, instance);
 		}
+//		else {
+//		    Log.d("Model", "objectCache hit " + key);
+//		}
 		
 		return instance;
 	}
