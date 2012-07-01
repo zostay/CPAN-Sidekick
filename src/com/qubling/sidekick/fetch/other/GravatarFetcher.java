@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -33,8 +31,7 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
 	
 	private float gravatarDpSize;
 	private int timeoutAbsolute;
-    
-    private static final Pattern RESIZE_GRAVATAR_PATTERN = Pattern.compile("([?&])s=[0-9]+\\b");
+	
     private static final int TIMEOUT_CONNECTION = 2000;
     private static final int TIMEOUT_SOCKET = 3000;
     
@@ -71,12 +68,18 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
 	@Override
     protected void execute() {
 //		Log.d("GravatarFetcher", "START execute()");
+
+        // Calculate the pixel size of the Gravatar
+        Context context = getContext();
+        int gravatarPixelSize = Math.min(
+                (int) (gravatarDpSize * context.getResources().getDisplayMetrics().density + 0.5f),
+                512);
 			
 		ResultSet<Gravatar> inputResults = getResultSet();
 		
 		for (Gravatar gravatar : inputResults) {
 			try {
-				Bitmap bitmap = fetchBitmap(gravatar.getUrl());
+				Bitmap bitmap = fetchBitmap(gravatar.getUrl(gravatarPixelSize));
 	            gravatar.setBitmap(bitmap);
 //	            Log.d("GravatarFetcher", "Fetched " + gravatar.getUrl());
 			}
@@ -93,17 +96,8 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
 		setResultSet(inputResults);
 	}
 
-    private Bitmap fetchBitmap(String gravatarURL) {
-    	Context context = getContext();
-
-        // Calculate the pixel size of the Gravatar
-        int gravatarPixelSize = Math.min(
-                (int) (gravatarDpSize * context.getResources().getDisplayMetrics().density + 0.5f),
-                512);
-
-        Matcher resizeGravatarMatcher = RESIZE_GRAVATAR_PATTERN.matcher(gravatarURL);
-        final String resizedGravatarURL = resizeGravatarMatcher.replaceFirst("$1s=" + gravatarPixelSize);
-
+    private Bitmap fetchBitmap(final String gravatarURL) {
+        
         try {
 
         	// Make sure we don't get stuck waiting for a Gravatar
@@ -114,7 +108,7 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
             // Prepare the request
 //            Log.d("AuthorByDistributionSearch", "Gravatar: " + resizedGravatarURL);
             HttpClient httpClient = getHttpClient();
-            final HttpGet req = new HttpGet(resizedGravatarURL);
+            final HttpGet req = new HttpGet(gravatarURL);
             req.setParams(httpParams);
             
             // Start the absolute timer for the request
@@ -126,7 +120,7 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
 				public void run() {
 //					long elapsed = new Date().getTime() - ts.getTime();
 //					Log.w("GravatarFetcher", "Gravatar request #" + reqId + " took too long (" + elapsed + " µs), aborting fetch: " + resizedGravatarURL);
-					Log.w("GravatarFetcher", "Gravatar request took too long, aborting fetch: " + resizedGravatarURL);
+					Log.w("GravatarFetcher", "Gravatar request took too long, aborting fetch: " + gravatarURL);
 					req.abort();
 					throw new RuntimeException(GRAVATAR_TOOK_TOO_LONG);
 				}

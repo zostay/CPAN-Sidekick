@@ -1,5 +1,8 @@
 package com.qubling.sidekick.instance;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.qubling.sidekick.model.Model;
 
 import android.graphics.Bitmap;
@@ -7,6 +10,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Gravatar extends Instance<Gravatar> {
+    private static final Pattern RESIZE_GRAVATAR_PATTERN = Pattern.compile("([?&])s=[0-9]+\\b");
+    
 	private String url;
 	private Bitmap bitmap;
 	
@@ -27,6 +32,11 @@ public class Gravatar extends Instance<Gravatar> {
 	
 	public String getUrl() {
 		return url;
+	}
+	
+	public String getUrl(int pixels) {
+        Matcher resizeGravatarMatcher = RESIZE_GRAVATAR_PATTERN.matcher(url);
+        return resizeGravatarMatcher.replaceFirst("$1s=" + pixels);
 	}
 	
 	public Bitmap getBitmap() {
