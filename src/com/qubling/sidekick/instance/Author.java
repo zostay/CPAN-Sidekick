@@ -1,6 +1,7 @@
 package com.qubling.sidekick.instance;
 
 import com.qubling.sidekick.model.Model;
+import com.qubling.sidekick.search.Schema;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -68,6 +69,20 @@ public class Author extends Instance<Author> {
             return new Author[size];
         }
     };
+    
+    @Override
+    protected void attachRelatedModels(Schema schema) {
+        if (gravatar != null) {
+            gravatar.attachToModel(schema.getGravatarModel());
+        }
+    }
+    
+    @Override
+    protected void addToCache() {
+        getModel().cache(this);
+        if (gravatar != null)
+            gravatar.addToCache();
+    }
     
     @Override
     public String toString() {

@@ -1,12 +1,8 @@
 package com.qubling.sidekick.fetch;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 
 import com.qubling.sidekick.instance.Instance;

@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.qubling.sidekick.model.Model;
+import com.qubling.sidekick.search.Schema;
 
 import android.graphics.Bitmap;
 import android.os.Parcel;
@@ -70,6 +71,15 @@ public class Gravatar extends Instance<Gravatar> {
             return new Gravatar[size];
         }
     };
+    
+    @Override
+    public void attachRelatedModels(Schema schema) {
+    }
+
+    @Override
+    public void addToCache() {
+        getModel().cache(this);
+    }
     
     @Override
     public String toString() {

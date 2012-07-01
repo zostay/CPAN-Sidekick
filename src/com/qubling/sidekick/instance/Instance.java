@@ -3,6 +3,7 @@ package com.qubling.sidekick.instance;
 import java.util.Date;
 
 import com.qubling.sidekick.model.Model;
+import com.qubling.sidekick.search.Schema;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -27,7 +28,13 @@ public abstract class Instance<SomeInstance extends Instance<SomeInstance>> impl
 	
 	public void attachToModel(Model<SomeInstance> model) {
 		this.model = model;
+		
+		attachRelatedModels(model.getSchema());
+		addToCache();
 	}
+	
+	protected abstract void attachRelatedModels(Schema schema);
+	protected abstract void addToCache();
 	
 	public boolean isAttachedToModel() {
 		return this.model != null;

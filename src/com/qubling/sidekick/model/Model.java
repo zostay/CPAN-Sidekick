@@ -20,6 +20,10 @@ public abstract class Model<SomeInstance extends Instance<SomeInstance>> {
     	return schema;
     }
 	
+	public void cache(SomeInstance instance) {
+	    objectCache.put(instance.getKey(), instance);
+	}
+	
 	protected abstract SomeInstance constructInstance(String key);
 	
 	public SomeInstance acquireInstance(String key) {

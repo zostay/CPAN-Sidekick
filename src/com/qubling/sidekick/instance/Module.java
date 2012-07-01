@@ -1,6 +1,7 @@
 package com.qubling.sidekick.instance;
 
 import com.qubling.sidekick.model.Model;
+import com.qubling.sidekick.search.Schema;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -94,6 +95,20 @@ public class Module extends Instance<Module> {
             return new Module[size];
         }
     };
+    
+    @Override
+    public void attachRelatedModels(Schema schema) {
+        if (release != null) {
+            release.attachToModel(schema.getReleaseModel());
+        }
+    }
+    
+    @Override
+    public void addToCache() {
+        getModel().cache(this);
+        if (release != null)
+            release.addToCache();
+    }
     
     @Override
     public String toString() {
