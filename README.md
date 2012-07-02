@@ -1,8 +1,8 @@
 # CPAN Sidekick
 
 CPAN Sidekick is an Android application for searching and viewing CPAN (the
-Comprehensive Perl Archive Network). This application is now available on the
-Android Market.
+Comprehensive Perl Archive Network). This application is now available on
+Google Play.
 
  * <https://play.google.com/store/apps/details?id=com.qubling.sidekick>
 
