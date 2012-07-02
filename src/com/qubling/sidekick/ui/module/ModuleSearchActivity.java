@@ -5,12 +5,6 @@
  */
 package com.qubling.sidekick.ui.module;
 
-import java.io.IOException;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.DialogInterface;
@@ -22,11 +16,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
-import android.widget.Toast;
 
 import com.qubling.sidekick.R;
 import com.qubling.sidekick.Util;
 import com.qubling.sidekick.instance.Module;
+import com.qubling.sidekick.util.ConnectivityCheck;
 import com.qubling.sidekick.widget.ModuleListAdapter;
 
 /**
@@ -153,14 +147,7 @@ public class ModuleSearchActivity extends ModuleActivity {
 
         moduleSearchHelper.onCreate(state);
         
-        HttpClient testConnectivityClient = new DefaultHttpClient();
-        HttpPost request = new HttpPost("http://api.metacpan.org/");
-        try {
-            testConnectivityClient.execute(request);
-        }
-        catch (IOException e) {
-            Toast.makeText(this, R.string.cannot_connect_to_metacpan, Toast.LENGTH_LONG).show();
-        }
+        new ConnectivityCheck(this);
     }
 
     @Override
