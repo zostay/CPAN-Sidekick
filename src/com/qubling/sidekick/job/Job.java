@@ -64,7 +64,7 @@ public class Job implements Runnable {
 			});
 			
 			try {
-				job.execute();
+				job.executeOnExecutor(JobExecutor.THREAD_POOL_EXECUTOR);
 			}
 			catch (RejectedExecutionException e) {
 				Log.e("Job", "Failed to start job in parallel, will try again.", e);
