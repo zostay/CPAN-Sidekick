@@ -98,6 +98,7 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
 
     private Bitmap fetchBitmap(final String gravatarURL) {
         
+        Timer timer = new Timer();
         try {
 
         	// Make sure we don't get stuck waiting for a Gravatar
@@ -114,7 +115,6 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
             // Start the absolute timer for the request
 //            final int reqId = ++requestCounter;
 //            final Date ts = new Date();
-            Timer timer = new Timer();
             timer.schedule(new TimerTask() {
 				@Override
 				public void run() {
@@ -129,11 +129,6 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
             // Do the request
             HttpResponse res = httpClient.execute(req);
             
-            // Request is finished, stop the timer
-//            long elapsed = new Date().getTime() - ts.getTime();
-//            Log.d("GravatarFetcher", "Gravatar request #" + reqId + " finished executing request (" + elapsed + " µs)");
-            timer.cancel();
-
             // Get the response content
             HttpEntity entity = res.getEntity();
             InputStream content = entity.getContent();
@@ -166,6 +161,13 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
         	else {
         		throw e;
         	}
+        }
+        
+        finally {
+            // Request is finished, stop the timer
+//          long elapsed = new Date().getTime() - ts.getTime();
+//          Log.d("GravatarFetcher", "Gravatar request #" + reqId + " finished executing request (" + elapsed + " µs)");
+          timer.cancel();
         }
     }
     
