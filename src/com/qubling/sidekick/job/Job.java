@@ -7,16 +7,26 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.RejectedExecutionException;
 
 import android.app.Activity;
+import android.os.Build;
 import android.util.Log;
 
-public class Job implements Runnable {
+public abstract class Job implements Runnable {
 	private Collection<Runnable> commands;
 	private final Activity activity;
 	
-	public Job(Activity activity) {
+	protected Job(Activity activity) {
 	    this.activity = activity;
 	    this.commands = new ArrayList<Runnable>();
     }
+	
+	public static Job newJob(Activity activity) {
+	    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+	        return new JobEclair(activity);
+	    }
+	    else {
+	        return new JobHoneycomb(activity);
+	    }
+	}
 	
 	public void addCommand(Runnable command) {
 		addCommand(command, null);
@@ -64,7 +74,7 @@ public class Job implements Runnable {
 			});
 			
 			try {
-				job.executeOnExecutor(JobExecutor.THREAD_POOL_EXECUTOR);
+			    executeJob(job);
 			}
 			catch (RejectedExecutionException e) {
 				Log.e("Job", "Failed to start job in parallel, will try again.", e);
@@ -79,6 +89,8 @@ public class Job implements Runnable {
 			Log.e("Job", "Interrupted while waiting for jobs to finish.", e);
 		}
 	}
+	
+	public abstract void executeJob(JobExecutor job) throws RejectedExecutionException;
 	
 	@Override
 	public String toString() {

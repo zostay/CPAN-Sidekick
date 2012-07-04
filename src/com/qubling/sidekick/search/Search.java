@@ -54,7 +54,7 @@ public class Search<SomeInstance extends Instance<SomeInstance>>
 		this.activity = activity;
 		
 		this.searchPlan = new Search.Plan();
-		Job originalJob = new Job(activity);
+		Job originalJob = Job.newJob(activity);
 		originalJob.addCommand(fetcher, makeFollowup(fetcher));
 		this.searchPlan.add(originalJob);
 		
@@ -63,7 +63,7 @@ public class Search<SomeInstance extends Instance<SomeInstance>>
 	}
 	
 	public Search<SomeInstance> thenDoFetch(UpdateFetcher<SomeInstance>... fetchersArray) {
-		Job fetcherJob = new Job(activity);
+		Job fetcherJob = Job.newJob(activity);
 		for (UpdateFetcher<SomeInstance> fetcher : fetchersArray) {
 //			Log.d("Search", "originalFetcher.getResultSet() " + originalFetcher + " " + originalFetcher.getResultSet());
 			fetcher.setIncomingResultSet(
@@ -78,7 +78,7 @@ public class Search<SomeInstance extends Instance<SomeInstance>>
 	}
 	
 	public Search<SomeInstance> whenFinishedRun(Runnable... runnablesArray) {
-		Job commandJob = new Job(activity);
+		Job commandJob = Job.newJob(activity);
 		for (Runnable runnable : runnablesArray) {
 			commandJob.addCommand(runnable);
 		}
