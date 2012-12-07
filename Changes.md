@@ -1,5 +1,10 @@
 # Change Log
 
+## v0.4.4 vc12 2012-12-06 Release
+
+ * Bugfix: Issue #11: Attempted to fix the runtime exception that causes random failures while loading Gravatars, but this fix is not successful.
+ * Bugfix: Since the last release MetaCPAN has started using HTTPS URLs, which meant that links within the app to other modules opened a browser window instead of another module viewer within the app. This has been fixed.
+
 ## v0.4.3 vc11 2012-07-04 Release
 
  * Bugfix: The change in v0.4.2 to fix AsyncTask problems in Honeycomb and later, breaks Gingerbread and earlier. Fixed it in a way that works on both old and new Android devices.
