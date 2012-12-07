@@ -98,76 +98,91 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
 
     private Bitmap fetchBitmap(final String gravatarURL) {
         
-        Timer timer = new Timer();
         try {
-
-        	// Make sure we don't get stuck waiting for a Gravatar
-            HttpParams httpParams = new BasicHttpParams();
-            HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_CONNECTION);
-            HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_SOCKET);
-
-            // Prepare the request
-//            Log.d("AuthorByDistributionSearch", "Gravatar: " + resizedGravatarURL);
-            HttpClient httpClient = getHttpClient();
-            final HttpGet req = new HttpGet(gravatarURL);
-            req.setParams(httpParams);
+            Timer timer = new Timer();
+            try {
+    
+            	// Make sure we don't get stuck waiting for a Gravatar
+                HttpParams httpParams = new BasicHttpParams();
+                HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_CONNECTION);
+                HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_SOCKET);
+    
+                // Prepare the request
+    //            Log.d("AuthorByDistributionSearch", "Gravatar: " + resizedGravatarURL);
+                HttpClient httpClient = getHttpClient();
+                final HttpGet req = new HttpGet(gravatarURL);
+                req.setParams(httpParams);
+                
+                // Start the absolute timer for the request
+    //            final int reqId = ++requestCounter;
+    //            final Date ts = new Date();
+                timer.schedule(new TimerTask() {
+    				@Override
+    				public void run() {
+    //					long elapsed = new Date().getTime() - ts.getTime();
+    //					Log.w("GravatarFetcher", "Gravatar request #" + reqId + " took too long (" + elapsed + " 탎), aborting fetch: " + resizedGravatarURL);
+    					Log.w("GravatarFetcher", "Gravatar request took too long, aborting fetch: " + gravatarURL);
+    					req.abort();
+    					throw new RuntimeException(GRAVATAR_TOOK_TOO_LONG);
+    				}
+    			}, timeoutAbsolute);
+                
+                // Do the request
+                HttpResponse res = httpClient.execute(req);
+                
+                // Cancel as soon as we have the response to avoid weird exceptions
+                timer.cancel();
+                
+                // Get the response content
+                HttpEntity entity = res.getEntity();
+                InputStream content = entity.getContent();
+                Bitmap gravatarBitmap = BitmapFactory.decodeStream(content);
+                return gravatarBitmap;
+            }
             
-            // Start the absolute timer for the request
-//            final int reqId = ++requestCounter;
-//            final Date ts = new Date();
-            timer.schedule(new TimerTask() {
-				@Override
-				public void run() {
-//					long elapsed = new Date().getTime() - ts.getTime();
-//					Log.w("GravatarFetcher", "Gravatar request #" + reqId + " took too long (" + elapsed + " 탎), aborting fetch: " + resizedGravatarURL);
-					Log.w("GravatarFetcher", "Gravatar request took too long, aborting fetch: " + gravatarURL);
-					req.abort();
-					throw new RuntimeException(GRAVATAR_TOOK_TOO_LONG);
-				}
-			}, timeoutAbsolute);
+            catch (InterruptedIOException e) {
+            	// No message, since this probably means Gravatar took too long
+            	return null;
+            }
+    
+            catch (IOException e) {
+                Log.e("GravatarFetcher", "Error loading Gravatar: " + e, e);
+                return null;
+            }
+    
+            // During testing, I sometimes get an IllegalStateException: Connection is not open.
+            // This is a stupid exception and nearly any illegal state exception we can ignore by
+            // just not loading the Gravatar. The bitmap is not *that* important.
+            catch (IllegalStateException e) {
+            	Log.e("GravatarFetcher", "Error fetching Gravatar: " + e, e);
+            	return null;
+            }
             
-            // Do the request
-            HttpResponse res = httpClient.execute(req);
+            catch (RuntimeException e) {
+            	if (GRAVATAR_TOOK_TOO_LONG.equals(e.getMessage())) {
+            		return null;
+            	}
+            	else {
+            		throw e;
+            	}
+            }
             
-            // Get the response content
-            HttpEntity entity = res.getEntity();
-            InputStream content = entity.getContent();
-            Bitmap gravatarBitmap = BitmapFactory.decodeStream(content);
-            return gravatarBitmap;
+            finally {
+                // Request is finished, stop the timer
+    //          long elapsed = new Date().getTime() - ts.getTime();
+    //          Log.d("GravatarFetcher", "Gravatar request #" + reqId + " finished executing request (" + elapsed + " 탎)");
+              timer.cancel();
+            }
         }
         
-        catch (InterruptedIOException e) {
-        	// No message, since this probably means Gravatar took too long
-        	return null;
-        }
-
-        catch (IOException e) {
-            Log.e("GravatarFetcher", "Error loading Gravatar: " + e, e);
-            return null;
-        }
-
-        // During testing, I sometimes get an IllegalStateException: Connection is not open.
-        // This is a stupid exception and nearly any illegal state exception we can ignore by
-        // just not loading the Gravatar. The bitmap is not *that* important.
-        catch (IllegalStateException e) {
-        	Log.e("GravatarFetcher", "Error fetching Gravatar: " + e, e);
-        	return null;
-        }
-        
+        // Guarantee that Gravatar took too long never escapes from here...
         catch (RuntimeException e) {
-        	if (GRAVATAR_TOOK_TOO_LONG.equals(e.getMessage())) {
-        		return null;
-        	}
-        	else {
-        		throw e;
-        	}
-        }
-        
-        finally {
-            // Request is finished, stop the timer
-//          long elapsed = new Date().getTime() - ts.getTime();
-//          Log.d("GravatarFetcher", "Gravatar request #" + reqId + " finished executing request (" + elapsed + " 탎)");
-          timer.cancel();
+            if (GRAVATAR_TOOK_TOO_LONG.equals(e.getMessage())) {
+                return null;
+            }
+            else {
+                throw e;
+            }
         }
     }
     
