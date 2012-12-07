@@ -35,7 +35,7 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
     private static final int TIMEOUT_CONNECTION = 2000;
     private static final int TIMEOUT_SOCKET = 3000;
     
-    private static final String GRAVATAR_TOOK_TOO_LONG = "Gravatar took too long";
+//    private static final String GRAVATAR_TOOK_TOO_LONG = "Gravatar took too long";
 //    private static int requestCounter = 0;
     
     public static final int DEFAULT_TIMEOUT_ABSOLUTE = 3100;
@@ -98,7 +98,7 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
 
     private Bitmap fetchBitmap(final String gravatarURL) {
         
-        try {
+//        try {
             Timer timer = new Timer();
             try {
     
@@ -123,7 +123,7 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
     //					Log.w("GravatarFetcher", "Gravatar request #" + reqId + " took too long (" + elapsed + " µs), aborting fetch: " + resizedGravatarURL);
     					Log.w("GravatarFetcher", "Gravatar request took too long, aborting fetch: " + gravatarURL);
     					req.abort();
-    					throw new RuntimeException(GRAVATAR_TOOK_TOO_LONG);
+    					//throw new RuntimeException(GRAVATAR_TOOK_TOO_LONG);
     				}
     			}, timeoutAbsolute);
                 
@@ -158,14 +158,14 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
             	return null;
             }
             
-            catch (RuntimeException e) {
-            	if (GRAVATAR_TOOK_TOO_LONG.equals(e.getMessage())) {
-            		return null;
-            	}
-            	else {
-            		throw e;
-            	}
-            }
+//            catch (RuntimeException e) {
+//            	if (GRAVATAR_TOOK_TOO_LONG.equals(e.getMessage())) {
+//            		return null;
+//            	}
+//            	else {
+//            		throw e;
+//            	}
+//            }
             
             finally {
                 // Request is finished, stop the timer
@@ -173,17 +173,17 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
     //          Log.d("GravatarFetcher", "Gravatar request #" + reqId + " finished executing request (" + elapsed + " µs)");
               timer.cancel();
             }
-        }
+//        }
         
         // Guarantee that Gravatar took too long never escapes from here...
-        catch (RuntimeException e) {
-            if (GRAVATAR_TOOK_TOO_LONG.equals(e.getMessage())) {
-                return null;
-            }
-            else {
-                throw e;
-            }
-        }
+//        catch (RuntimeException e) {
+//            if (GRAVATAR_TOOK_TOO_LONG.equals(e.getMessage())) {
+//                return null;
+//            }
+//            else {
+//                throw e;
+//            }
+//        }
     }
     
     public String toString() {
