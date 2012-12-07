@@ -79,10 +79,12 @@ public class ModuleViewFragment extends ModuleFragment implements ModuleViewThin
                 }
 
                 // Rewrite MetaCPAN module URLs to fetch the POD
-                else if (url.startsWith(CPANFetcher.METACPAN_MODULE_URL)) {
+                else if (url.startsWith(CPANFetcher.METACPAN_MODULE_URL)
+                      || url.startsWith(CPANFetcher.METACPAN_SECURE_MODULE_URL)) {
+                    
                     moduleHistory.push(module);
 
-                    String moduleName = url.substring(CPANFetcher.METACPAN_MODULE_URL.length());
+                    String moduleName = url.substring(CPANFetcher.METACPAN_SECURE_MODULE_URL.length());
                     module = searchSession.getModuleModel().acquireInstance(moduleName);
 
                     fetchModule();
