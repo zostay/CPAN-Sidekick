@@ -66,6 +66,9 @@ public class ModuleKeywordSearch extends CPANQueryFetcher<Module> {
 	            if (hit.has("module")) {
 	                name = hit.getJSONArray("module").getJSONObject(0).getString("name");
 	            }
+	            else if (hit.has("documentation")) {
+	                name = hit.getString("documentation");
+	            }
 	            else {
 	                name = hit.getString("name");
 	            }
