@@ -8,10 +8,10 @@
 
     <FrameLayout
         android:id="@+id/frameLayout1"
-        android:background="@android:color/background_light"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp" >
+        android:layout_margin="15dp"
+        android:background="@color/background_light" >
 
         <include
 	        android:id="@+id/module_info"
