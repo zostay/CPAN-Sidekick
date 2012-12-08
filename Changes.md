@@ -1,5 +1,9 @@
 # Change Log
 
+## v0.4.5 vc13 2012-12-07 Release
+
+ * Bugfix: Issue #11: Fix the runtime exception that causes random failures while loading Gravatars by removing that runtime exception completely.
+
 ## v0.4.4 vc12 2012-12-06 Release
 
  * Bugfix: Issue #11: Attempted to fix the runtime exception that causes random failures while loading Gravatars, but this fix is not successful.
