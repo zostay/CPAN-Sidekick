@@ -186,12 +186,19 @@ public class ModuleViewFragment extends ModuleFragment implements ModuleViewThin
     }
 	
 	public void onFinishedFetch(Fetcher<Module> fetcher, ResultSet<Module> modules) {
+	    
+	    // Don't do anything if we don't have an activity (i.e., don't NPE either)
+	    if (getActivity() == null) return;
+
     	View moduleInfo = getActivity().findViewById(R.id.module_info);
     	
 		ModuleHelper.updateItem(moduleInfo, module);
 		
 		if (module.getRawPod() != null) {
 			WebView podView = (WebView) getActivity().findViewById(R.id.module_pod);
+			
+			// Avoid an NPE here, just in case
+			if (podView == null) return;
 			
 			String formattedPod = "<html><head><link href=\"style/pod.css\" type=\"text/css\" rel=\"stylesheet\"/></head><body class=\"pod\">"
                     + module.getRawPod()
