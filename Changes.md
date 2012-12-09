@@ -1,5 +1,11 @@
 # Change Log
 
+## v0.4.6 vc14 2012-12-09 Release
+
+ * Bugfix: Issue #15: Allow the app to view the documentation of .pod files in addition to .pm files.
+ * Bugfix: Issue #12: Fix an NPE occuring while fetching module POD from MetaCPAN.
+ * Bugfix: Fixed the background color of the module header on Ice Cream Sandwich and newer tablets to make it look like it similar to what it has looked like on Honeycomb.
+
 ## v0.4.5 vc13 2012-12-07 Release
 
  * Bugfix: Issue #11: Fix the runtime exception that causes random failures while loading Gravatars by removing that runtime exception completely.
