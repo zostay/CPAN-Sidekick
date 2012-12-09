@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/release_information_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,8 +10,8 @@
         android:id="@+id/fragment1"
         android:name="com.qubling.sidekick.ui.release.ReleaseInfoFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-        <!-- Preview: layout=@layout/release_view_fragment -->
+        android:layout_height="match_parent"
+        tools:layout="@layout/release_view_fragment" >
     </fragment>
 
 </LinearLayout>

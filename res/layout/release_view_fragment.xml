@@ -16,7 +16,8 @@
         <LinearLayout
             android:id="@+id/release_information_badge"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:background="@color/background_light" >
 
             <QuickContactBadge
                 android:id="@+id/module_author_avatar"
