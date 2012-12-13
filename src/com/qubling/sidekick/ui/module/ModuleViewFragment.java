@@ -130,6 +130,15 @@ public class ModuleViewFragment extends ModuleFragment implements ModuleViewThin
         }
 
         fetchModule();
+
+        View moduleInfo = getActivity().findViewById(R.id.module_info);
+        moduleInfo.setOnClickListener(new View.OnClickListener() {
+            
+            @Override
+            public void onClick(View v) {
+                getModuleActivity().onReleaseClick(module.getRelease());
+            }
+        });
     }
 
 	@Override

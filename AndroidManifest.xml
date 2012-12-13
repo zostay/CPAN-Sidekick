@@ -27,6 +27,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".ui.release.ReleaseViewActivity" android:label="@string/activity_release_view"></activity>
     </application>
 
 </manifest>
