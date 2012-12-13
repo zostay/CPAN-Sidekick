@@ -6,7 +6,9 @@ import java.util.Collections;
 import com.qubling.sidekick.fetch.Fetcher;
 import com.qubling.sidekick.fetch.SubqueryFetcher;
 import com.qubling.sidekick.fetch.UpdateFetcher;
+import com.qubling.sidekick.fetch.cpan.CPANQueryFetcher;
 import com.qubling.sidekick.fetch.cpan.ModuleDetailsFetcher;
+import com.qubling.sidekick.fetch.cpan.ModuleForReleaseFetcher;
 import com.qubling.sidekick.fetch.cpan.ModuleKeywordSearch;
 import com.qubling.sidekick.fetch.cpan.ModulePodFetcher;
 import com.qubling.sidekick.instance.Author;
@@ -27,6 +29,12 @@ public class ModuleModel extends Model<Module> {
 	public Fetcher<Module> searchByKeyword(String keywords) {
 		return new ModuleKeywordSearch(this, keywords);
 	}
+    
+    public Fetcher<Module> fetchModulesForRelease(Release release) {
+        CPANQueryFetcher<Module> fetcher = new ModuleForReleaseFetcher(this, release);
+        fetcher.setSize(999);
+        return fetcher;
+    }
 	
 	public UpdateFetcher<Module> fetchPod() {
 		return new ModulePodFetcher(this);

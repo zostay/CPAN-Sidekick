@@ -33,13 +33,19 @@ public class ModuleListAdapter extends BaseAdapter {
     private Search<Module> search;
     
     private LayoutInflater inflater;
+    private int moduleLayout;
     private int currentModule = -1;
 
     private View loadMoreItemsRow;
-
-    public ModuleListAdapter(Context context, Search<Module> search) {
+    
+    public ModuleListAdapter(Context context, Search<Module> search, int moduleLayout) {
         this.inflater      = LayoutInflater.from(context);
         this.search        = search;
+        this.moduleLayout  = moduleLayout;
+    }
+
+    public ModuleListAdapter(Context context, Search<Module> search) {
+        this(context, search, R.layout.module_list_item);
     }
     
     private ResultSet<Module> getResultSet() {
@@ -99,7 +105,7 @@ public class ModuleListAdapter extends BaseAdapter {
         // Try to convert, if we can
         View row = convertView;
         if (row == null) {
-            row = inflater.inflate(R.layout.module_list_item, null);
+            row = inflater.inflate(moduleLayout, null);
         }
 
         if (position == currentModule) {

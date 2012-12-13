@@ -62,6 +62,10 @@ public class Module extends Instance<Module> {
     	return release;
     }
 	
+	public void setRelease(Release release) {
+	    this.release = release;
+	}
+	
 	public String getAuthorPauseId() {
 		return release == null ? null : release.getAuthorPauseId();
 	}

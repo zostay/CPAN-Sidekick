@@ -1,0 +1,27 @@
+{
+  "query": {
+    "filtered": {
+      "query": { "match_all": {} },
+      "filter": {
+        "and": [
+          { "term": { "release": "%release_version|s%" } },
+          { "term": { "author": "%author_pauseid|s%" } },
+          { "or": [
+            { "and": [
+              { "exists": { "field": "file.module.name" } },
+              { "term": { "file.module.indexed": true } }
+            ] },
+            { "and": [
+              { "exists": { "field": "file.pod.analyzed" } },
+              { "term": { "file.indexed": true } }
+            ] }
+          ] }
+        ]
+      }
+    }
+  },
+  "size": %size|j%,
+  "from": %from|j%,
+  "sort": [ "documentation" ],
+  "fields": [ "documentation", "_source.abstract", "_source.module", "path", "status" ]
+}

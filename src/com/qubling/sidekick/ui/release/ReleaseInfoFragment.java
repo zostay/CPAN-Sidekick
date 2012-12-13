@@ -3,11 +3,14 @@ package com.qubling.sidekick.ui.release;
 import com.qubling.sidekick.R;
 import com.qubling.sidekick.fetch.Fetcher;
 import com.qubling.sidekick.instance.Gravatar;
+import com.qubling.sidekick.instance.Module;
 import com.qubling.sidekick.instance.Release;
+import com.qubling.sidekick.model.ModuleModel;
 import com.qubling.sidekick.model.ReleaseModel;
 import com.qubling.sidekick.search.ResultSet;
 import com.qubling.sidekick.search.Schema;
 import com.qubling.sidekick.search.Search;
+import com.qubling.sidekick.widget.ModuleListAdapter;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -16,14 +19,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.QuickContactBadge;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-public class ReleaseInfoFragment extends Fragment implements Fetcher.OnFinished<Release> {
+public class ReleaseInfoFragment extends Fragment {
 
     private Schema searchSession;
     private Release release;
+    
+    private Search<Module> moduleSearch;
     
     public void setRelease(Release release) {
         this.release = release;
@@ -113,22 +119,40 @@ public class ReleaseInfoFragment extends Fragment implements Fetcher.OnFinished<
         fetchRelease();
     }
     
-    public void fetchRelease() {
+    private void fetchRelease() {
+        fetchReleaseMetadata();
+        fetchReleaseModules();
+    }
+    
+    private void fetchReleaseMetadata() {
         ReleaseModel releases = searchSession.getReleaseModel();
         Fetcher<Release> releaseFetch = releases.fetch();
         releaseFetch.getResultSet().add(release);
         
-        Search<Release> search = searchSession.doFetch(releaseFetch, this);
-        
-        search.start();
+        Search<Release> releaseMetaSearch = searchSession.doFetch(releaseFetch, new Fetcher.OnFinished<Release>() {
+            @Override
+            public void onFinishedFetch(Fetcher<Release> fetcher, ResultSet<Release> results) {
+                // Don't do anything if we don't have an activity (i.e., don't NPE either)
+                if (getActivity() == null) return;        
+                updateReleaseInfo();
+            }
+        });
+        releaseMetaSearch.start();
     }
-
-    @Override
-    public void onFinishedFetch(Fetcher<Release> fetcher, ResultSet<Release> results) {
+    
+    private void fetchReleaseModules() {
+        ModuleModel modules = searchSession.getModuleModel();
+        Fetcher<Module> modulesFetch = modules.fetchModulesForRelease(release);
         
-        // Don't do anything if we don't have an activity (i.e., don't NPE either)
-        if (getActivity() == null) return;
+        moduleSearch = searchSession.doFetch(modulesFetch, new Fetcher.OnFinished<Module>() {
+            @Override
+            public void onFinishedFetch(Fetcher<Module> fetcher, ResultSet<Module> results) {
+                ModuleListAdapter adapter = new ModuleListAdapter(getActivity(), moduleSearch, R.layout.module_list_item_simplified);
+                ListView moduleListView = (ListView) getActivity().findViewById(R.id.release_modules_list);
+                moduleListView.setAdapter(adapter);
+            }
+        });
         
-        updateReleaseInfo();
+        moduleSearch.start();
     }
 }
