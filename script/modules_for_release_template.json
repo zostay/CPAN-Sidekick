@@ -1,0 +1,26 @@
+{
+  "query": {
+    "filtered": {
+      "query": { "match_all": {} },
+      "filter": {
+        "and": [
+          { "term": { "release": "Mo-0.31" } },
+          { "term": { "author": "INGY" } },
+          { "or": [
+            { "and": [
+              { "exists": { "field": "file.module.name" } },
+              { "term": { "file.module.indexed": true } }
+            ] },
+            { "and": [
+              { "exists": { "field": "file.pod.analyzed" } },
+              { "term": { "file.indexed": true } }
+            ] }
+          ] }
+        ]
+      }
+    }
+  },
+  "size": 999,
+  "sort": [ "documentation" ],
+  "fields": [ "documentation", "_source.abstract", "_source.module", "path", "status" ]
+}

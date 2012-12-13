@@ -21,6 +21,11 @@ case $1 in
         path="/favorite/_search"
         ;;
 
+    modules)
+        file="modules_for_release_template.json"
+        path="/file/_search"
+        ;;
+
     *)
         echo "Say what!?"
         exit
