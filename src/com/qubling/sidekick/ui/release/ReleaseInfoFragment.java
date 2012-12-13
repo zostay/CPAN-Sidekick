@@ -30,7 +30,7 @@ public class ReleaseInfoFragment extends Fragment {
         releaseName.setText(distVersion);
         
         TextView authorFullName = (TextView) getActivity().findViewById(R.id.module_author_fullname);
-        authorFullName.setText("Not Yet Implemented");
+        authorFullName.setText(release.getAuthor().getFullName());
         
         TextView releaseMeta = (TextView) getActivity().findViewById(R.id.release_metadata);
         releaseMeta.setText("Not Yet Implemented");

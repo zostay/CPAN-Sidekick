@@ -86,10 +86,12 @@ public class AuthorDetailsFetcher extends CPANQueryUpdateFetcher<Author> {
             JSONObject jsonAuthor = hits.getJSONObject(i).getJSONObject("_source");
 
             String pauseId = jsonAuthor.getString("pauseid");
+            String fullName = jsonAuthor.getString("name");
             String gravatarUrl = jsonAuthor.getString("gravatar_url");
 
             Author author = authors.get(pauseId);
             if (author != null) {
+                author.setFullName(fullName);
             	author.setGravatarUrl(gravatarUrl);
 //            	Log.d("AuthorDetailsFetcher", "Setting author Gravatar " + author.getPauseId() + ": " + gravatarUrl);
             }

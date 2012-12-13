@@ -8,6 +8,7 @@ import android.os.Parcelable;
 
 public class Author extends Instance<Author> {
 	private String pauseId;
+	private String fullName;
 	private Gravatar gravatar;
 	
 	public Author(Model<Author> model, String pauseId) {
@@ -18,6 +19,7 @@ public class Author extends Instance<Author> {
 	
 	public Author(Parcel in) {
 		pauseId  = in.readString();
+		fullName = in.readString();
 		gravatar = in.readParcelable(Author.class.getClassLoader());
 	}
 
@@ -29,6 +31,14 @@ public class Author extends Instance<Author> {
 	public String getPauseId() {
     	return pauseId;
     }
+	
+	public String getFullName() {
+	    return fullName;
+	}
+	
+	public void setFullName(String fullName) {
+	    this.fullName = fullName;
+	}
 
 	public String getGravatarUrl() {
     	return gravatar == null ? null : gravatar.getUrl();
@@ -54,6 +64,7 @@ public class Author extends Instance<Author> {
     @Override
     public void writeToParcel(Parcel out, int flags) {
     	out.writeString(pauseId);
+    	out.writeString(fullName);
     	out.writeParcelable(gravatar, flags);
     }
 
