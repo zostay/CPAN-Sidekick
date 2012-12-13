@@ -47,7 +47,7 @@ public class ModuleDetailsFetcher extends CPANDirectFetcher<Module> {
 		}
 		catch (JSONException e) {
 			// TODO Show an alert dialog or toast when this happens
-			Log.e("ModuleDetailFetcher", "Error reading JSON response while fetching details: " + e.getMessage(), e);
+			Log.e("ModuleDetailsFetcher", "Error reading JSON response while fetching details: " + e.getMessage(), e);
 		}
 	}
 

@@ -1,6 +1,7 @@
 package com.qubling.sidekick.model;
 
 import com.qubling.sidekick.fetch.UpdateFetcher;
+import com.qubling.sidekick.fetch.cpan.ReleaseDetailsFetcher;
 import com.qubling.sidekick.fetch.cpan.ReleaseFavoritesUpdateFetcher;
 import com.qubling.sidekick.fetch.cpan.ReleaseRatingsUpdateFetcher;
 import com.qubling.sidekick.instance.Release;
@@ -22,6 +23,10 @@ public class ReleaseModel extends Model<Release> {
 	public UpdateFetcher<Release> fetchRatings() {
 		return new ReleaseRatingsUpdateFetcher(this);
 	}
+    
+    public UpdateFetcher<Release> fetch() {
+        return new ReleaseDetailsFetcher(this);
+    }
 	
 	@Override
 	public String toString() {

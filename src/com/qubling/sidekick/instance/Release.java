@@ -15,6 +15,8 @@ public class Release extends Instance<Release> {
 	private long ratingCount = -1;
 	private double ratingMean;
 	
+	private String license;
+	
 	public Release(Model<Release> model, String name) {
 		super(model);
 		
@@ -29,6 +31,7 @@ public class Release extends Instance<Release> {
 		myFavorite    = readParcelBoolean(in);
 		ratingCount   = in.readLong();
 		ratingMean    = in.readDouble();
+		license       = in.readString();
 	}
 	
 	@Override
@@ -100,6 +103,14 @@ public class Release extends Instance<Release> {
     	this.ratingMean = ratingMean;
     }
 	
+	public String getLicense() {
+	    return license;
+	}
+	
+	public void setLicense(String license) {
+	    this.license = license;
+	}
+	
 	@Override
 	public int describeContents() {
 		return 0;
@@ -114,6 +125,7 @@ public class Release extends Instance<Release> {
     	writeParcelBoolean(out, myFavorite);
     	out.writeLong(ratingCount);
     	out.writeDouble(ratingMean);
+    	out.writeString(license);
     }
 
     public static final Parcelable.Creator<Release> CREATOR

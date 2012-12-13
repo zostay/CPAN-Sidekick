@@ -26,7 +26,8 @@ public abstract class CPANDirectFetcher<SomeInstance extends Instance<SomeInstan
 	 */
     public enum FetchSection {
     	MODULE_POD(METACPAN_API_POD_URL),
-    	MODULE_FETCH(METACPAN_API_MODULE_URL);
+    	MODULE_FETCH(METACPAN_API_MODULE_URL),
+    	RELEASE_FETCH(METACPAN_API_RELEASE_URL);
 
         private String baseUrl;
 

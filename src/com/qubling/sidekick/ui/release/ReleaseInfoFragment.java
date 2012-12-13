@@ -1,8 +1,13 @@
 package com.qubling.sidekick.ui.release;
 
 import com.qubling.sidekick.R;
+import com.qubling.sidekick.fetch.Fetcher;
 import com.qubling.sidekick.instance.Gravatar;
 import com.qubling.sidekick.instance.Release;
+import com.qubling.sidekick.model.ReleaseModel;
+import com.qubling.sidekick.search.ResultSet;
+import com.qubling.sidekick.search.Schema;
+import com.qubling.sidekick.search.Search;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -15,13 +20,22 @@ import android.widget.QuickContactBadge;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-public class ReleaseInfoFragment extends Fragment {
-    
+public class ReleaseInfoFragment extends Fragment implements Fetcher.OnFinished<Release> {
+
+    private Schema searchSession;
     private Release release;
     
     public void setRelease(Release release) {
         this.release = release;
         
+        updateReleaseInfo();
+    }
+    
+    public Release getRelease() {
+        return release;
+    }
+    
+    private void updateReleaseInfo() {
         TextView releaseName = (TextView) getActivity().findViewById(R.id.release_name);
         StringBuilder distVersion = new StringBuilder();
         distVersion.append(release.getName());
@@ -33,7 +47,7 @@ public class ReleaseInfoFragment extends Fragment {
         authorFullName.setText(release.getAuthor().getFullName());
         
         TextView releaseMeta = (TextView) getActivity().findViewById(R.id.release_metadata);
-        releaseMeta.setText("Not Yet Implemented");
+        releaseMeta.setText("License: " + (release.getLicense() == null ? "..." : release.getLicense()));
         
         TextView authorPauseId = (TextView) getActivity().findViewById(R.id.module_author_pauseid);
         authorPauseId.setText(release.getAuthorPauseId());
@@ -79,10 +93,13 @@ public class ReleaseInfoFragment extends Fragment {
         }   
     }
     
-    public Release getRelease() {
-        return release;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        searchSession = new Schema(this.getActivity());
     }
-    
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
@@ -93,7 +110,25 @@ public class ReleaseInfoFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         
+        fetchRelease();
+    }
+    
+    public void fetchRelease() {
+        ReleaseModel releases = searchSession.getReleaseModel();
+        Fetcher<Release> releaseFetch = releases.fetch();
+        releaseFetch.getResultSet().add(release);
         
+        Search<Release> search = searchSession.doFetch(releaseFetch, this);
+        
+        search.start();
     }
 
+    @Override
+    public void onFinishedFetch(Fetcher<Release> fetcher, ResultSet<Release> results) {
+        
+        // Don't do anything if we don't have an activity (i.e., don't NPE either)
+        if (getActivity() == null) return;
+        
+        updateReleaseInfo();
+    }
 }
