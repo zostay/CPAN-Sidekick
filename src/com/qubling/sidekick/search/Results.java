@@ -4,6 +4,7 @@ import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -224,6 +225,11 @@ public class Results<SomeInstance extends Instance<SomeInstance>>
 		for (OnChangeListener<SomeInstance> listener : onChangeListeners) {
 			listener.onRemove(instance);
 		}
+	}
+	
+	@Override
+	public void sort(Comparator<SomeInstance> comparator) {
+	    Collections.sort(resultIndex, comparator);
 	}
 	
 	@Override

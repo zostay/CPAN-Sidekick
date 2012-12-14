@@ -2,6 +2,8 @@ package com.qubling.sidekick.search;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 
 import com.qubling.sidekick.fetch.UpdateFetcher;
@@ -162,6 +164,12 @@ public class ResultsForUpdate<SomeInstance extends Instance<SomeInstance>>
 	public void onRemove(SomeInstance instance) {
 		filteredIndex.remove(instance);
 	}
+    
+    @Override
+    public void sort(Comparator<SomeInstance> comparator) {
+        Collections.sort(filteredIndex, comparator);
+        unfilteredResultSet.sort(comparator);
+    }
 	
 	@Override
 	public String toString() {

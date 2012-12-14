@@ -2,6 +2,7 @@ package com.qubling.sidekick.search;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 
 import com.qubling.sidekick.instance.Instance;
 
@@ -31,4 +32,6 @@ public interface ResultSet<SomeInstance extends Instance<SomeInstance>> extends 
 	
 	public void addOnChangeListener(OnChangeListener<SomeInstance> listener);
 	public void removeOnChangeListener(OnChangeListener<SomeInstance> listener);
+	
+	public void sort(Comparator<SomeInstance> comparator);
 }

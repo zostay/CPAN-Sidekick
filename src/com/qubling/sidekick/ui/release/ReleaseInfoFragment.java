@@ -1,5 +1,7 @@
 package com.qubling.sidekick.ui.release;
 
+import java.util.Comparator;
+
 import com.qubling.sidekick.R;
 import com.qubling.sidekick.fetch.Fetcher;
 import com.qubling.sidekick.instance.Gravatar;
@@ -150,6 +152,13 @@ public class ReleaseInfoFragment extends ModuleFragment {
         moduleSearch = searchSession.doFetch(modulesFetch, new Fetcher.OnFinished<Module>() {
             @Override
             public void onFinishedFetch(Fetcher<Module> fetcher, ResultSet<Module> results) {
+                results.sort(new Comparator<Module>() {
+                    @Override
+                    public int compare(Module a, Module b) {
+                        return a.getName().compareToIgnoreCase(b.getName());
+                    }
+                });
+                
                 ModuleListAdapter adapter = new ModuleListAdapter(getActivity(), moduleSearch, R.layout.module_list_item_simplified);
                 ListView moduleListView = (ListView) getActivity().findViewById(R.id.release_modules_list);
                 moduleListView.setAdapter(adapter);
