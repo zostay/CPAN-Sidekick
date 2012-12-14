@@ -7,7 +7,7 @@
     android:orientation="horizontal" >
 
     <fragment
-        android:id="@+id/fragment1"
+        android:id="@+id/release_info_fragment"
         android:name="com.qubling.sidekick.ui.release.ReleaseInfoFragment"
         android:layout_width="300dp"
         android:layout_height="match_parent"
@@ -16,7 +16,7 @@
 
     <fragment
         android:id="@+id/module_view_fragment"
-        android:name="com.qubling.sidekick.module.ModuleViewFragment"
+        android:name="com.qubling.sidekick.ui.module.ModuleViewFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/module_view_fragment" >
