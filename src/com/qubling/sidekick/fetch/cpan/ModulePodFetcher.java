@@ -13,6 +13,19 @@ public class ModulePodFetcher extends CPANDirectFetcher<Module> {
     public boolean needsUpdate(Module module) {
 		return module.getRawPod() == null;
     }
+    
+	@Override
+    protected String getRemainderUrl(Module module) {
+	    if (module.getName().contains("/")) {
+	        return module.getAuthorPauseId() + "/"
+	             + module.getReleaseName() + "-"
+	             + module.getRelease().getVersion() + "/"
+	             + module.getName();
+	    }
+	    else {
+	        return module.getKey();
+	    }
+    }
 
 	@Override
     public void consumeResponse(String content, Module module) {

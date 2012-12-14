@@ -59,10 +59,14 @@ public abstract class CPANDirectFetcher<SomeInstance extends Instance<SomeInstan
 //		Log.d("CPANDirectFetcher", "END execute()");
 	}
 	
+	protected String getRemainderUrl(SomeInstance instance) {
+	    return instance.getKey();
+	}
+	
     protected void fetchOne(SomeInstance instance) {
         String fetchContent;
         try {
-            HttpGet fetchRequest = new HttpGet(fetchSection.getBaseUrl() + instance.getKey());
+            HttpGet fetchRequest = new HttpGet(fetchSection.getBaseUrl() + getRemainderUrl(instance));
             HttpResponse fetchResponse = getHttpClient().execute(fetchRequest);
 
             fetchContent = HttpUtils.slurpContent(fetchResponse);
