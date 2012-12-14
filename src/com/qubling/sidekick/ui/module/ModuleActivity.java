@@ -53,7 +53,7 @@ public abstract class ModuleActivity extends FragmentActivity implements OnSearc
 
     public void startSearch(boolean modal) {}
     public void cancelSearch() {}
-    protected void onModuleClick(Module clickedModule) {}
+    public void onModuleClick(Module clickedModule) {}
     
     public void onReleaseClick(Release clickedRelease) {
         Intent moduleReleaseIntent = new Intent(this, ReleaseViewActivity.class);

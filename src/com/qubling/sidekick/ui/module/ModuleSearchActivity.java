@@ -210,7 +210,7 @@ public class ModuleSearchActivity extends ModuleActivity {
     }
 
     @Override
-    protected void onModuleClick(Module currentModule) {
+    public void onModuleClick(Module currentModule) {
     	boolean convertable = convertToRealViewFragment();
     	ModuleViewFragment fragment = getModuleViewFragment();
 

@@ -10,6 +10,7 @@ import com.qubling.sidekick.model.ReleaseModel;
 import com.qubling.sidekick.search.ResultSet;
 import com.qubling.sidekick.search.Schema;
 import com.qubling.sidekick.search.Search;
+import com.qubling.sidekick.ui.module.ModuleFragment;
 import com.qubling.sidekick.widget.ModuleListAdapter;
 
 import android.graphics.Color;
@@ -18,13 +19,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.QuickContactBadge;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
-public class ReleaseInfoFragment extends Fragment {
+public class ReleaseInfoFragment extends ModuleFragment {
 
     private Schema searchSession;
     private Release release;
@@ -150,6 +153,23 @@ public class ReleaseInfoFragment extends Fragment {
                 ModuleListAdapter adapter = new ModuleListAdapter(getActivity(), moduleSearch, R.layout.module_list_item_simplified);
                 ListView moduleListView = (ListView) getActivity().findViewById(R.id.release_modules_list);
                 moduleListView.setAdapter(adapter);
+
+                moduleListView.setOnItemClickListener(new OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View row, int position, long id) {
+                        ListView moduleListView = (ListView) parent;
+                        Module currentModule = (Module) moduleListView.getItemAtPosition(position);
+
+                        // This happens when you click on the progress throbber item
+                        if (currentModule == null)
+                            return;
+
+                        getModuleActivity().onModuleClick(currentModule);
+
+                        ModuleListAdapter adapter = (ModuleListAdapter) parent.getAdapter();
+                        adapter.setCurrentModule(position);
+                    }
+                });
             }
         });
         

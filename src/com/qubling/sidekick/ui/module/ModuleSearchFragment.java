@@ -84,7 +84,6 @@ public class ModuleSearchFragment extends ModuleFragment implements Fetcher.OnFi
                 ModuleListAdapter adapter = (ModuleListAdapter) parent.getAdapter();
                 adapter.setCurrentModule(position);
             }
-
         });
 
         freshenModuleList();
