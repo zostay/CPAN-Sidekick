@@ -15,7 +15,7 @@
     </fragment>
 
     <fragment
-        android:id="@+id/module_view_fragment"
+        android:id="@+id/module_view_fragment_container"
         android:name="com.qubling.sidekick.ui.module.ModuleViewFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
