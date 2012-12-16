@@ -20,4 +20,5 @@
     <color name="transparent">#00000000</color>
     <color name="webview_background">#fff</color>
     <color name="background_light">#EEEEEE</color>
+    <color name="release_header_background">#ffbb33</color>
 </resources>

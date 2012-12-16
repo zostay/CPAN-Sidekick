@@ -24,6 +24,8 @@ import com.qubling.sidekick.ui.release.ReleaseViewActivity;
  */
 public abstract class ModuleActivity extends FragmentActivity implements OnSearchActivity {
 
+    public static final String EXTRA_MODULE = "com.qubling.sidekick.intent.extra.MODULE";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
@@ -55,9 +57,11 @@ public abstract class ModuleActivity extends FragmentActivity implements OnSearc
     public void cancelSearch() {}
     public void onModuleClick(Module clickedModule) {}
     
-    public void onReleaseClick(Release clickedRelease) {
+    public void onReleaseClick(Module clickedModule) {
+        Release clickedRelease = clickedModule.getRelease();
         Intent moduleReleaseIntent = new Intent(this, ReleaseViewActivity.class);
         moduleReleaseIntent.putExtra(ReleaseViewActivity.EXTRA_RELEASE, clickedRelease);
+        moduleReleaseIntent.putExtra(ReleaseViewActivity.EXTRA_MODULE, clickedModule);
         startActivity(moduleReleaseIntent);
     }
 

@@ -223,7 +223,7 @@ public class ModuleSearchActivity extends ModuleActivity {
         // Phone
         else {
         	Intent moduleViewIntent = new Intent(this, ModuleViewActivity.class);
-	        moduleViewIntent.putExtra(ModuleViewActivity.EXTRA_MODULE, currentModule);
+	        moduleViewIntent.putExtra(ModuleActivity.EXTRA_MODULE, currentModule);
 	        startActivity(moduleViewIntent);
         }
     }

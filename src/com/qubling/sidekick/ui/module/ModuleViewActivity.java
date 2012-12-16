@@ -21,8 +21,6 @@ import com.qubling.sidekick.instance.Module;
  *
  */
 public class ModuleViewActivity extends ModuleActivity {
-    public static final String EXTRA_MODULE = "com.qubling.sidekick.intent.extra.MODULE";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

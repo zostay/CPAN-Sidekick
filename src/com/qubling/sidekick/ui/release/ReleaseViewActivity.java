@@ -26,12 +26,19 @@ public class ReleaseViewActivity extends ModuleActivity {
         
         Intent intent = getIntent();
         Release release = (Release) intent.getParcelableExtra(EXTRA_RELEASE);
+        Module module = (Module) intent.getParcelableExtra(EXTRA_MODULE);
         
         setTitle(release.getName() + "-" + release.getVersion());
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        ReleaseInfoFragment fragment = (ReleaseInfoFragment) fragmentManager.findFragmentById(R.id.release_info_fragment);
-        fragment.setRelease(release);
+        ReleaseInfoFragment releaseFragment = (ReleaseInfoFragment) fragmentManager.findFragmentById(R.id.release_info_fragment);
+        releaseFragment.setRelease(release);
+        
+        ModuleViewFragment moduleFragment = (ModuleViewFragment) fragmentManager.findFragmentById(R.id.module_view_fragment);
+        if (moduleFragment != null) {
+            moduleFragment.setModule(module);
+            moduleFragment.fetchModule();
+        }
     }
 
     private ModuleViewFragment getModuleViewFragment() {
@@ -52,7 +59,7 @@ public class ReleaseViewActivity extends ModuleActivity {
         // Phone
         else {
             Intent moduleViewIntent = new Intent(this, ModuleViewActivity.class);
-            moduleViewIntent.putExtra(ModuleViewActivity.EXTRA_MODULE, clickedModule);
+            moduleViewIntent.putExtra(ModuleActivity.EXTRA_MODULE, clickedModule);
             startActivity(moduleViewIntent);
         }
     }

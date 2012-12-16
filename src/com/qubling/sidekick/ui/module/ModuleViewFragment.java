@@ -136,7 +136,7 @@ public class ModuleViewFragment extends ModuleFragment implements ModuleViewThin
             
             @Override
             public void onClick(View v) {
-                getModuleActivity().onReleaseClick(module.getRelease());
+                getModuleActivity().onReleaseClick(module);
             }
         });
     }
