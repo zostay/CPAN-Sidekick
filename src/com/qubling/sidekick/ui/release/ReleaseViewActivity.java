@@ -38,6 +38,8 @@ public class ReleaseViewActivity extends ModuleActivity {
         if (moduleFragment != null) {
             moduleFragment.setModule(module);
             moduleFragment.fetchModule();
+            
+            releaseFragment.selectModule(module);
         }
     }
 

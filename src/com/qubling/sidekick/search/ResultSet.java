@@ -34,4 +34,5 @@ public interface ResultSet<SomeInstance extends Instance<SomeInstance>> extends 
 	public void removeOnChangeListener(OnChangeListener<SomeInstance> listener);
 	
 	public void sort(Comparator<SomeInstance> comparator);
+	public int indexOf(SomeInstance needle);
 }

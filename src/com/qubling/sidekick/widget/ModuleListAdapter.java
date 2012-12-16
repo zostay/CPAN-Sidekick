@@ -5,6 +5,8 @@
  */
 package com.qubling.sidekick.widget;
 
+import java.util.Collections;
+
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -158,6 +160,13 @@ public class ModuleListAdapter extends BaseAdapter {
     public void setCurrentModule(int currentModule) {
     	this.currentModule = currentModule;
     	notifyDataSetChanged();
+    }
+    
+    public int setCurrentModule(Module module) {
+        int currentModule = getResultSet().indexOf(module);
+        this.currentModule = currentModule;
+        notifyDataSetChanged();
+        return currentModule;
     }
     
     public void setSearch(Search<Module> search) {

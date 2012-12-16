@@ -233,6 +233,17 @@ public class Results<SomeInstance extends Instance<SomeInstance>>
 	}
 	
 	@Override
+	public int indexOf(SomeInstance needle) {
+	    int i = 0;
+	    for (SomeInstance instance : this) {
+	        if (instance.getKey().equals(needle.getKey()))
+	            return i;
+	        i++;
+	    }
+	    return -1;
+	}
+	
+	@Override
 	public String toString() {
 		StringBuilder result = new StringBuilder("Results(");
 		for (int i = 0; i < size() && i < 3; i++) {

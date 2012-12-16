@@ -32,6 +32,7 @@ public class ReleaseInfoFragment extends ModuleFragment {
 
     private Schema searchSession;
     private Release release;
+    private Module module;
     
     private Search<Module> moduleSearch;
     
@@ -161,6 +162,10 @@ public class ReleaseInfoFragment extends ModuleFragment {
                 ModuleListAdapter adapter = new ModuleListAdapter(getActivity(), moduleSearch, R.layout.module_list_item_simplified);
                 ListView moduleListView = (ListView) getActivity().findViewById(R.id.release_modules_list);
                 moduleListView.setAdapter(adapter);
+                if (module != null) {
+                    int position = adapter.setCurrentModule(module);
+                    moduleListView.setSelection(position);
+                }
 
                 moduleListView.setOnItemClickListener(new OnItemClickListener() {
                     @Override
@@ -176,11 +181,24 @@ public class ReleaseInfoFragment extends ModuleFragment {
 
                         ModuleListAdapter adapter = (ModuleListAdapter) parent.getAdapter();
                         adapter.setCurrentModule(position);
+                        module = adapter.getItem(position);
                     }
                 });
             }
         });
         
         moduleSearch.start();
+    }
+    
+    public void selectModule(Module module) {
+        this.module = module;
+        
+        ListView moduleListView = (ListView) getActivity().findViewById(R.id.release_modules_list);
+        if (moduleListView == null) return;
+        
+        ModuleListAdapter adapter = (ModuleListAdapter) moduleListView.getAdapter();
+        if (adapter == null) return;
+        
+        adapter.setCurrentModule(module);
     }
 }

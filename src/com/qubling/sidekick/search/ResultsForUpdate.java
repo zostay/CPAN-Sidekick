@@ -170,6 +170,17 @@ public class ResultsForUpdate<SomeInstance extends Instance<SomeInstance>>
         Collections.sort(filteredIndex, comparator);
         unfilteredResultSet.sort(comparator);
     }
+    
+    @Override
+    public int indexOf(SomeInstance needle) {
+        int i = 0;
+        for (SomeInstance instance : this) {
+            if (instance.getKey().equals(needle.getKey()))
+                return i;
+            i++;
+        }
+        return -1;
+    }
 	
 	@Override
 	public String toString() {
