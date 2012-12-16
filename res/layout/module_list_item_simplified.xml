@@ -1,33 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ModuleInfo"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_cpan_module" android:contentDescription="Module Icon"/>
+
+    <LinearLayout
         android:id="@+id/ModuleDetails"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingRight="10dp" 
+        android:paddingBottom="2dp"
         android:paddingLeft="10dp"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp">
+        android:paddingRight="10dp"
+        android:paddingTop="2dp" >
 
-            <TextView
-                android:id="@+id/module_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minWidth="40dp"
-                android:singleLine="true"
-                android:text="@string/sample_module_name_only"
-                android:textSize="18dp" />
+        <TextView
+            android:id="@+id/module_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="40dp"
+            android:singleLine="true"
+            android:text="@string/sample_module_name_only"
+            android:textSize="18dp" />
 
-            <TextView
-                android:id="@+id/module_abstract"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minWidth="40dp"
-                android:singleLine="true"
-                android:text="@string/sample_module_abstract"
-                android:textColor="@color/abstract_text_color"
-                android:textSize="14dp" />
-
+        <TextView
+            android:id="@+id/module_abstract"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="40dp"
+            android:singleLine="true"
+            android:text="@string/sample_module_abstract"
+            android:textColor="@color/abstract_text_color"
+            android:textSize="14dp" />
+    </LinearLayout>
 
 </LinearLayout>
-

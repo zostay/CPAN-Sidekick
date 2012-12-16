@@ -5,16 +5,12 @@ import com.qubling.sidekick.Util;
 import com.qubling.sidekick.instance.Module;
 import com.qubling.sidekick.instance.Release;
 import com.qubling.sidekick.ui.module.ModuleActivity;
-import com.qubling.sidekick.ui.module.ModuleSearchFragment;
 import com.qubling.sidekick.ui.module.ModuleViewActivity;
 import com.qubling.sidekick.ui.module.ModuleViewFragment;
-import com.qubling.sidekick.ui.module.ModuleViewPlaceholderFragment;
-import com.qubling.sidekick.ui.module.ModuleViewThingyFragment;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 
 public class ReleaseViewActivity extends ModuleActivity {
     public static final String EXTRA_RELEASE = "com.qubling.sidekick.intent.extra.RELEASE";
@@ -40,7 +36,7 @@ public class ReleaseViewActivity extends ModuleActivity {
 
     private ModuleViewFragment getModuleViewFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        return (ModuleViewFragment) fragmentManager.findFragmentById(R.id.module_view_fragment_container);
+        return (ModuleViewFragment) fragmentManager.findFragmentById(R.id.module_view_fragment);
     }
 
     @Override

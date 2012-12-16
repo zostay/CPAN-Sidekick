@@ -9,13 +9,13 @@
     <fragment
         android:id="@+id/release_info_fragment"
         android:name="com.qubling.sidekick.ui.release.ReleaseInfoFragment"
-        android:layout_width="300dp"
+        android:layout_width="400dp"
         android:layout_height="match_parent"
         tools:layout="@layout/release_view_fragment" >
     </fragment>
 
     <fragment
-        android:id="@+id/module_view_fragment_container"
+        android:id="@+id/module_view_fragment"
         android:name="com.qubling.sidekick.ui.module.ModuleViewFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
