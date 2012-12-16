@@ -100,7 +100,8 @@
         <ListView
             android:id="@+id/release_modules_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:cacheColorHint="@color/list_background" >
         </ListView>
 
 </LinearLayout>
