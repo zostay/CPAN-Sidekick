@@ -5,8 +5,6 @@
  */
 package com.qubling.sidekick.widget;
 
-import java.util.Collections;
-
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
