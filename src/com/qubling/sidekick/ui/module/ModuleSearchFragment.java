@@ -118,7 +118,7 @@ public class ModuleSearchFragment extends ModuleFragment implements Fetcher.OnFi
         ListView moduleListView = getSearchResultsListView();
         if (moduleListView != null) {
         	ModuleListAdapter adapter = (ModuleListAdapter) moduleListView.getAdapter();
-        	adapter.setSearch(search);
+        	if (adapter != null) adapter.setSearch(search);
         }
         
         search.addOnSearchActivityListener(this.getModuleActivity());

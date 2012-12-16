@@ -13,7 +13,7 @@ import com.qubling.sidekick.R;
 public class ModuleSearchHelperEclair extends ModuleSearchHelper {
     private boolean searchRunning = false;
 
-	public ModuleSearchHelperEclair(ModuleSearchActivity activity) {
+	public ModuleSearchHelperEclair(SearchableActivity activity) {
 		super(activity);
 	}
 

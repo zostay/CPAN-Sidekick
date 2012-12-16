@@ -8,7 +8,7 @@ import android.view.MenuInflater;
 import com.qubling.sidekick.R;
 
 public abstract class ModuleSearchHelper {
-    public static ModuleSearchHelper createInstance(ModuleSearchActivity activity) {
+    public static ModuleSearchHelper createInstance(SearchableActivity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             return new ModuleSearchHelperHoneycomb(activity);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR_MR1) {
@@ -18,17 +18,17 @@ public abstract class ModuleSearchHelper {
         }
     }
 
-    private ModuleSearchActivity activity;
+    private SearchableActivity activity;
 
-    public ModuleSearchHelper(ModuleSearchActivity activity) {
+    public ModuleSearchHelper(SearchableActivity activity) {
     	this.activity = activity;
     }
 
-    public void setActivity(ModuleSearchActivity activity) {
+    public void setActivity(SearchableActivity activity) {
     	this.activity = activity;
     }
 
-    public ModuleSearchActivity getActivity() {
+    public SearchableActivity getActivity() {
     	return activity;
     }
 

@@ -20,6 +20,7 @@ import android.view.View;
 import com.qubling.sidekick.R;
 import com.qubling.sidekick.Util;
 import com.qubling.sidekick.instance.Module;
+import com.qubling.sidekick.instance.Release;
 import com.qubling.sidekick.util.ConnectivityCheck;
 import com.qubling.sidekick.widget.ModuleListAdapter;
 
@@ -29,7 +30,7 @@ import com.qubling.sidekick.widget.ModuleListAdapter;
  * @author sterling
  *
  */
-public class ModuleSearchActivity extends ModuleActivity {
+public class ModuleSearchActivity extends ModuleActivity implements SearchableActivity {
     final ModuleSearchHelper moduleSearchHelper = ModuleSearchHelper.createInstance(this);
 
     private ProgressDialog progressDialog;
@@ -109,7 +110,7 @@ public class ModuleSearchActivity extends ModuleActivity {
 
     /** Called when the activity is first created. */
     @Override
-    public void onCreate(Bundle state) {
+    protected void onCreate(Bundle state) {
         super.onCreate(state);
 
         // Setup the view

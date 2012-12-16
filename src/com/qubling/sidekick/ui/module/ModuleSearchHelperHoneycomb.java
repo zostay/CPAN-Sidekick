@@ -9,7 +9,7 @@ import android.widget.SearchView;
 import com.qubling.sidekick.R;
 
 public class ModuleSearchHelperHoneycomb extends ModuleSearchHelper {
-	public ModuleSearchHelperHoneycomb(ModuleSearchActivity activity) {
+	public ModuleSearchHelperHoneycomb(SearchableActivity activity) {
 		super(activity);
 	}
 

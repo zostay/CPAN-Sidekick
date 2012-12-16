@@ -5,15 +5,22 @@ import com.qubling.sidekick.Util;
 import com.qubling.sidekick.instance.Module;
 import com.qubling.sidekick.instance.Release;
 import com.qubling.sidekick.ui.module.ModuleActivity;
+import com.qubling.sidekick.ui.module.ModuleSearchActivity;
+import com.qubling.sidekick.ui.module.ModuleSearchHelper;
 import com.qubling.sidekick.ui.module.ModuleViewActivity;
 import com.qubling.sidekick.ui.module.ModuleViewFragment;
+import com.qubling.sidekick.ui.module.SearchableActivity;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.view.Menu;
 
-public class ReleaseViewActivity extends ModuleActivity {
+public class ReleaseViewActivity extends ModuleActivity implements SearchableActivity {
     public static final String EXTRA_RELEASE = "com.qubling.sidekick.intent.extra.RELEASE";
+    
+    final ModuleSearchHelper moduleSearchHelper = ModuleSearchHelper.createInstance(this);
 
     @Override
     protected void onCreate(Bundle state) {
@@ -41,6 +48,8 @@ public class ReleaseViewActivity extends ModuleActivity {
             
             releaseFragment.selectModule(module);
         }
+
+        moduleSearchHelper.onCreate(state);
     }
 
     private ModuleViewFragment getModuleViewFragment() {
@@ -97,6 +106,33 @@ public class ReleaseViewActivity extends ModuleActivity {
         // Fine, this module is in the same release, load the module in the current activity
         else {
             return true;
+        }
+    }
+    
+    @Override
+    public void doNewSearch(String query) {
+        Intent searchIntent = new Intent(this, ModuleSearchActivity.class);
+        searchIntent.putExtra(SearchManager.QUERY, query);
+        searchIntent.setAction(Intent.ACTION_SEARCH);
+        startActivity(searchIntent);
+    }
+
+    /**
+     * Called when your activity's options menu needs to be created.
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return moduleSearchHelper.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onSearchRequested() {
+        Boolean result = moduleSearchHelper.onSearchRequested();
+        if (result == null) {
+            return super.onSearchRequested();
+        }
+        else {
+            return result;
         }
     }
 }
