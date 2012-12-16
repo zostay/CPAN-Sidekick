@@ -57,10 +57,10 @@ public class ModuleViewFragment extends ModuleFragment implements ModuleViewThin
 	    searchSession = new Schema(this.getActivity());
     }
     
-    public void setModuleViaWebView(String url) {
+    public void setModuleViaWebView(String url, String baseUrl) {
         moduleHistory.push(module);
 
-        String moduleName = url.substring(CPANFetcher.METACPAN_MODULE_URL.length());
+        String moduleName = url.substring(baseUrl.length());
         module = searchSession.getModuleModel().acquireInstance(moduleName);
 
         fetchModule();
@@ -89,13 +89,13 @@ public class ModuleViewFragment extends ModuleFragment implements ModuleViewThin
 
                 // Rewrite MetaCPAN module URLs to fetch the POD
                 else if (url.startsWith(CPANFetcher.METACPAN_MODULE_URL)) {
-                    setModuleViaWebView(url);
+                    setModuleViaWebView(url, CPANFetcher.METACPAN_MODULE_URL);
                     return true;
                 }
                 
                 // Rewrite MetaCPAN secure module URLs to fetch the POD
                 else if (url.startsWith(CPANFetcher.METACPAN_SECURE_MODULE_URL)) {
-                    setModuleViaWebView(url);
+                    setModuleViaWebView(url, CPANFetcher.METACPAN_SECURE_MODULE_URL);
                     return true;
                 }
 
