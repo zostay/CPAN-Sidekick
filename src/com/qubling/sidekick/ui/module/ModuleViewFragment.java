@@ -193,23 +193,31 @@ public class ModuleViewFragment extends ModuleFragment implements ModuleViewThin
 	    
 	    // Don't do anything if we don't have an activity (i.e., don't NPE either)
 	    if (getActivity() == null) return;
-
-    	View moduleInfo = getActivity().findViewById(R.id.module_info);
-    	
-		ModuleHelper.updateItem(moduleInfo, module);
-		
-		if (module.getRawPod() != null) {
-			WebView podView = (WebView) getActivity().findViewById(R.id.module_pod);
-			
-			// Avoid an NPE here, just in case
-			if (podView == null) return;
-			
-			String formattedPod = "<html><head><link href=\"style/pod.css\" type=\"text/css\" rel=\"stylesheet\"/></head><body class=\"pod\">"
-                    + module.getRawPod()
-                    + "</body></html>";
-
-			podView.loadDataWithBaseURL("file:///android_asset/web/pod/", formattedPod, "text/html", "UTF-8", null);
-		}
+	    
+	    // Check to see if the module fetched can be shown here
+	    if (getModuleActivity().isModuleAcceptableForThisActivity(module)) {
+        	View moduleInfo = getActivity().findViewById(R.id.module_info);
+        	
+    		ModuleHelper.updateItem(moduleInfo, module);
+    		
+    		if (module.getRawPod() != null) {
+    			WebView podView = (WebView) getActivity().findViewById(R.id.module_pod);
+    			
+    			// Avoid an NPE here, just in case
+    			if (podView == null) return;
+    			
+    			String formattedPod = "<html><head><link href=\"style/pod.css\" type=\"text/css\" rel=\"stylesheet\"/></head><body class=\"pod\">"
+                        + module.getRawPod()
+                        + "</body></html>";
+    
+    			podView.loadDataWithBaseURL("file:///android_asset/web/pod/", formattedPod, "text/html", "UTF-8", null);
+    		}
+	    }
+	    
+	    // The activity doesn't want to show this activity and has initiated a new one
+	    else {
+	        module = moduleHistory.pop();
+	    }
 	}
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {

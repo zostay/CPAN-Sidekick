@@ -65,4 +65,7 @@ public abstract class ModuleActivity extends FragmentActivity implements OnSearc
         startActivity(moduleReleaseIntent);
     }
 
+    public boolean isModuleAcceptableForThisActivity(Module module) {
+        return true;
+    }
 }

@@ -65,4 +65,38 @@ public class ReleaseViewActivity extends ModuleActivity {
             startActivity(moduleViewIntent);
         }
     }
+    
+    @Override
+    public void onReleaseClick(Module clickedModule) {
+        // Do nothing. We only allow modules that belong to the current release.
+    }
+    
+    @Override
+    public boolean isModuleAcceptableForThisActivity(Module module) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        ReleaseInfoFragment releaseFragment = (ReleaseInfoFragment) fragmentManager.findFragmentById(R.id.release_info_fragment);
+        Release currentRelease = releaseFragment.getRelease();
+        
+        // TODO In the future, it might be nice to keep the release activity 
+        // we have up and just manage our own history similar to what the module 
+        // view fragment does, but this is good enough for now.
+        
+        // The release does not match, start a new activity
+        if (!module.getReleaseName().equals(currentRelease.getName())
+                || !module.getRelease().getVersion().equals(currentRelease.getVersion())) {
+            
+            Release otherRelease = module.getRelease();
+            Intent moduleReleaseIntent = new Intent(this, ReleaseViewActivity.class);
+            moduleReleaseIntent.putExtra(ReleaseViewActivity.EXTRA_RELEASE, otherRelease);
+            moduleReleaseIntent.putExtra(ReleaseViewActivity.EXTRA_MODULE, module);
+            startActivity(moduleReleaseIntent);
+            
+            return false;
+        }
+        
+        // Fine, this module is in the same release, load the module in the current activity
+        else {
+            return true;
+        }
+    }
 }
