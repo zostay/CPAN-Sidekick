@@ -1,107 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/release_information"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    android:id="@+id/release_information"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/release_name"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/release_header_background"
-            android:padding="5dp"
-            android:text="@string/sample_release_name"
-            android:textSize="30dp" />
+    <TextView
+        android:id="@+id/release_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/release_header_background"
+        android:padding="1dp"
+        android:text="@string/sample_release_name"
+        android:textSize="30dp" />
+
+    <LinearLayout
+        android:id="@+id/release_information_side_by_side"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
 
         <LinearLayout
             android:id="@+id/release_information_badge"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/background_light" >
-
-            <QuickContactBadge
-                android:id="@+id/module_author_avatar"
-                android:layout_width="150dp"
-                android:layout_height="150dp" />
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/background_light"
+            android:orientation="vertical" >
 
             <LinearLayout
-                android:id="@+id/release_information_badge_details"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="3dp"
-                android:orientation="vertical" >
+                android:id="@+id/release_author_information_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/module_author_pauseid"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sample_module_author_pauseid"
-                    android:textSize="15dp" />
+                <QuickContactBadge
+                    android:id="@+id/module_author_avatar"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp" />
 
-                <TextView
-                    android:id="@+id/module_author_fullname"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sample_module_author_fullname"
-                    android:textSize="15dp" />
-
-                <FrameLayout
-                    android:id="@+id/release_rating_favorite"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" >
-
-                    <LinearLayout
-                        android:id="@+id/RatingDetails"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="left"
-                        android:orientation="horizontal"
-                        android:paddingBottom="4dp"
-                        android:paddingTop="4dp" >
-
-                        <RatingBar
-                            android:id="@+id/module_release_rating"
-                            style="?android:attr/ratingBarStyleSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:max="5" />
-
-                        <TextView
-                            android:id="@+id/module_release_rating_count"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingLeft="5dp"
-                            android:text="@string/default_ratings_0"
-                            android:textColor="@android:color/darker_gray"
-                            android:textSize="12dp" />
-                    </LinearLayout>
-
-                    <Button
-                        android:id="@+id/module_release_favorite"
-                        style="@style/NotFavoritedButton"
-                        android:layout_width="35dp"
-                        android:layout_height="22dp"
-                        android:layout_gravity="right"
-                        android:focusable="false"
-                        android:gravity="center_vertical|right"
-                        android:text="@string/favorite_not_favorited"
-                        android:textSize="8dp" />
-                </FrameLayout>
-
-                <TextView
-                    android:id="@+id/release_metadata"
+                <LinearLayout
+                    android:id="@+id/release_information_badge_details"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/sample_release_metadata" />
+                    android:layout_margin="3dp"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/module_author_pauseid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sample_module_author_pauseid"
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:id="@+id/module_author_fullname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/sample_module_author_fullname"
+                        android:textSize="15dp" />
+                </LinearLayout>
             </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/release_rating_favorite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <LinearLayout
+                    android:id="@+id/RatingDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:orientation="horizontal"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp" >
+
+                    <RatingBar
+                        android:id="@+id/module_release_rating"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:max="5" />
+
+                    <TextView
+                        android:id="@+id/module_release_rating_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="5dp"
+                        android:text="@string/default_ratings_0"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="12dp" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/module_release_favorite"
+                    style="@style/NotFavoritedButton"
+                    android:layout_width="35dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="right"
+                    android:focusable="false"
+                    android:gravity="center_vertical|right"
+                    android:text="@string/favorite_not_favorited"
+                    android:textSize="8dp" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/release_metadata"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sample_release_metadata" />
+
         </LinearLayout>
 
         <ListView
             android:id="@+id/release_modules_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:cacheColorHint="@color/list_background" >
         </ListView>
+    </LinearLayout>
 
 </LinearLayout>
