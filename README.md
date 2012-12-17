@@ -16,6 +16,7 @@ already present:
  * See search results with the author's picture, module abstract, ratings, and
    favorites.
  * Tap on individual results to see the documentation for that module.
+ * Tap on the module header on documentation to see the release details
  * Follow links within the documentation to see the documentation for other
    modules.
  * Any link to something other than a module will work, but will go to a
@@ -31,7 +32,6 @@ point:
  * Provide in-app features that mirror all the basic functionality provided by
    the MetaCPAN API:
    * Author information
-   * Release information
    * User profiles
    * Favorite voting
    * Etc.

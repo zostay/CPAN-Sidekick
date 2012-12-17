@@ -1,5 +1,15 @@
 # Change Log
 
+## v0.5.0 vc15 2012-12-16 Release
+
+ * Added a release view showing more details about a release and a list of all modules in that release.
+ * Made the module lists on the left wider on tablets in landscape view
+ * Load more items when in portrait mode, to prevent multiple loads needed to fill one screen.
+ * Removed the custom configuration handling, which we do not even do anymore.
+ * Removed some duplicate code for handling POD WebView clicks.
+ * Added sorting to result sets so they can be sorted in release view.
+ * Fetches the full name of authors now for display on the release view.
+
 ## v0.4.6 vc14 2012-12-09 Release
 
  * Bugfix: Issue #15: Allow the app to view the documentation of .pod files in addition to .pm files.
