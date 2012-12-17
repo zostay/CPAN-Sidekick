@@ -29,6 +29,12 @@ public class ModuleModel extends Model<Module> {
 	public Fetcher<Module> searchByKeyword(String keywords) {
 		return new ModuleKeywordSearch(this, keywords);
 	}
+	
+	public Fetcher<Module> searchByKeyword(String keywords, int size) {
+	    ModuleKeywordSearch keywordSearch = new ModuleKeywordSearch(this, keywords);
+	    keywordSearch.setSize(size);
+	    return keywordSearch;
+	}
     
     public Fetcher<Module> fetchModulesForRelease(Release release) {
         CPANQueryFetcher<Module> fetcher = new ModuleForReleaseFetcher(this, release);

@@ -2,6 +2,7 @@ package com.qubling.sidekick.ui.module;
 
 import java.util.ArrayList;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,9 +98,11 @@ public class ModuleSearchFragment extends ModuleFragment implements Fetcher.OnFi
 	private Search<Module> buildSearch(String searchText) {
 //		Log.d("ModuleSearchFragment", "buildSearch(" + searchText + ")");
 		
+	    int size = getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ? 25 : 10;
+	    
 		// Load the fetchers we need
         ModuleModel modules = getSearchSession().getModuleModel();
-        Fetcher<Module> keywordSearch  = modules.searchByKeyword(lastSearchText = searchText);
+        Fetcher<Module> keywordSearch = modules.searchByKeyword(lastSearchText = searchText, size);
         UpdateFetcher<Module> fetchFavorites = modules.fetchReleaseFavorites("");
         UpdateFetcher<Module> fetchRatings   = modules.fetchReleaseRatings();
         UpdateFetcher<Module> fetchAuthors   = modules.fetchAuthors();
