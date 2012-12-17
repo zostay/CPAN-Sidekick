@@ -159,6 +159,8 @@ public class ReleaseInfoFragment extends ModuleFragment {
                     }
                 });
                 
+                if (getActivity() == null) return;
+                
                 ModuleListAdapter adapter = new ModuleListAdapter(getActivity(), moduleSearch, R.layout.module_list_item_simplified);
                 ListView moduleListView = (ListView) getActivity().findViewById(R.id.release_modules_list);
                 moduleListView.setAdapter(adapter);
