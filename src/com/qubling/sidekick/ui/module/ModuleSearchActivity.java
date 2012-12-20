@@ -5,22 +5,27 @@
  */
 package com.qubling.sidekick.ui.module;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.qubling.sidekick.R;
 import com.qubling.sidekick.Util;
 import com.qubling.sidekick.instance.Module;
-import com.qubling.sidekick.instance.Release;
+import com.qubling.sidekick.ui.AboutDialogFragment;
 import com.qubling.sidekick.util.ConnectivityCheck;
 import com.qubling.sidekick.widget.ModuleListAdapter;
 
@@ -164,6 +169,18 @@ public class ModuleSearchActivity extends ModuleActivity implements SearchableAc
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	return moduleSearchHelper.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.menu_about:
+            DialogFragment dialog = new AboutDialogFragment();
+            dialog.show(getSupportFragmentManager(), "about");
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

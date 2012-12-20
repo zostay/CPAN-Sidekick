@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/about_cpan_sidekick"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/about_background"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="30dp" >
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:contentDescription="CPAN Sidekick Logo"
+        android:src="@drawable/ic_cpan_sidekick" />
+
+    <LinearLayout
+        android:id="@+id/about_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingTop="15dp" >
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_version" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_version" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/about_copyright" />
+
+    <TextView
+        android:id="@+id/link_report_a_bug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:bufferType="spannable"
+        android:clickable="true"
+        android:paddingTop="15dp"
+        android:text="@string/about_report_a_bug"
+        android:textColor="@color/link_color" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/about_report_a_bug_more" />
+
+    <TextView
+        android:id="@+id/link_about_metacpan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:bufferType="spannable"
+        android:clickable="true"
+        android:paddingTop="15dp"
+        android:text="@string/about_metacpan"
+        android:textColor="@color/link_color" />
+
+    <TextView
+        android:id="@+id/more_about_metacpan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/about_special_thanks" />
+
+</LinearLayout>

@@ -21,4 +21,6 @@
     <color name="webview_background">#fff</color>
     <color name="background_light">#EEEEEE</color>
     <color name="release_header_background">#ffbb33</color>
+    <color name="about_background">#FFF</color>
+    <color name="link_color">#36C</color>
 </resources>

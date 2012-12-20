@@ -24,4 +24,11 @@
     <string name="sample_release_metadata">License: Perl_5</string>
     <string name="cannot_connect_to_metacpan">Cannot connect to MetaCPAN. Please make sure your device is connected to the network.</string>
     <string name="activity_release_view">CPAN Release View</string>
+    <string name="preference_about">About</string>
+    <string name="text_version">Version</string>
+    <string name="about_copyright">© 2012 Qubling Software</string>
+    <string name="about_report_a_bug">&lt;u&gt;Report a bug&lt;/u&gt;</string>
+    <string name="about_report_a_bug_more">If you find a problem, please report it.</string>
+    <string name="about_special_thanks">Special Thanks to the MetaCPAN team. This application would not be possible without them.</string>
+    <string name="about_metacpan">&lt;u&gt;About MetaCPAN&lt;/u&gt;</string>
 </resources>
