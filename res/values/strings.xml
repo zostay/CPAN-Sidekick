@@ -31,4 +31,8 @@
     <string name="about_report_a_bug_more">If you find a problem, please report it.</string>
     <string name="about_special_thanks">Special Thanks to the MetaCPAN team. This application would not be possible without them.</string>
     <string name="about_metacpan">&lt;u&gt;About MetaCPAN&lt;/u&gt;</string>
+    <string name="error_no_accounts_to_pick_title">No Accounts Found</string>
+    <string name="error_no_accounts_to_pick">No accounts found on your device for Facebook, Twitter, or Github. To use the sign in feature of CPAN Sidekick you must install the official Facebook or Twitter or Github application and configure an account.</string>
+    <string name="dialog_select_account">Choose an Account</string>
+    <string name="sample_account_name">Account Name (Account Type)</string>
 </resources>
