@@ -120,7 +120,7 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
     				@Override
     				public void run() {
     //					long elapsed = new Date().getTime() - ts.getTime();
-    //					Log.w("GravatarFetcher", "Gravatar request #" + reqId + " took too long (" + elapsed + " µs), aborting fetch: " + resizedGravatarURL);
+    //					Log.w("GravatarFetcher", "Gravatar request #" + reqId + " took too long (" + elapsed + " Âµs), aborting fetch: " + resizedGravatarURL);
     					Log.w("GravatarFetcher", "Gravatar request took too long, aborting fetch: " + gravatarURL);
     					req.abort();
     					//throw new RuntimeException(GRAVATAR_TOOK_TOO_LONG);
@@ -170,7 +170,7 @@ public class GravatarFetcher extends AbstractFetcher<Gravatar> implements Update
             finally {
                 // Request is finished, stop the timer
     //          long elapsed = new Date().getTime() - ts.getTime();
-    //          Log.d("GravatarFetcher", "Gravatar request #" + reqId + " finished executing request (" + elapsed + " µs)");
+    //          Log.d("GravatarFetcher", "Gravatar request #" + reqId + " finished executing request (" + elapsed + " Âµs)");
               timer.cancel();
             }
 //        }

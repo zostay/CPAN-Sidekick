@@ -4,5 +4,6 @@ version := "0.9.0"
 
 scalaVersion := "2.10.0"
 
-scalaOptions ++= Seq("-deprecation", "-unchecked")
+scalacOptions ++= Seq("-deprecation", "-unchecked")
 
+libraryDependencies += "org.scala-lang" % "scala-compiler" % "2.10.0" withSources()
