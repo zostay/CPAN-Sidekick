@@ -193,87 +193,87 @@ public class ModuleSearchActivity extends ModuleActivity implements SearchableAc
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.menu_sign_in_out:
-            AuthenticationHelper auth = new AuthenticationHelper(this);
-            Map<String, AuthenticatorDescription> authenticatorMap = auth.getAuthenticatorMap();
-            List<Account> accounts = auth.getAccounts();
-            
-            if (accounts.size() == 0) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                
-                builder.setTitle(R.string.error_no_accounts_to_pick_title);
-                builder.setIcon(android.R.drawable.ic_dialog_alert);
-                builder.setMessage(R.string.error_no_accounts_to_pick);
-                builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                builder.show();
-            }
-            else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                
-                List<Map<String, Object>> accountList = new ArrayList<Map<String,Object>>(accounts.size());
-                for (Account account : accounts) {
-                    Map<String, Object> accountMap = new HashMap<String, Object>(2);
-                    AuthenticatorDescription authDesc = authenticatorMap.get(account.type);
-                    String authName = account.type;
-                    Resources authRes = null;
-                    try {
-                        authRes = getPackageManager().getResourcesForApplication(authDesc.packageName);
-                        authName = authRes.getString(authDesc.labelId);
-                    }
-                    catch (NameNotFoundException e) {
-                        Log.e("ModuleSearchActivity", "Could not find label for " + account.type);
-                    }
-                    
-                    accountMap.put("label", account.name + " (" + authName + ")");
-                    if (authRes != null) {
-                        accountMap.put("icon", new Pair<Resources, Integer>(authRes, authDesc.iconId));
-                    }
-                    
-                    accountList.add(accountMap);
-                }
-                
-                String[] from = new String[] { "label", "icon" };
-                int[] to = new int[] { R.id.account_name, R.id.account_type_icon };
-                
-                SimpleAdapter accountAdapter = new SimpleAdapter(this, accountList, R.layout.account_list_item, from, to);
-                accountAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
-                    
-                    @Override
-                    public boolean setViewValue(View view, Object data, String textRepresentation) {
-                        if (view instanceof ImageView && data instanceof Pair<?, ?>) {
-                            ImageView image = (ImageView) view;
-                            Pair<?, ?> pair = (Pair<?, ?>) data;
-                            
-                            try {
-                                Resources accountResources = (Resources) pair.first;
-                                Integer iconId = (Integer) pair.second;
-                                Drawable accountIcon = accountResources.getDrawable(iconId);
-                                image.setImageDrawable(accountIcon);
-                            }
-                            
-                            // This will NEVER happen! ... yeah right ...
-                            catch (ClassCastException e) {
-                                return false;
-                            }
-                            
-                            return true;
-                        }
-                        
-                        return false;
-                    }
-                });
-                
-                builder.setTitle(R.string.dialog_select_account);
-                builder.setAdapter(accountAdapter, null);
-                builder.show();
-            }
-            return true;
+//        case R.id.menu_sign_in_out:
+//            AuthenticationHelper auth = new AuthenticationHelper(this);
+//            Map<String, AuthenticatorDescription> authenticatorMap = auth.getAuthenticatorMap();
+//            List<Account> accounts = auth.getAccounts();
+//            
+//            if (accounts.size() == 0) {
+//                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//                
+//                builder.setTitle(R.string.error_no_accounts_to_pick_title);
+//                builder.setIcon(android.R.drawable.ic_dialog_alert);
+//                builder.setMessage(R.string.error_no_accounts_to_pick);
+//                builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+//                    
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                });
+//                builder.show();
+//            }
+//            else {
+//                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//                
+//                List<Map<String, Object>> accountList = new ArrayList<Map<String,Object>>(accounts.size());
+//                for (Account account : accounts) {
+//                    Map<String, Object> accountMap = new HashMap<String, Object>(2);
+//                    AuthenticatorDescription authDesc = authenticatorMap.get(account.type);
+//                    String authName = account.type;
+//                    Resources authRes = null;
+//                    try {
+//                        authRes = getPackageManager().getResourcesForApplication(authDesc.packageName);
+//                        authName = authRes.getString(authDesc.labelId);
+//                    }
+//                    catch (NameNotFoundException e) {
+//                        Log.e("ModuleSearchActivity", "Could not find label for " + account.type);
+//                    }
+//                    
+//                    accountMap.put("label", account.name + " (" + authName + ")");
+//                    if (authRes != null) {
+//                        accountMap.put("icon", new Pair<Resources, Integer>(authRes, authDesc.iconId));
+//                    }
+//                    
+//                    accountList.add(accountMap);
+//                }
+//                
+//                String[] from = new String[] { "label", "icon" };
+//                int[] to = new int[] { R.id.account_name, R.id.account_type_icon };
+//                
+//                SimpleAdapter accountAdapter = new SimpleAdapter(this, accountList, R.layout.account_list_item, from, to);
+//                accountAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
+//                    
+//                    @Override
+//                    public boolean setViewValue(View view, Object data, String textRepresentation) {
+//                        if (view instanceof ImageView && data instanceof Pair<?, ?>) {
+//                            ImageView image = (ImageView) view;
+//                            Pair<?, ?> pair = (Pair<?, ?>) data;
+//                            
+//                            try {
+//                                Resources accountResources = (Resources) pair.first;
+//                                Integer iconId = (Integer) pair.second;
+//                                Drawable accountIcon = accountResources.getDrawable(iconId);
+//                                image.setImageDrawable(accountIcon);
+//                            }
+//                            
+//                            // This will NEVER happen! ... yeah right ...
+//                            catch (ClassCastException e) {
+//                                return false;
+//                            }
+//                            
+//                            return true;
+//                        }
+//                        
+//                        return false;
+//                    }
+//                });
+//                
+//                builder.setTitle(R.string.dialog_select_account);
+//                builder.setAdapter(accountAdapter, null);
+//                builder.show();
+//            }
+//            return true;
         case R.id.menu_about:
             DialogFragment dialog = new AboutDialogFragment();
             dialog.show(getSupportFragmentManager(), "about");

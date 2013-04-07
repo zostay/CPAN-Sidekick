@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/menu_module_search" android:title="@string/menu_module_search" android:icon="@android:drawable/ic_menu_search" android:showAsAction="ifRoom" android:actionViewClass="android.widget.SearchView"></item>
-    <item android:id="@+id/menu_sign_in_out" android:icon="@android:drawable/ic_menu_preferences" android:title="Sign In"></item><item android:id="@+id/menu_about" android:icon="@android:drawable/ic_menu_info_details" android:title="About"></item>
-    
+    <!--  <item android:id="@+id/menu_sign_in_out" android:icon="@android:drawable/ic_menu_preferences" android:title="Sign In"></item><item android:id="@+id/menu_about" android:icon="@android:drawable/ic_menu_info_details" android:title="About"></item>
+    -->
 </menu>
