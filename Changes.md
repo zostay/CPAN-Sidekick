@@ -1,5 +1,9 @@
 # Change Log
 
+## v0.5.1 vc16 2013-04-07 Release
+
+ * Bugfix: The MetaCPAN API changed sometime in late January/early February, presumably to prevent 3rd parties from executing arbitrary JavaScript on the MetaCPAN API server. Made the changes to use the new metacpan_script key to fix broken search results.
+
 ## v0.5.0 vc15 2012-12-16 Release
 
  * Added a release view showing more details about a release and a list of all modules in that release.
