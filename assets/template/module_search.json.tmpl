@@ -3,7 +3,7 @@
     "filtered": {
       "query": {
         "custom_score": {
-          "script": "documentation = doc['documentation'].stringValue; if(documentation == empty) { documentation = 'xxxxxxxxxxxxxxxxxxxxxxxxx' } return _score - documentation.length()/10000",
+          "metacpan_script": "prefer_shorter_module_names_400",
           "query": {
             "boosting": {
               "negative_boost": 0.5,
