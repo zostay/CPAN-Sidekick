@@ -23,7 +23,7 @@ public class ReleaseViewActivity extends ModuleActivity implements SearchableAct
     final ModuleSearchHelper moduleSearchHelper = ModuleSearchHelper.createInstance(this);
 
     @Override
-    protected void onCreate(Bundle state) {
+    public void onCreate(Bundle state) {
         super.onCreate(state);
         
         setContentView(R.layout.release_view);
@@ -33,7 +33,7 @@ public class ReleaseViewActivity extends ModuleActivity implements SearchableAct
         
         Intent intent = getIntent();
         Release release = (Release) intent.getParcelableExtra(EXTRA_RELEASE);
-        Module module = (Module) intent.getParcelableExtra(EXTRA_MODULE);
+        Module module = (Module) intent.getParcelableExtra(ModuleActivity.ExtraModule());
         
         setTitle(release.getName() + "-" + release.getVersion());
 
@@ -70,7 +70,7 @@ public class ReleaseViewActivity extends ModuleActivity implements SearchableAct
         // Phone
         else {
             Intent moduleViewIntent = new Intent(this, ModuleViewActivity.class);
-            moduleViewIntent.putExtra(ModuleActivity.EXTRA_MODULE, clickedModule);
+            moduleViewIntent.putExtra(ModuleActivity.ExtraModule(), clickedModule);
             startActivity(moduleViewIntent);
         }
     }
@@ -97,7 +97,7 @@ public class ReleaseViewActivity extends ModuleActivity implements SearchableAct
             Release otherRelease = module.getRelease();
             Intent moduleReleaseIntent = new Intent(this, ReleaseViewActivity.class);
             moduleReleaseIntent.putExtra(ReleaseViewActivity.EXTRA_RELEASE, otherRelease);
-            moduleReleaseIntent.putExtra(ReleaseViewActivity.EXTRA_MODULE, module);
+            moduleReleaseIntent.putExtra(ModuleActivity.ExtraModule(), module);
             startActivity(moduleReleaseIntent);
             
             return false;

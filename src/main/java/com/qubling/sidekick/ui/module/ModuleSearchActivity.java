@@ -128,7 +128,7 @@ public class ModuleSearchActivity extends ModuleActivity implements SearchableAc
 
     /** Called when the activity is first created. */
     @Override
-    protected void onCreate(Bundle state) {
+    public void onCreate(Bundle state) {
         super.onCreate(state);
 
         // Setup the view
@@ -341,7 +341,7 @@ public class ModuleSearchActivity extends ModuleActivity implements SearchableAc
         // Phone
         else {
         	Intent moduleViewIntent = new Intent(this, ModuleViewActivity.class);
-	        moduleViewIntent.putExtra(ModuleActivity.EXTRA_MODULE, currentModule);
+	        moduleViewIntent.putExtra(ModuleActivity.ExtraModule(), currentModule);
 	        startActivity(moduleViewIntent);
         }
     }

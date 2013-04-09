@@ -22,7 +22,7 @@ import com.qubling.sidekick.instance.Module;
  */
 public class ModuleViewActivity extends ModuleActivity {
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.module_view);
@@ -31,7 +31,7 @@ public class ModuleViewActivity extends ModuleActivity {
         Util.setupBugSense(this);
 
         Intent intent = getIntent();
-        Module 	module = (Module) intent.getParcelableExtra(EXTRA_MODULE);
+        Module 	module = (Module) intent.getParcelableExtra(ModuleActivity.ExtraModule());
 
         setTitle(module.getName());
 
