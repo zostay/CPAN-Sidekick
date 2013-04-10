@@ -83,7 +83,7 @@ public class ModuleSearchFragment extends ModuleFragment implements Fetcher.OnFi
                 getModuleActivity().onModuleClick(currentModule);
 
                 ModuleListAdapter adapter = (ModuleListAdapter) parent.getAdapter();
-                adapter.setCurrentModule(position);
+                adapter.currentModule_$eq(position);
             }
         });
 
@@ -106,7 +106,7 @@ public class ModuleSearchFragment extends ModuleFragment implements Fetcher.OnFi
         UpdateFetcher<Module> fetchFavorites = modules.fetchReleaseFavorites("");
         UpdateFetcher<Module> fetchRatings   = modules.fetchReleaseRatings();
         UpdateFetcher<Module> fetchAuthors   = modules.fetchAuthors();
-        UpdateFetcher<Module> fetchGravatars = modules.fetchGravatars(GRAVATAR_DP_SIZE);
+        UpdateFetcher<Module> fetchGravatars = modules.fetchGravatars(ModuleFragment.GravatarDpSize());
         
         // Start the search task
         @SuppressWarnings("unchecked")
@@ -164,7 +164,7 @@ public class ModuleSearchFragment extends ModuleFragment implements Fetcher.OnFi
 
         // Remember which one has been tapped
         ModuleListAdapter adapter = (ModuleListAdapter) getSearchResultsListView().getAdapter();
-        int position = adapter.getCurrentModule();
+        int position = adapter.currentModule();
 
         state.putInt("moduleListCurrentSelection", position);
     }

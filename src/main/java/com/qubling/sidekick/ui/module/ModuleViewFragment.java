@@ -163,7 +163,7 @@ public class ModuleViewFragment extends ModuleFragment implements ModuleViewThin
         UpdateFetcher<Module> fetchFavorites = modules.fetchReleaseFavorites("");
         UpdateFetcher<Module> fetchRatings   = modules.fetchReleaseRatings();
         UpdateFetcher<Module> fetchAuthors   = modules.fetchAuthors();
-        UpdateFetcher<Module> fetchGravatars = modules.fetchGravatars(GRAVATAR_DP_SIZE);
+        UpdateFetcher<Module> fetchGravatars = modules.fetchGravatars(ModuleFragment.GravatarDpSize());
     	
         @SuppressWarnings("unchecked")
         Search<Module> search = searchSession.doFetch(moduleFetch, this)

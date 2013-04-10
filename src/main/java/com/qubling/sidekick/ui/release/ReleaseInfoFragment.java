@@ -165,7 +165,8 @@ public class ReleaseInfoFragment extends ModuleFragment {
                 ListView moduleListView = (ListView) getActivity().findViewById(R.id.release_modules_list);
                 moduleListView.setAdapter(adapter);
                 if (module != null) {
-                    int position = adapter.setCurrentModule(module);
+                    adapter.currentModule_$eq(module);
+                    int position = adapter.currentModule();
                     moduleListView.setSelection(position);
                 }
 
@@ -182,7 +183,7 @@ public class ReleaseInfoFragment extends ModuleFragment {
                         getModuleActivity().onModuleClick(currentModule);
 
                         ModuleListAdapter adapter = (ModuleListAdapter) parent.getAdapter();
-                        adapter.setCurrentModule(position);
+                        adapter.currentModule_$eq(position);
                         module = adapter.getItem(position);
                     }
                 });
@@ -201,6 +202,6 @@ public class ReleaseInfoFragment extends ModuleFragment {
         ModuleListAdapter adapter = (ModuleListAdapter) moduleListView.getAdapter();
         if (adapter == null) return;
         
-        adapter.setCurrentModule(module);
+        adapter.currentModule_$eq(module);
     }
 }
