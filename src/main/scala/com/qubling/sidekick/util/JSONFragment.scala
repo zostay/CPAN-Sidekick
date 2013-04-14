@@ -3,7 +3,7 @@
  *
  * This software may be distributed under the terms of the Artistic License 2.0.
  */
-package com.qubling.sidekick.util;
+package com.qubling.sidekick.util
 
 /**
  * Used with {@link StringTemplate} to allow for a complete JSON object or
@@ -12,6 +12,6 @@ package com.qubling.sidekick.util;
  * @author sterling
  *
  */
-public interface JSONFragment {
-    public String toJSONString();
+trait JSONFragment {
+  def toJSONString() : String;
 }
