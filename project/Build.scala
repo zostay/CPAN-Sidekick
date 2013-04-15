@@ -24,7 +24,8 @@ object General {
     // AndroidManifestGenerator.settings ++
     AndroidMarketPublish.settings ++ Seq (
       keyalias in Android := "change-me",
-      libraryDependencies += "org.scalatest" %% "scalatest" % "1.9.1" % "test"
+      libraryDependencies += "org.scalatest" %% "scalatest" % "1.9.1" % "test",
+      proguardOptimizations in Android += "-keep class scala.collection.SeqLike { public protected *; }"
     )
 }
 
